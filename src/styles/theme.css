@@ -1,0 +1,45 @@
+/* Design tokens. Every color on the site is a shade of the brand blue. */
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand: VavenCloud blue #3d69cc (hue 222°) */
+  --color-brand-50: #eff4fc;
+  --color-brand-100: #dde7f8;
+  --color-brand-200: #bfd1f2;
+  --color-brand-300: #93b2e8;
+  --color-brand-400: #648cdb;
+  --color-brand-500: #3d69cc;
+  --color-brand-600: #3157b3;
+  --color-brand-700: #2a4791;
+  --color-brand-800: #263d76;
+  --color-brand-900: #233561;
+  --color-brand-950: #172240;
+
+  /* Deep navy surfaces – same hue, very dark */
+  --color-ink-700: #1b2b52;
+  --color-ink-800: #132142;
+  --color-ink-900: #0d1731;
+  --color-ink-950: #070e21;
+
+  /* Soft ease-out for hovers: quick start, long gentle settle. Used as the default for every `transition` utility. */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 250ms;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float 6s ease-in-out 3s infinite;
+  --animate-shimmer: shimmer 6s linear infinite;
+
+  @keyframes shimmer {
+    to { background-position: 200% center; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}

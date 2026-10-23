@@ -18,7 +18,10 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* "@/..." = src/... (mirrors resolve.alias in vite.config.ts) */
+    "paths": { "@/*": ["./src/*"] }
   },
   "include": ["src"]
 }

@@ -1,0 +1,12 @@
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-white font-sans text-slate-700 antialiased;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}

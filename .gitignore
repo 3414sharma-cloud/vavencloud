@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local environment (API URL, reCAPTCHA key)
+.env
+.env.*
+!.env.example

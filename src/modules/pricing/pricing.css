@@ -1,0 +1,28 @@
+/* Plan cards fade/slide in each time a tab is switched (staggered via inline animation-delay) */
+.plan-card {
+  animation: plan-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes plan-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+/* "Compare all features" panel: animates height via grid rows, no fixed max-height needed */
+#plans-compare {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.35s ease;
+}
+#plans-compare.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+#plans-compare > div {
+  min-height: 0;
+  overflow: hidden;
+}

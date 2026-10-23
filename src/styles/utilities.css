@@ -1,0 +1,7 @@
+@utility gradient-text {
+  background-image: linear-gradient(90deg, #93b2e8, #3d69cc, #bfd1f2, #3d69cc, #93b2e8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
