@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand: VavenCloud blue #3d69cc (hue 222°). Every color on the site is a shade of this. */
+  --color-brand-50: #eff4fc;
+  --color-brand-100: #dde7f8;
+  --color-brand-200: #bfd1f2;
+  --color-brand-300: #93b2e8;
+  --color-brand-400: #648cdb;
+  --color-brand-500: #3d69cc;
+  --color-brand-600: #3157b3;
+  --color-brand-700: #2a4791;
+  --color-brand-800: #263d76;
+  --color-brand-900: #233561;
+  --color-brand-950: #172240;
+
+  /* Deep navy surfaces – same hue, very dark */
+  --color-ink-700: #1b2b52;
+  --color-ink-800: #132142;
+  --color-ink-900: #0d1731;
+  --color-ink-950: #070e21;
+
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-delayed: float 6s ease-in-out 3s infinite;
+  --animate-shimmer: shimmer 6s linear infinite;
+
+  @keyframes shimmer {
+    to { background-position: 200% center; }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+@utility gradient-text {
+  background-image: linear-gradient(90deg, #93b2e8, #3d69cc, #bfd1f2, #3d69cc, #93b2e8);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-white font-sans text-slate-700 antialiased;
+  }
+  summary::-webkit-details-marker {
+    display: none;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-r from-brand-500 to-brand-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-brand-500/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-400;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white backdrop-blur transition duration-200 hover:border-white/25 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-900 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-brand-300 hover:text-brand-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-500;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3 py-1 text-xs font-semibold tracking-wider text-brand-700 uppercase;
+  }
+  .eyebrow-dark {
+    @apply inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold tracking-wider text-brand-200 uppercase;
+  }
+  .section-title {
+    @apply text-3xl font-bold tracking-tight text-balance text-slate-900 sm:text-4xl lg:text-5xl;
+  }
+  .field {
+    @apply mt-1.5 block w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/15 focus:outline-none;
+  }
+}
+
+/* Navbar: full-width + invisible at the top, floating clear-glass pill once scrolled.
+   No fill colour - only blur, a brand-blue outline, a top highlight and a soft blue glow. */
+#site-nav {
+  border: 1px solid transparent;
+  transition:
+    max-width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    margin 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    padding 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-radius 0.45s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+#site-nav {
+  position: relative;
+  isolation: isolate; /* keeps the glass layers (::before/::after) behind the nav content */
+}
+
+/* GlassSurface (src/glassSurface.ts) sets --glass-bg / --glass-filter / --glass-shadow on #site-nav.
+   They are only applied once scrolled, so the bar stays invisible at the top of the page. */
+#site-header.is-scrolled #site-nav {
+  max-width: min(72rem, calc(100% - 1.5rem));
+  margin-top: 0.75rem;
+  padding: 0.5rem 0.5rem 0.5rem 1.25rem;
+  border-radius: 9999px;
+  border-color: rgb(100 140 219 / 0.35); /* faint brand-400 edge */
+  background: var(--glass-bg, transparent);
+  -webkit-backdrop-filter: var(--glass-filter, blur(12px));
+  backdrop-filter: var(--glass-filter, blur(12px));
+  box-shadow:
+    var(--glass-shadow, 0 0 0 transparent),
+    0 12px 32px -14px rgb(61 105 204 / 0.55); /* brand-500 glow */
+}
+
+/* Frosted fallback (Safari/Firefox) extras from the original: diagonal sheen + light-catching rim */
+#site-nav.glass-frosted::before,
+#site-nav.glass-frosted::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+#site-nav.glass-frosted::before {
+  background: linear-gradient(135deg, hsl(0 0% 100% / 0.14) 0%, transparent 42%, transparent 64%, hsl(0 0% 100% / 0.05) 100%);
+}
+#site-nav.glass-frosted::after {
+  padding: 3px;
+  background: linear-gradient(150deg, hsl(0 0% 100% / 0.34), hsl(0 0% 100% / 0.03) 45%, hsl(0 0% 100% / 0.02) 60%, hsl(0 0% 100% / 0.18));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+}
+#site-header.is-scrolled #site-nav.glass-frosted::before,
+#site-header.is-scrolled #site-nav.glass-frosted::after {
+  opacity: 1;
+}
+/* Menu open: tint the pill so white text reads over any section */
+#site-header.menu-open #site-nav {
+  background: rgb(7 14 33 / 0.8); /* ink-950 */
+  border-color: rgb(100 140 219 / 0.5);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+/* Nav text over light sections: swap white text for dark so the clear glass stays readable */
+#site-header .nav-fg,
+#site-header .nav-accent,
+#site-header .nav-btn {
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+/* Per-item: .on-light is set on each nav item whose own background is light */
+#site-header .nav-fg.on-light {
+  color: var(--color-slate-700);
+}
+#site-header .nav-fg.on-light:hover,
+#site-header a.nav-fg.on-light[href="#top"] {
+  color: var(--color-slate-900);
+}
+#site-header .nav-fg.on-light .nav-accent {
+  color: var(--color-brand-600);
+}
+#site-header .nav-btn.on-light {
+  color: var(--color-slate-900);
+  border-color: rgb(61 105 204 / 0.3);
+  background-color: rgb(255 255 255 / 0.35);
+}
+
+/* Hero headline rotating word: old word lifts up and blurs out, new one rises in from below */
+.rotator-word {
+  display: inline-block;
+  transition:
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.45s ease,
+    filter 0.45s ease;
+}
+.rotator-word.is-out {
+  transform: translateY(-0.35em);
+  opacity: 0;
+  filter: blur(10px);
+}
+.rotator-word.is-enter {
+  transform: translateY(0.35em);
+  opacity: 0;
+  filter: blur(10px);
+  transition: none;
+}
+
+/* Scroll reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
