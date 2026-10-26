@@ -4,9 +4,9 @@ import { contactFromFormData, loadRecaptcha, submitContactForm } from './contact
 type Status = 'idle' | 'error' | 'invalid' | 'sent'
 
 const messages: Record<Exclude<Status, 'idle'>, { text: string; className: string }> = {
-  invalid: { text: 'Please fill in the required fields marked *.', className: 'text-rose-600' },
-  error: { text: 'Something went wrong. Please try again or email us directly.', className: 'text-rose-600' },
-  sent: { text: 'Thanks, your message has been sent. We’ll get back to you shortly.', className: 'text-emerald-600' },
+  invalid: { text: 'Please fill in the required fields marked *.', className: 'text-rose-600 dark:text-rose-400' },
+  error: { text: 'Something went wrong. Please try again or email us directly.', className: 'text-rose-600 dark:text-rose-400' },
+  sent: { text: 'Thanks, your message has been sent. We’ll get back to you shortly.', className: 'text-emerald-700 dark:text-emerald-400' },
 }
 
 /**
@@ -36,11 +36,11 @@ export function initContactForm(form: HTMLFormElement): void {
   const show = (state: Status) => {
     if (state === 'idle') {
       status.innerHTML = idleText
-      status.className = 'text-xs leading-relaxed text-slate-500'
+      status.className = 'mt-4 text-xs leading-relaxed text-neutral-500'
       return
     }
     status.textContent = messages[state].text
-    status.className = `text-sm font-medium ${messages[state].className}`
+    status.className = `mt-4 text-sm font-medium ${messages[state].className}`
   }
 
   form.addEventListener('submit', async (e) => {
@@ -69,7 +69,7 @@ export function initContactForm(form: HTMLFormElement): void {
       show('error')
     } finally {
       submit.disabled = false
-      submitLabel.textContent = 'Send Message'
+      submitLabel.textContent = 'Send message'
     }
   })
 }

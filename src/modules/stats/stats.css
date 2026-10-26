@@ -1,0 +1,364 @@
+/* "By the numbers" scroll story: frosted-glass panels over soft neutral shapes.
+   Drawings replay each time a panel gets `.is-shown`. */
+
+/* ---------- Background (gives the glass something to blur) ---------- */
+.stats-dots {
+  background-image: radial-gradient(rgb(10 10 10 / 0.08) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 60% 70% at 70% 50%, #000 20%, transparent 75%);
+}
+.dark .stats-dots {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+}
+.stats-shape {
+  position: absolute;
+  border-radius: 9999px;
+}
+.stats-shape--a {
+  top: 18%;
+  right: 22%;
+  height: 300px;
+  width: 300px;
+  background: linear-gradient(135deg, #e5e5e5, #fafafa);
+  animation: stats-float 14s ease-in-out infinite alternate;
+}
+.stats-shape--b {
+  right: 4%;
+  bottom: 14%;
+  height: 220px;
+  width: 220px;
+  background: linear-gradient(135deg, rgb(61 105 204 / 0.16), rgb(61 105 204 / 0.04));
+  animation: stats-float 18s ease-in-out infinite alternate-reverse;
+}
+.stats-shape--c {
+  top: 8%;
+  right: 6%;
+  height: 120px;
+  width: 120px;
+  border: 1px solid #e5e5e5;
+  animation: stats-float 11s ease-in-out infinite alternate;
+}
+.dark .stats-shape--a {
+  background: linear-gradient(135deg, #262626, #171717);
+}
+.dark .stats-shape--b {
+  background: linear-gradient(135deg, rgb(100 140 219 / 0.18), rgb(100 140 219 / 0.03));
+}
+.dark .stats-shape--c {
+  border-color: #262626;
+}
+@keyframes stats-float {
+  to { transform: translate(-30px, 24px) scale(1.06); }
+}
+
+/* ---------- Glass surface ---------- */
+.stats-glass {
+  isolation: isolate;
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.32));
+  -webkit-backdrop-filter: blur(22px) saturate(160%);
+  backdrop-filter: blur(22px) saturate(160%);
+  border: 1px solid rgb(255 255 255 / 0.8);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 0 0 1px rgb(10 10 10 / 0.05),
+    0 24px 48px -32px rgb(10 10 10 / 0.18);
+}
+.dark .stats-glass {
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.08), rgb(255 255 255 / 0.02));
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 24px 48px -32px rgb(0 0 0 / 0.7);
+}
+/* Light sheen that follows the cursor across the glass */
+.stats-glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  opacity: 0;
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.7), transparent 65%);
+  transition: opacity 0.3s ease;
+}
+.dark .stats-glass::before {
+  background: radial-gradient(320px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.07), transparent 65%);
+}
+.stats-glass:hover::before {
+  opacity: 1;
+}
+
+/* Big numbers: plain black-to-grey, no colour */
+.stats-big {
+  background-image: linear-gradient(180deg, #0a0a0a 25%, #737373 120%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: 0.06em;
+}
+.dark .stats-big {
+  background-image: linear-gradient(180deg, #fff 25%, #737373 120%);
+}
+
+/* Stacked layout (small screens): reveal on scroll */
+.stats-panel {
+  opacity: 0;
+  translate: 0 32px;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stats-panel.is-shown {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Sticky layout (desktop): one panel at a time, stacked in one grid cell */
+@media (min-width: 1024px) {
+  .stats-panel {
+    grid-area: 1 / 1;
+    opacity: 0;
+    visibility: hidden;
+    translate: 0 60px;
+    scale: 0.96;
+    filter: blur(8px);
+    transition:
+      opacity 0.6s ease,
+      translate 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      scale 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.6s ease,
+      visibility 0s linear 0.8s;
+  }
+  .stats-panel[data-active] {
+    opacity: 1;
+    visibility: visible;
+    translate: 0 0;
+    scale: 1;
+    filter: none;
+    transition-delay: 0s;
+  }
+  .stats-panel.is-shown {
+    translate: 0 0;
+  }
+}
+
+/* Illustration pops in after the number */
+.stats-art {
+  opacity: 0;
+  scale: 0.85;
+  transition:
+    opacity 0.6s ease 0.2s,
+    scale 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s;
+}
+.is-shown .stats-art {
+  opacity: 1;
+  scale: 1;
+}
+
+/* ---------- Step list ---------- */
+.stats-step-fill {
+  background: #0a0a0a;
+  transform: scaleX(var(--p, 0));
+  transform-origin: left;
+}
+[data-stats-hint] {
+  transition: opacity 0.4s ease;
+}
+.stats-mouse {
+  position: relative;
+  height: 22px;
+  width: 14px;
+  border: 1.5px solid currentColor;
+  border-radius: 9999px;
+}
+.stats-mouse::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  height: 4px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: stats-wheel 1.6s ease-in-out infinite;
+}
+@keyframes stats-wheel {
+  60% { transform: translateY(6px); opacity: 0; }
+  100% { opacity: 0; }
+}
+
+/* ---------- Supporting row ---------- */
+.stats-mini {
+  opacity: 0;
+  translate: 0 16px;
+  transition:
+    opacity 0.6s ease,
+    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.15s ease;
+}
+.is-shown .stats-mini {
+  opacity: 1;
+  translate: 0 0;
+}
+.is-shown .stats-mini:nth-child(2) { transition-delay: 0.08s, 0.08s, 0s; }
+.is-shown .stats-mini:nth-child(3) { transition-delay: 0.16s, 0.16s, 0s; }
+.is-shown .stats-mini:nth-child(4) { transition-delay: 0.24s, 0.24s, 0s; }
+
+/* ---------- Growth chart ---------- */
+.stats-gridline {
+  stroke: rgb(10 10 10 / 0.08);
+  stroke-dasharray: 3 5;
+}
+.dark .stats-gridline {
+  stroke: rgb(255 255 255 / 0.1);
+}
+.stats-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.is-shown .stats-line {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+.stats-area,
+.stats-dot {
+  opacity: 0;
+}
+.is-shown .stats-area,
+.is-shown .stats-dot {
+  opacity: 1;
+  transition: opacity 0.6s ease 1.4s;
+}
+.stats-dot {
+  fill: #3d69cc;
+  stroke: #fff;
+  stroke-width: 2;
+}
+.stats-dot-halo {
+  fill: #3d69cc;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.is-shown .stats-dot-halo {
+  animation: stats-halo 2s ease-out 1.8s infinite;
+}
+@keyframes stats-halo {
+  0% { opacity: 0.45; transform: scale(0.5); }
+  100% { opacity: 0; transform: scale(1.6); }
+}
+
+/* ---------- Uptime ring ---------- */
+.stats-ring-track {
+  stroke: rgb(10 10 10 / 0.07);
+}
+.stats-ring {
+  stroke: #3d69cc;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+}
+.is-shown .stats-ring {
+  stroke-dashoffset: 0.6;
+  transition: stroke-dashoffset 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+.stats-check {
+  stroke: #3d69cc;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.is-shown .stats-check {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease-out 1.9s;
+}
+
+/* ---------- Clock ---------- */
+.stats-clock-face {
+  fill: rgb(255 255 255 / 0.6);
+  stroke: rgb(10 10 10 / 0.12);
+}
+.dark .stats-clock-face {
+  fill: rgb(255 255 255 / 0.03);
+}
+.stats-tick {
+  stroke: #a3a3a3;
+}
+.stats-hand {
+  transform-origin: 50px 50px;
+  animation: stats-spin linear infinite;
+}
+.stats-hand--hour {
+  stroke: #0a0a0a;
+  animation-duration: 36s;
+}
+.stats-hand--minute {
+  stroke: #3d69cc;
+  animation-duration: 3s;
+}
+.dark .stats-hand--hour {
+  stroke: #fff;
+}
+@keyframes stats-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Globe ---------- */
+.stats-globe {
+  background-color: #f5f5f5;
+  background-image: radial-gradient(#a3a3a3 1.5px, transparent 1.7px);
+  background-size: 11px 11px;
+  box-shadow:
+    inset -18px -12px 30px rgb(10 10 10 / 0.12),
+    inset 10px 8px 22px rgb(255 255 255 / 0.9);
+  animation: stats-turn 14s linear infinite;
+}
+.dark .stats-globe {
+  background-color: #171717;
+  background-image: radial-gradient(#525252 1.5px, transparent 1.7px);
+  box-shadow:
+    inset -18px -12px 30px rgb(0 0 0 / 0.5),
+    inset 10px 8px 22px rgb(255 255 255 / 0.06);
+}
+@keyframes stats-turn {
+  to { background-position: 132px 0; }
+}
+.stats-pin {
+  position: absolute;
+  height: 12px;
+  width: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 9999px;
+  background: #3d69cc;
+  border: 2px solid #fff;
+  animation: stats-pin 2.4s ease-out infinite;
+  animation-delay: var(--d, 0s);
+}
+@keyframes stats-pin {
+  0% { box-shadow: 0 0 0 0 rgb(61 105 204 / 0.45); }
+  100% { box-shadow: 0 0 0 14px rgb(61 105 204 / 0); }
+}
+
+/* ---------- Technology strip (two identical lists, shifted by exactly one list width) ---------- */
+.stats-marquee {
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.stats-marquee-track {
+  animation: stats-marquee 40s linear infinite;
+}
+.stats-marquee:hover .stats-marquee-track {
+  animation-play-state: paused;
+}
+@keyframes stats-marquee {
+  to { transform: translateX(-50%); }
+}
+
+.dark .stats-step-fill {
+  background: #fff;
+}
+.dark .stats-ring-track {
+  stroke: rgb(255 255 255 / 0.08);
+}
+.dark .stats-clock-face {
+  stroke: rgb(255 255 255 / 0.15);
+}
+

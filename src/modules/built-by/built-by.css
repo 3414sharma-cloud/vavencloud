@@ -1,0 +1,83 @@
+/* "Built by anyone": four paths drop into one rail and merge into the "Live on VavenCloud" badge */
+
+.built-by-drop,
+.built-by-rail {
+  position: absolute;
+  overflow: hidden;
+  background: #e5e5e5;
+}
+.dark .built-by-drop,
+.dark .built-by-rail {
+  background: #262626;
+}
+
+/* Vertical connectors under each card */
+.built-by-drop {
+  top: 0;
+  height: 50%;
+  width: 1px;
+}
+.built-by-drop--center {
+  top: 50%;
+}
+
+/* Horizontal rail joining the four connectors */
+.built-by-rail {
+  top: 50%;
+  left: 12.5%;
+  right: 12.5%;
+  height: 1px;
+}
+
+/* Light pulses travelling down and along the lines */
+.built-by-drop::after,
+.built-by-rail::after {
+  content: "";
+  position: absolute;
+  background: #3d69cc;
+  box-shadow: 0 0 8px #3d69cc;
+}
+.built-by-drop::after {
+  left: 0;
+  width: 1px;
+  height: 14px;
+  animation: built-by-down 2.4s ease-in infinite;
+}
+.built-by-drop--center::after {
+  animation-delay: 1.2s;
+}
+.built-by-rail::after {
+  top: 0;
+  left: 50%;
+  height: 1px;
+  width: 40px;
+  animation: built-by-in 2.4s ease-in-out infinite 0.6s;
+}
+@keyframes built-by-down {
+  from { transform: translateY(-14px); }
+  to { transform: translateY(40px); }
+}
+/* Pulse sweeps from the outer edges towards the centre */
+@keyframes built-by-in {
+  0% { transform: translateX(-40vw); opacity: 0; }
+  30% { opacity: 1; }
+  50% { transform: translateX(-20px); opacity: 0; }
+  51% { transform: translateX(40vw); opacity: 0; }
+  80% { opacity: 1; }
+  100% { transform: translateX(-20px); opacity: 0; }
+}
+
+/* The badge "receives" the pulses */
+.built-by-live::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 9999px;
+  border: 2px solid #3d69cc;
+  opacity: 0;
+  animation: built-by-ping 2.4s cubic-bezier(0, 0, 0.2, 1) infinite 1.8s;
+}
+@keyframes built-by-ping {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}

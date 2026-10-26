@@ -1,10 +1,21 @@
 @layer base {
   html {
-    scroll-behavior: smooth;
     scroll-padding-top: 5rem;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
   body {
-    @apply bg-white font-sans text-slate-700 antialiased;
+    @apply bg-white font-sans text-neutral-600 antialiased dark:bg-neutral-950 dark:text-neutral-400;
+  }
+  ::selection {
+    @apply bg-brand-600 text-white;
   }
   summary::-webkit-details-marker {
     display: none;

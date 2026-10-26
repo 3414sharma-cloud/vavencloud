@@ -1,20 +1,23 @@
 /**
- * Every internal link in one place. When you add a page (e.g. src/pages/pricing/index.html),
- * add its URL here and link to it via `routes.pricing`.
- * Anchors are prefixed with "/" so they also work from other pages.
+ * Every internal link in one place. The site is a single landing page for now, so these are
+ * section anchors. Prefixed with "/" so they keep working if more pages are added later.
  */
 export const routes = {
   home: '/',
   top: '/#top',
+  builtBy: '/#built-by',
+  find: '/#find',
   services: '/#services',
+  process: '/#process',
   whyUs: '/#why-us',
-  clients: '/#clients',
+  plans: '/#plans',
   faq: '/#faq',
   contact: '/#contact',
-  pricing: '/pricing/',
-  // No dedicated pages yet: these deep-link into the pricing tabs (see pricing.section.ts)
-  webHosting: '/pricing/#web-hosting',
-  cloudServices: '/pricing/#cloud-services',
+  // Kept for the (currently unused) pricing modules; there is no pricing page right now.
+  clients: '/#clients',
+  pricing: '/#plans',
+  webHosting: '/#plans',
+  cloudServices: '/#plans',
 } as const
 
 export type Route = (typeof routes)[keyof typeof routes]

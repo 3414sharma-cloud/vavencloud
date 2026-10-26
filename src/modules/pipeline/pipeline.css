@@ -1,0 +1,116 @@
+/* "How we work" pipeline: flowing rail, travelling packet, pulsing active node, streamed console lines */
+
+.pipeline-bg {
+  background-image: radial-gradient(rgb(10 10 10 / 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 55%, #000 20%, transparent 75%);
+}
+.dark .pipeline-bg {
+  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+}
+
+/* Unfilled part of the rail: dashes flowing towards the next stage */
+.pipeline-rail {
+  background-image: repeating-linear-gradient(90deg, #d4d4d4 0 8px, transparent 8px 14px);
+  background-size: 14px 100%;
+  animation: pipeline-flow 0.8s linear infinite;
+}
+.dark .pipeline-rail {
+  background-image: repeating-linear-gradient(90deg, #404040 0 8px, transparent 8px 14px);
+}
+@keyframes pipeline-flow {
+  to { background-position: 14px 0; }
+}
+
+.pipeline-fill {
+  transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
+  box-shadow: 0 0 12px rgb(61 105 204 / 0.5);
+}
+
+/* Glowing dot running along the completed part of the rail */
+.pipeline-packet {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 8px;
+  width: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 0 3px rgb(61 105 204 / 0.5),
+    0 0 14px 4px rgb(61 105 204 / 0.6);
+  animation: pipeline-packet 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+}
+@keyframes pipeline-packet {
+  0% { left: 0; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { left: 100%; opacity: 0; }
+}
+
+/* Active node: expanding ring */
+[data-state="active"] .pipeline-ring {
+  animation: pipeline-ring 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@keyframes pipeline-ring {
+  0% { transform: scale(0.9); opacity: 1; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+[data-state="active"] .pipeline-node {
+  box-shadow: 0 0 0 6px rgb(61 105 204 / 0.12);
+}
+[data-state="done"] .pipeline-node {
+  animation: pipeline-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes pipeline-pop {
+  50% { transform: scale(1.15); }
+}
+
+/* Stage details fade in on change; deliverables stagger in */
+.pipeline-panel:not([hidden]) {
+  animation: pipeline-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pipeline-panel:not([hidden]) .pipeline-item {
+  animation: pipeline-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--k, 0) * 90ms + 200ms);
+}
+@keyframes pipeline-in {
+  from { opacity: 0; transform: translateY(12px); }
+}
+
+/* Console */
+.pipeline-line {
+  animation: pipeline-line 0.4s ease-out both;
+}
+@keyframes pipeline-line {
+  from { opacity: 0; transform: translateX(-8px); }
+}
+[data-pipeline-log]::after {
+  content: "";
+  display: inline-block;
+  height: 1em;
+  width: 0.55em;
+  margin-top: 0.25rem;
+  background: #a3a3a3;
+  vertical-align: middle;
+  animation: pipeline-caret 1s steps(1) infinite;
+}
+@keyframes pipeline-caret {
+  50% { opacity: 0; }
+}
+
+.pipeline-total {
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pipeline-status-dot {
+  animation: pipeline-blink 1.4s ease-in-out infinite;
+}
+.is-paused .pipeline-status-dot {
+  animation: none;
+  background: #fbbf24;
+}
+@keyframes pipeline-blink {
+  50% { opacity: 0.3; }
+}

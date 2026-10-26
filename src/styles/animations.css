@@ -1,29 +1,13 @@
-/* Scroll reveal (driven by src/shared/lib/reveal.ts) */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition:
-    opacity 0.7s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
-}
-
+/*
+ * Section-specific motion lives next to each section (hero.css, stats.css, pipeline.css).
+ * Visitors who ask for reduced motion get it switched off here; sliders also skip autoplay in JS.
+ */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-    transition: none;
-  }
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

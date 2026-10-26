@@ -6,35 +6,36 @@ export interface Feature {
   description: string
 }
 
+/** Partner, not vendor: support language from docs/messaging.md. */
 export const features: Feature[] = [
   {
-    icon: 'infinity',
-    title: 'Managed Infrastructure',
-    description: 'Server setup, patching, monitoring and scaling handled by cloud engineers, so you never have to firefight servers.',
+    icon: 'support',
+    title: "We're on call",
+    description: 'Real engineers, day and night. When something breaks, you talk to a person who can fix it.',
   },
   {
-    icon: 'globe',
-    title: 'Global Cloud Infrastructure',
-    description: 'Data centers across multiple continents keep your sites fast for visitors wherever they are.',
+    icon: 'rocket',
+    title: "We're behind your launch",
+    description: 'We set up, deploy and test with you, then stay close on go-live day.',
   },
   {
-    icon: 'shield',
-    title: 'Enterprise-grade Security',
-    description: 'DDoS protection, firewalls, malware scanning and free SSL on every plan.',
+    icon: 'activity',
+    title: 'We keep it running',
+    description: 'Monitoring, nightly backups and security patches, handled quietly in the background.',
+  },
+  {
+    icon: 'lock',
+    title: 'Your product stays yours',
+    description: 'Your code, your data, your accounts. We run it, you own it.',
   },
   {
     icon: 'zap',
-    title: 'Performance First',
-    description: 'NVMe storage, built-in caching and a global CDN for sub-second load times.',
-  },
-  {
-    icon: 'support',
-    title: 'Human Support, 24/7',
-    description: 'Talk to real experts any time via chat, email or phone. No bots, no runaround.',
+    title: 'Fast where your users are',
+    description: 'NVMe storage, caching and a global CDN keep your app quick, wherever people open it.',
   },
   {
     icon: 'wallet',
-    title: 'Transparent Pricing',
-    description: 'Simple plans with no hidden fees. Scale up or down whenever you need.',
+    title: 'Clear, simple pricing',
+    description: 'Plans without surprises. Grow or scale back whenever you need.',
   },
 ]

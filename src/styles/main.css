@@ -1,6 +1,6 @@
 /*
  * Global stylesheet entry. Imported once by src/app/create-page.ts.
- * Component-specific CSS lives next to its component (e.g. layout/header/header.css).
+ * Component-specific CSS lives next to its component.
  * source("../") = scan all of src/ for Tailwind classes.
  */
 @import "tailwindcss" source("../");

@@ -1,25 +1,49 @@
 import type { Section } from '@/app/types.ts'
 import { site } from '@/app/site.config.ts'
-import { qs } from '@/shared/lib/dom.ts'
-import { icon } from '@/shared/ui/icons.ts'
+import { qs, qsa } from '@/shared/lib/dom.ts'
+import { getThemePreference, onThemeChange, setThemePreference, type ThemePreference } from '@/shared/lib/theme.ts'
+import { icon, type IconName } from '@/shared/ui/icons.ts'
 import { brandLink } from '@/shared/ui/logo.ts'
-import { particleLayer } from '@/shared/ui/particle-layer.ts'
 import { footerColumns, legalLinks } from './footer.data.ts'
 
+const linkClass = 'transition-colors hover:text-neutral-950 dark:hover:text-white'
+
+const themeOptions: { value: ThemePreference; label: string; icon: IconName }[] = [
+  { value: 'light', label: 'Light', icon: 'sun' },
+  { value: 'dark', label: 'Dark', icon: 'moon' },
+  { value: 'system', label: 'System', icon: 'monitor' },
+]
+
+/** System / Light / Dark switch. Native radios, so it works with keyboard and screen readers as-is. */
+const themeSwitch = () => `
+<fieldset id="theme-switch" class="flex items-center gap-3">
+  <legend class="sr-only">Theme</legend>
+  <span class="text-xs text-neutral-500" aria-hidden="true">Theme</span>
+  <div class="inline-flex rounded-lg border border-neutral-200 p-0.5 dark:border-neutral-800">
+    ${themeOptions
+      .map(
+        (o) => `
+    <label class="flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:text-neutral-950 has-checked:bg-neutral-950 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-brand-600 dark:text-neutral-400 dark:hover:text-white dark:has-checked:bg-white dark:has-checked:text-neutral-950">
+      <input type="radio" name="theme" value="${o.value}" class="sr-only" />
+      ${icon(o.icon, 'h-3.5 w-3.5')}${o.label}
+    </label>`,
+      )
+      .join('')}
+  </div>
+</fieldset>`
+
 const html = () => `
-<footer data-nav="dark" class="relative overflow-hidden bg-ink-950 pt-20 pb-10 text-slate-400">
-  <div class="pointer-events-none absolute -top-40 left-1/2 h-80 w-[700px] -translate-x-1/2 rounded-full bg-brand-700/20 blur-[120px]" aria-hidden="true"></div>
-  ${particleLayer()}
-  <div class="relative mx-auto max-w-7xl px-6">
+<footer class="border-t border-neutral-200 bg-neutral-50 pt-16 pb-10 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
+  <div class="container-page">
     <div class="grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-4">
         ${brandLink()}
-        <p class="mt-5 max-w-sm leading-relaxed">VavenCloud delivers secure web hosting, scalable cloud servers, CDN, backups and professional email to help businesses of every size grow online.</p>
-        <ul class="mt-6 flex gap-3">
+        <p class="mt-5 max-w-sm leading-relaxed">The hosting platform behind your product. Bring your app, we get it live and keep it running, with engineers on call 24/7.</p>
+        <ul class="mt-6 flex gap-2">
           ${site.socials
             .map(
               (s) =>
-                `<li><a href="${s.href}" class="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-white/5 text-slate-300 transition hover:border-brand-400 hover:bg-brand-500 hover:text-white" aria-label="VavenCloud on ${s.label}">${icon(s.icon, 'h-4 w-4')}</a></li>`,
+                `<li><a href="${s.href}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-neutral-600 transition-colors hover:border-neutral-950 hover:text-neutral-950 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-white dark:hover:text-white" aria-label="VavenCloud on ${s.label}">${icon(s.icon, 'h-4 w-4')}</a></li>`,
             )
             .join('')}
         </ul>
@@ -29,38 +53,57 @@ const html = () => `
         .map(
           (col) => `
       <nav class="lg:col-span-2" aria-label="${col.title}">
-        <p class="text-sm font-semibold text-white">${col.title}</p>
-        <ul class="mt-5 space-y-3 text-sm">
-          ${col.links.map((l) => `<li><a href="${l.href}" class="transition hover:text-white">${l.label}</a></li>`).join('')}
+        <p class="font-semibold text-neutral-950 dark:text-white">${col.title}</p>
+        <ul class="mt-4 space-y-3">
+          ${col.links
+            .map((l) =>
+              l.external
+                ? `<li><a href="${l.href}" target="_blank" rel="noopener noreferrer" class="${linkClass}">${l.label}<span class="sr-only"> (opens in a new tab)</span></a></li>`
+                : `<li><a href="${l.href}" class="${linkClass}">${l.label}</a></li>`,
+            )
+            .join('')}
         </ul>
       </nav>`,
         )
         .join('')}
 
       <div class="lg:col-span-4">
-        <p class="text-sm font-semibold text-white">Contact Info</p>
-        <ul class="mt-5 space-y-4 text-sm">
-          <li class="flex gap-3"><span class="text-brand-300">${icon('mail', 'h-5 w-5')}</span><a href="mailto:${site.contact.email}" class="hover:text-white">${site.contact.email}</a></li>
-          <li class="flex gap-3"><span class="text-brand-300">${icon('phone', 'h-5 w-5')}</span><span>${site.contact.phones.map((p) => `<a href="${p.href}" class="hover:text-white">${p.label}</a>`).join(', ')}</span></li>
-          <li class="flex gap-3"><span class="text-brand-300">${icon('map-pin', 'h-5 w-5')}</span><span>${site.contact.address}</span></li>
+        <p class="font-semibold text-neutral-950 dark:text-white">Contact</p>
+        <ul class="mt-4 space-y-3">
+          <li class="flex gap-3">${icon('mail', 'mt-0.5 h-4 w-4 shrink-0')}<a href="mailto:${site.contact.email}" class="${linkClass}">${site.contact.email}</a></li>
+          <li class="flex gap-3">${icon('phone', 'mt-0.5 h-4 w-4 shrink-0')}<span>${site.contact.phones.map((p) => `<a href="${p.href}" class="${linkClass}">${p.label}</a>`).join(', ')}</span></li>
+          <li class="flex gap-3">${icon('map-pin', 'mt-0.5 h-4 w-4 shrink-0')}<span class="leading-relaxed">${site.contact.address}</span></li>
         </ul>
       </div>
     </div>
 
-    <div class="mt-16 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm sm:flex-row">
+    <div class="mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800">
       <p>© <span id="year"></span> ${site.name}. All rights reserved.</p>
-      <ul class="flex flex-wrap gap-6">
-        ${legalLinks.map((l) => `<li><a href="${l.href}" class="hover:text-white">${l.label}</a></li>`).join('')}
-      </ul>
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+        <ul class="flex gap-6">
+          ${legalLinks.map((l) => `<li><a href="${l.href}" class="${linkClass}">${l.label}</a></li>`).join('')}
+        </ul>
+        ${themeSwitch()}
+      </div>
     </div>
   </div>
 </footer>`
+
+function initThemeSwitch(): void {
+  const radios = qsa<HTMLInputElement>('#theme-switch input[name="theme"]')
+  radios.forEach((r) => r.addEventListener('change', () => r.checked && setThemePreference(r.value as ThemePreference)))
+  onThemeChange(() => {
+    const pref = getThemePreference()
+    radios.forEach((r) => (r.checked = r.value === pref))
+  })
+}
 
 export function footer(): Section {
   return {
     html: html(),
     init() {
       qs('#year').textContent = String(new Date().getFullYear())
+      initThemeSwitch()
     },
   }
 }

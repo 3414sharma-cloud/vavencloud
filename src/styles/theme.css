@@ -1,6 +1,13 @@
-/* Design tokens. Every color on the site is a shade of the brand blue. */
+/*
+ * Design tokens. The site is black & white (Tailwind `neutral`); brand blue is an accent only
+ * (eyebrows, focus rings, selected states, "popular" badges).
+ */
+
+/* `dark:` follows the .dark class on <html>, set from the user's saved preference or the OS (see shared/lib/theme.ts). */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Brand: VavenCloud blue #3d69cc (hue 222°) */
   --color-brand-50: #eff4fc;
@@ -15,31 +22,13 @@
   --color-brand-900: #233561;
   --color-brand-950: #172240;
 
-  /* Deep navy surfaces – same hue, very dark */
+  /* Legacy navy surfaces, only used by modules that are no longer on the landing page */
   --color-ink-700: #1b2b52;
   --color-ink-800: #132142;
   --color-ink-900: #0d1731;
   --color-ink-950: #070e21;
 
-  /* Soft ease-out for hovers: quick start, long gentle settle. Used as the default for every `transition` utility. */
-  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-  --default-transition-duration: 250ms;
-
-  --animate-marquee: marquee 40s linear infinite;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-float-delayed: float 6s ease-in-out 3s infinite;
-  --animate-shimmer: shimmer 6s linear infinite;
-
-  @keyframes shimmer {
-    to { background-position: 200% center; }
-  }
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
+  /* Quiet, short transitions: colour changes only, no movement */
+  --default-transition-timing-function: ease;
+  --default-transition-duration: 150ms;
 }

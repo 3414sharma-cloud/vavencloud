@@ -1,0 +1,29 @@
+/* "The problem" statement: words go from faint to their final colour as they are reached */
+.problem-word {
+  color: #e5e5e5; /* neutral-200 */
+  transition: color 0.35s ease;
+}
+.dark .problem-word {
+  color: #262626; /* neutral-800 */
+}
+.problem-word.is-lit {
+  color: #8a8a8a;
+}
+.problem-word.is-lit[data-strong] {
+  color: #0a0a0a;
+}
+.dark .problem-word.is-lit[data-strong] {
+  color: #fff;
+}
+
+.problem-cta {
+  opacity: 0;
+  translate: 0 12px;
+  transition:
+    opacity 0.6s ease,
+    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.problem-cta.is-lit {
+  opacity: 1;
+  translate: 0 0;
+}

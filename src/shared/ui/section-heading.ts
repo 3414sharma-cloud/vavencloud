@@ -1,18 +1,17 @@
 interface SectionHeadingOptions {
-  /** Small pill label above the title */
+  /** Small label above the title */
   eyebrow?: string
-  /** May contain inline HTML, e.g. `Our <span class="text-brand-600">services</span>` */
+  /** May contain inline HTML */
   title: string
   description?: string
-  /** `dark` = for sections on an ink background */
+  /** Kept for the older modules; the landing page follows the light/dark theme instead. */
   tone?: 'light' | 'dark'
 }
 
 /** Eyebrow + h2 + intro text used at the top of most sections. Wrap it to control alignment/width. */
-export function sectionHeading({ eyebrow, title, description, tone = 'light' }: SectionHeadingOptions): string {
-  const dark = tone === 'dark'
+export function sectionHeading({ eyebrow, title, description }: SectionHeadingOptions): string {
   return `
-    ${eyebrow ? `<span class="${dark ? 'eyebrow-dark' : 'eyebrow'}">${eyebrow}</span>` : ''}
-    <h2 class="section-title ${eyebrow ? 'mt-4' : ''} ${dark ? 'text-white' : ''}">${title}</h2>
-    ${description ? `<p class="mt-5 text-lg ${dark ? 'text-slate-400' : 'text-slate-600'}">${description}</p>` : ''}`
+    ${eyebrow ? `<p class="eyebrow">${eyebrow}</p>` : ''}
+    <h2 class="section-title ${eyebrow ? 'mt-3' : ''}">${title}</h2>
+    ${description ? `<p class="section-lead mt-4">${description}</p>` : ''}`
 }
