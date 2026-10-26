@@ -12,6 +12,6 @@ interface SectionHeadingOptions {
 export function sectionHeading({ eyebrow, title, description }: SectionHeadingOptions): string {
   return `
     ${eyebrow ? `<p class="eyebrow">${eyebrow}</p>` : ''}
-    <h2 class="section-title ${eyebrow ? 'mt-3' : ''}">${title}</h2>
-    ${description ? `<p class="section-lead mt-4">${description}</p>` : ''}`
+    <h2 class="section-title ${eyebrow ? 'mt-5' : ''}">${title}</h2>
+    ${description ? `<p class="section-lead mt-5">${description}</p>` : ''}`
 }

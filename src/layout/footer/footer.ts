@@ -19,11 +19,11 @@ const themeSwitch = () => `
 <fieldset id="theme-switch" class="flex items-center gap-3">
   <legend class="sr-only">Theme</legend>
   <span class="text-xs text-neutral-500" aria-hidden="true">Theme</span>
-  <div class="inline-flex rounded-lg border border-neutral-200 p-0.5 dark:border-neutral-800">
+  <div class="inline-flex rounded-full border border-neutral-200 p-0.5 dark:border-neutral-800">
     ${themeOptions
       .map(
         (o) => `
-    <label class="flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:text-neutral-950 has-checked:bg-neutral-950 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-brand-600 dark:text-neutral-400 dark:hover:text-white dark:has-checked:bg-white dark:has-checked:text-neutral-950">
+    <label class="flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium text-neutral-600 transition-colors hover:text-neutral-950 has-checked:bg-neutral-950 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-brand-600 dark:text-neutral-400 dark:hover:text-white dark:has-checked:bg-white dark:has-checked:text-neutral-950">
       <input type="radio" name="theme" value="${o.value}" class="sr-only" />
       ${icon(o.icon, 'h-3.5 w-3.5')}${o.label}
     </label>`,
@@ -43,7 +43,7 @@ const html = () => `
           ${site.socials
             .map(
               (s) =>
-                `<li><a href="${s.href}" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-neutral-600 transition-colors hover:border-neutral-950 hover:text-neutral-950 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-white dark:hover:text-white" aria-label="VavenCloud on ${s.label}">${icon(s.icon, 'h-4 w-4')}</a></li>`,
+                `<li><a href="${s.href}" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 transition-colors hover:border-neutral-950 hover:text-neutral-950 dark:border-neutral-800 dark:text-neutral-400 dark:hover:border-white dark:hover:text-white" aria-label="VavenCloud on ${s.label}">${icon(s.icon, 'h-4 w-4')}</a></li>`,
             )
             .join('')}
         </ul>

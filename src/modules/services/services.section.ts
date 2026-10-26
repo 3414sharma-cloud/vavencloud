@@ -16,7 +16,7 @@ const serviceCard = (s: Service) => `
     <h3 class="mt-5 text-lg font-semibold text-neutral-950 dark:text-white">${s.title}</h3>
     <p class="mt-2 leading-relaxed">${s.description}</p>
     <ul class="mt-5 flex flex-wrap gap-2">
-      ${s.tags.map((t) => `<li class="rounded-md border border-neutral-200 px-2 py-0.5 text-xs text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">${t}</li>`).join('')}
+      ${s.tags.map((t) => `<li class="rounded-full border border-neutral-200 px-2.5 py-0.5 text-xs text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">${t}</li>`).join('')}
     </ul>
     <a href="${routes.contact}" class="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-neutral-950 underline-offset-4 hover:underline dark:text-white">
       Talk to us<span class="sr-only"> about ${s.title}</span> ${icon('arrow-right', 'h-4 w-4')}

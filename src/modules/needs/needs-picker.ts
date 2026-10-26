@@ -5,7 +5,7 @@ import { needs, type Need, type NeedId } from './needs.data.ts'
 import { onNeedChange, setNeed } from './needs.store.ts'
 
 const option = (n: Need) => `
-  <label class="flex cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-800 transition-colors hover:border-neutral-400 has-checked:border-brand-600 has-checked:text-neutral-950 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:has-checked:border-brand-400 dark:has-checked:text-white">
+  <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-neutral-200 px-4 py-3 text-sm font-medium text-neutral-800 transition-colors hover:border-neutral-400 has-checked:border-brand-600 has-checked:text-neutral-950 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:has-checked:border-brand-400 dark:has-checked:text-white">
     <input type="radio" name="need" value="${n.id}" class="h-4 w-4 shrink-0 accent-brand-600" />
     ${icon(n.icon, 'h-4 w-4 shrink-0 text-neutral-500')}
     <span>${n.label}</span>

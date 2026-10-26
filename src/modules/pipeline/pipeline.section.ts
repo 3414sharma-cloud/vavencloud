@@ -72,7 +72,7 @@ const html = () => `
         </div>
 
         <!-- Decorative console that "streams" the active stage; the panel on the left carries the content -->
-        <div class="flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 text-neutral-300 shadow-xl shadow-neutral-950/10" aria-hidden="true">
+        <div class="flex flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-950 text-neutral-300 shadow-xl shadow-neutral-950/10" aria-hidden="true">
           <div class="flex items-center gap-3 border-b border-neutral-800 px-4 py-3">
             <span class="flex gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span></span>
             <span class="font-mono text-xs text-neutral-500">vavencloud — your launch</span>

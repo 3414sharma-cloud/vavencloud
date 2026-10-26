@@ -99,7 +99,7 @@ const stepButton = (i: number) => `
 const secondaryIcons: Partial<Record<StatId, IconName>> = { businesses: 'users', launches: 'rocket', response: 'clock', rating: 'star' }
 
 const secondaryItem = (id: StatId) => `
-  <li class="stats-mini stats-glass flex items-center gap-4 rounded-2xl p-5">
+  <li class="stats-mini stats-glass flex items-center gap-4 rounded-3xl p-5">
     <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-neutral-950/5 text-neutral-900 dark:bg-white/10 dark:text-white">${icon(secondaryIcons[id] ?? 'check', 'h-5 w-5')}</span>
     <span class="flex flex-col">
       <span class="text-2xl font-semibold tracking-tight text-neutral-950 tabular-nums dark:text-white">${value(id)}</span>
@@ -115,7 +115,7 @@ const techList = (hidden: boolean) => `
 const html = () => `
 <section id="stats" aria-labelledby="stats-title">
   <div id="stats-story" class="relative lg:h-[400vh]">
-    <div class="relative overflow-hidden lg:sticky lg:top-16 lg:flex lg:h-[calc(100svh-4rem)] lg:items-center">
+    <div class="relative overflow-hidden lg:sticky lg:top-18 lg:flex lg:h-[calc(100svh-4.5rem)] lg:items-center">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
         <div class="stats-shapes absolute inset-y-0 right-0 w-full lg:w-[70%]"><span class="stats-shape stats-shape--a"></span><span class="stats-shape stats-shape--b"></span><span class="stats-shape stats-shape--c"></span></div>
         <div class="stats-dots absolute inset-0"></div>
@@ -124,7 +124,7 @@ const html = () => `
       <div class="container-page grid w-full gap-10 py-20 sm:py-24 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-center lg:gap-14 lg:py-0">
         <div>
           <p class="eyebrow">VavenCloud by the numbers</p>
-          <h2 id="stats-title" class="section-title mt-3 sm:!text-5xl lg:!text-[2.75rem] lg:!text-wrap">Thousands of products, <span class="text-neutral-400 dark:text-neutral-500">kept live.</span></h2>
+          <h2 id="stats-title" class="section-title mt-5 lg:!text-5xl lg:!text-wrap">Thousands of products, <span class="text-neutral-400 dark:text-neutral-500">kept live.</span></h2>
           <p class="section-lead mt-4">Real infrastructure and real people, behind every launch.</p>
           <ol class="mt-10 hidden space-y-1 lg:block" aria-label="Numbers">
             ${stories.map((_, i) => stepButton(i)).join('')}

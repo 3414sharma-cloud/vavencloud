@@ -66,12 +66,12 @@ export function plansSection(): Section {
     </div>
 
     <div class="mt-10 flex justify-center">
-      <div role="tablist" aria-label="Plan type" class="inline-flex rounded-lg border border-neutral-200 p-1 dark:border-neutral-800">
+      <div role="tablist" aria-label="Plan type" class="inline-flex rounded-full border border-neutral-200 p-1 dark:border-neutral-800">
         ${tabs
           .map(
             (t, i) => `
         <button type="button" role="tab" id="plans-tab-${t.id}" aria-controls="plans-panel-${t.id}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" data-tab="${t.id}"
-          class="rounded-md px-4 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 aria-selected:bg-neutral-950 aria-selected:text-white dark:text-neutral-400 dark:hover:text-white dark:aria-selected:bg-white dark:aria-selected:text-neutral-950">${t.label}</button>`,
+          class="rounded-full px-5 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 aria-selected:bg-neutral-950 aria-selected:text-white dark:text-neutral-400 dark:hover:text-white dark:aria-selected:bg-white dark:aria-selected:text-neutral-950">${t.label}</button>`,
           )
           .join('')}
       </div>
@@ -92,7 +92,7 @@ export function plansSection(): Section {
     </p>
 
     <!-- Development as a quiet extra, after the main plans (docs/messaging.md → "Where development goes") -->
-    <aside class="mx-auto mt-14 flex max-w-3xl flex-col gap-5 rounded-xl border border-dashed border-neutral-300 p-6 sm:flex-row sm:items-center sm:p-7 dark:border-neutral-700" aria-labelledby="extra-hands-title">
+    <aside class="mx-auto mt-14 flex max-w-3xl flex-col gap-5 rounded-3xl border border-dashed border-neutral-300 p-6 sm:flex-row sm:items-center sm:p-7 dark:border-neutral-700" aria-labelledby="extra-hands-title">
       <span class="icon-box">${icon('code', 'h-5 w-5')}</span>
       <div class="flex-1">
         <h3 id="extra-hands-title" class="font-semibold text-neutral-950 dark:text-white">Need extra hands?</h3>

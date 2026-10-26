@@ -8,55 +8,23 @@
 }
 
 .hero {
-  --hero-line: rgb(10 10 10 / 0.06);
   transition: --hero-accent 1.2s ease;
-}
-.dark .hero {
-  --hero-line: rgb(255 255 255 / 0.06);
 }
 
 /* ---------- Background ---------- */
-.hero-grid {
-  background-image:
-    linear-gradient(to right, var(--hero-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--hero-line) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 35%, transparent 80%);
+/* WebGL waves rising from the bottom edge; faded in at the top so they never sit behind the headline */
+.hero-waves {
+  mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
 }
-
-/* Light pulses running along the grid lines */
-.hero-beam {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0;
-  animation: var(--beam-anim) 9s linear infinite;
-  animation-delay: var(--delay, 0s);
+/* Shown only when WebGL2 is unavailable (the effect adds .has-waves to the hero when it mounts) */
+.hero-waves-fallback {
+  background:
+    radial-gradient(60% 90% at 30% 100%, color-mix(in srgb, var(--hero-accent) 35%, transparent), transparent 70%),
+    radial-gradient(50% 80% at 75% 100%, rgb(147 178 232 / 0.45), transparent 70%);
 }
-.hero-beam--x {
-  --beam-anim: hero-beam-x;
-  left: 0;
-  height: 1px;
-  width: 180px;
-  background: linear-gradient(90deg, transparent, var(--hero-accent), transparent);
+.has-waves .hero-waves-fallback {
+  display: none;
 }
-.hero-beam--y {
-  --beam-anim: hero-beam-y;
-  top: 0;
-  width: 1px;
-  height: 180px;
-  background: linear-gradient(180deg, transparent, var(--hero-accent), transparent);
-}
-@keyframes hero-beam-x {
-  0% { transform: translateX(-200px); opacity: 0; }
-  10%, 70% { opacity: 1; }
-  100% { transform: translateX(100vw); opacity: 0; }
-}
-@keyframes hero-beam-y {
-  0% { transform: translateY(-200px); opacity: 0; }
-  10%, 70% { opacity: 1; }
-  100% { transform: translateY(110vh); opacity: 0; }
-}
-
 /* Soft glow behind the headline, tinted by the active slide */
 .hero-glow {
   background: radial-gradient(closest-side, color-mix(in srgb, var(--hero-accent) 28%, transparent), transparent);
@@ -87,35 +55,79 @@
   background: #93b2e8;
   animation: hero-drift-a 22s ease-in-out infinite alternate;
 }
-.hero-orb--b {
-  right: -10%;
-  bottom: -14%;
-  height: 520px;
-  width: 520px;
-  background: var(--hero-accent);
-  animation: hero-drift-b 26s ease-in-out infinite alternate;
-}
 @keyframes hero-drift-a {
   to { transform: translate(18vw, 12vh) scale(1.15); }
 }
-@keyframes hero-drift-b {
-  to { transform: translate(-16vw, -10vh) scale(0.9); }
-}
-
+/* Tool chips orbiting the headline. Faded near the centre so they never sit behind the text. */
 .hero-orbits {
-  mask-image: radial-gradient(circle at center, #000 40%, transparent 70%);
+  mask-image: radial-gradient(ellipse 40% 34% at 50% 50%, transparent 72%, #000 100%);
 }
-.hero-orbit {
-  transform-box: view-box;
-  transform-origin: center;
-  animation: hero-spin var(--dur, 80s) linear infinite;
+.hero-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: calc(var(--r) * 2);
+  width: calc(var(--r) * 2);
+  margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
+  border-radius: 9999px;
+  border: 1px dashed rgb(10 10 10 / 0.1);
+  animation: hero-spin var(--dur) linear infinite;
 }
-.hero-orbit--reverse {
+.dark .hero-ring {
+  border-color: rgb(255 255 255 / 0.1);
+}
+.hero-ring--reverse {
+  border-style: solid;
   animation-direction: reverse;
 }
-.hero-orbit-dot {
-  fill: var(--hero-accent);
-  filter: drop-shadow(0 0 6px var(--hero-accent));
+/* Placed on the ring by angle, then the inner pill spins the other way to stay upright */
+.hero-chip {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 0;
+  width: 0;
+  transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(var(--a) * -1));
+}
+.hero-chip-inner {
+  display: inline-flex;
+  translate: -50% -50%;
+  align-items: center;
+  gap: 0.4rem;
+  white-space: nowrap;
+  border-radius: 9999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #404040;
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.5));
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgb(255 255 255 / 0.9);
+  box-shadow: 0 0 0 1px rgb(10 10 10 / 0.05), 0 8px 20px -12px rgb(10 10 10 / 0.25);
+  animation: hero-spin var(--dur) linear infinite reverse;
+}
+.hero-ring--reverse .hero-chip-inner {
+  animation-direction: normal;
+}
+.dark .hero-chip-inner {
+  color: #d4d4d4;
+  background: linear-gradient(140deg, rgb(23 23 23 / 0.85), rgb(23 23 23 / 0.55));
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.8);
+}
+
+/* Soft light following the cursor */
+.hero-spot {
+  opacity: 0;
+  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 40%), rgb(61 105 204 / 0.14), transparent 70%);
+  transition: opacity 0.5s ease;
+}
+.dark .hero-spot {
+  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 40%), rgb(100 140 219 / 0.2), transparent 70%);
+}
+.has-spot .hero-spot {
+  opacity: 1;
 }
 @keyframes hero-spin {
   to { transform: rotate(360deg); }
@@ -155,7 +167,27 @@
   animation: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
   animation-delay: calc(var(--i, 0) * 90ms + 150ms);
 }
-@keyframes hero-in {
+/* Headline rises in word by word */
+.hero-word {
+  display: inline-block;
+}
+.hero-slide[data-active] .hero-word {
+  animation: hero-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--w, 0) * 55ms + 230ms);
+}
+.hero-slide[data-active] .hero-word.hero-highlight {
+  animation:
+    hero-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) both,
+    hero-shimmer 6s linear infinite;
+  animation-delay: calc(var(--w, 0) * 55ms + 230ms), 0s;
+}
+@keyframes hero-word {
+  from {
+    opacity: 0;
+    transform: translateY(0.45em) rotate(2deg);
+    filter: blur(10px);
+  }
+}@keyframes hero-in {
   from {
     opacity: 0;
     transform: translateY(28px);
@@ -179,20 +211,6 @@
   to { background-position: 300% center; }
 }
 
-.hero-bob {
-  animation: hero-bob 6s ease-in-out infinite alternate;
-}
-@keyframes hero-bob {
-  to { transform: translateY(-10px); }
-}
-
-.hero-ping {
-  animation: hero-ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
-}
-@keyframes hero-ping {
-  75%, 100% { transform: scale(2.4); opacity: 0; }
-}
-
 /* ---------- Tab progress ---------- */
 .hero-progress {
   transform: scaleX(0);
@@ -209,4 +227,23 @@
 }
 @keyframes hero-progress {
   to { transform: scaleX(1); }
+}
+
+/* ---------- Control dock (frosted glass over the waves) ---------- */
+.hero-dock {
+  background: linear-gradient(140deg, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.4));
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  backdrop-filter: blur(18px) saturate(150%);
+  border: 1px solid rgb(255 255 255 / 0.8);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.9),
+    0 0 0 1px rgb(10 10 10 / 0.04),
+    0 20px 40px -28px rgb(10 10 10 / 0.25);
+}
+.dark .hero-dock {
+  background: linear-gradient(140deg, rgb(10 10 10 / 0.65), rgb(10 10 10 / 0.45));
+  border-color: rgb(255 255 255 / 0.1);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 20px 40px -28px rgb(0 0 0 / 0.8);
 }

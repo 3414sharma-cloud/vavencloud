@@ -54,7 +54,7 @@ export function builtBySection(): Section {
     </div>
 
     <div class="mt-10 flex justify-center lg:mt-0">
-      <div class="inline-flex flex-col items-center gap-4 rounded-2xl border border-neutral-200 bg-white px-6 py-5 text-center shadow-sm sm:flex-row sm:text-left dark:border-neutral-800 dark:bg-neutral-900">
+      <div class="inline-flex flex-col items-center gap-4 rounded-3xl border border-neutral-200 bg-white px-6 py-5 text-center shadow-sm sm:flex-row sm:text-left dark:border-neutral-800 dark:bg-neutral-900">
         <span class="built-by-live relative inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">${icon('cloud', 'h-5 w-5')}</span>
         <p class="text-sm">
           <span class="block font-semibold text-neutral-950 dark:text-white">Live on VavenCloud</span>

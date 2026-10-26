@@ -7,14 +7,15 @@ import { brandLink } from '@/shared/ui/logo.ts'
 import { navLinks } from './nav.data.ts'
 
 const desktopLink =
-  'rounded-md px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
+  'rounded-full px-3.5 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
 
 const iconButton =
-  'inline-flex h-9 w-9 items-center justify-center rounded-lg border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-950 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white'
+  'inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-950 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white'
 
 const html = () => `
-<header id="site-header" class="sticky top-0 z-50 border-b border-neutral-200 bg-white/95 backdrop-blur-sm dark:border-neutral-800 dark:bg-neutral-950/95">
-  <nav class="container-page flex h-16 items-center justify-between gap-6" aria-label="Main">
+<!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-white/55 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(10_10_10/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/45 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
+  <nav class="container-page flex h-18 items-center justify-between gap-6" aria-label="Main">
     ${brandLink()}
 
     <ul class="hidden items-center gap-1 lg:flex">
@@ -34,12 +35,12 @@ const html = () => `
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t border-neutral-200 lg:hidden dark:border-neutral-800">
+  <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-white/60 lg:hidden dark:border-white/10 dark:bg-neutral-950/60">
     <ul class="container-page flex flex-col py-3">
       ${navLinks
         .map(
           (l) =>
-            `<li><a href="${l.href}" class="block rounded-md px-2 py-3 text-base font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white">${l.label}</a></li>`,
+            `<li><a href="${l.href}" class="block rounded-xl px-3 py-3 text-base font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white">${l.label}</a></li>`,
         )
         .join('')}
       <li class="pt-2 pb-2"><a href="${routes.contact}" class="btn-primary w-full">Get in touch</a></li>
@@ -63,6 +64,8 @@ function initMobileMenu(siteHeader: HTMLElement): void {
   const setMenu = (open: boolean) => {
     menu.classList.toggle('hidden', !open)
     toggle.setAttribute('aria-expanded', String(open))
+    siteHeader.toggleAttribute('data-menu-open', open)
+    siteHeader.dispatchEvent(new Event('vc:headerstate'))
     toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu')
     qs('[data-icon-open]', toggle).classList.toggle('hidden', open)
     qs('[data-icon-close]', toggle).classList.toggle('hidden', !open)
@@ -97,11 +100,20 @@ function initActiveLink(siteHeader: HTMLElement): void {
   })
 }
 
+/** Glass background only once the page has scrolled (or while the mobile menu is open). */
+function initSolidOnScroll(siteHeader: HTMLElement): void {
+  const update = () => siteHeader.toggleAttribute('data-solid', window.scrollY > 8 || siteHeader.hasAttribute('data-menu-open'))
+  window.addEventListener('scroll', update, { passive: true })
+  siteHeader.addEventListener('vc:headerstate', update)
+  update()
+}
+
 export function header(): Section {
   return {
     html: html(),
     init() {
       const siteHeader = qs('#site-header')
+      initSolidOnScroll(siteHeader)
       initThemeToggle(siteHeader)
       initMobileMenu(siteHeader)
       initActiveLink(siteHeader)

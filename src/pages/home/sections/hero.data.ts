@@ -14,17 +14,8 @@ export interface HeroSlide {
   description: string
   primary: { label: string; href: string }
   secondary: { label: string; href: string }
-  /** Glow colour behind the text while this slide is active */
+  /** Glow and wave colour while this slide is active */
   accent: string
-  /** Two floating "live" cards shown beside the text on wide screens */
-  floats: [HeroFloat, HeroFloat]
-}
-
-export interface HeroFloat {
-  icon: IconName
-  label: string
-  value: string
-  note: string
 }
 
 /** The four hero headlines from docs/messaging.md, in that order. */
@@ -40,10 +31,6 @@ export const heroSlides: HeroSlide[] = [
     primary: { label: 'Bring your app', href: routes.contact },
     secondary: { label: 'See how it works', href: routes.process },
     accent: '#3d69cc',
-    floats: [
-      { icon: 'check', label: 'Launch checklist', value: '12 / 12 passed', note: 'Ready to go live' },
-      { icon: 'support', label: 'On launch day', value: 'Engineer on call', note: 'Watching every request' },
-    ],
   },
   {
     id: 'hosting',
@@ -56,10 +43,6 @@ export const heroSlides: HeroSlide[] = [
     primary: { label: 'See plans', href: routes.plans },
     secondary: { label: 'Help me choose', href: routes.find },
     accent: '#2563eb',
-    floats: [
-      { icon: 'activity', label: 'Uptime, last 90 days', value: '99.99%', note: 'All systems operational' },
-      { icon: 'zap', label: 'Avg. page load', value: '0.8 s', note: 'NVMe + global CDN' },
-    ],
   },
   {
     id: 'supported',
@@ -72,10 +55,6 @@ export const heroSlides: HeroSlide[] = [
     primary: { label: 'Talk to an engineer', href: routes.contact },
     secondary: { label: 'Why VavenCloud', href: routes.whyUs },
     accent: '#648cdb',
-    floats: [
-      { icon: 'shield', label: 'Nightly backup', value: 'Completed', note: 'Stored off-site' },
-      { icon: 'support', label: 'Someone to call', value: '24/7', note: 'Real engineers, not bots' },
-    ],
   },
   {
     id: 'anyone',
@@ -88,10 +67,6 @@ export const heroSlides: HeroSlide[] = [
     primary: { label: 'Bring your app', href: routes.contact },
     secondary: { label: 'Who we host', href: routes.builtBy },
     accent: '#0ea5e9',
-    floats: [
-      { icon: 'code', label: 'Built with', value: 'Any stack', note: 'PHP, Node, Python, WordPress…' },
-      { icon: 'sparkles', label: 'Made with AI tools', value: 'Welcome here', note: 'From prototype to production' },
-    ],
   },
 ]
 
