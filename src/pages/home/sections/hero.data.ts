@@ -4,8 +4,11 @@ import type { IconName } from '@/shared/ui/icons.ts'
 /** Hero copy from VavenCloud-Sample-Content.md → "Navigation and hero". */
 export const hero = {
   eyebrow: 'VavenCloud, by Vavensoft · Production ownership for founders',
-  title: 'When something breaks, you make one call.',
-  highlight: 'We fix the rest.',
+  /**
+   * The headline is split so it can act out its own meaning (see initHeadline):
+   * "breaks" cracks apart, "one call" lights up and rings, then it all snaps back and "We fix the rest." is underlined.
+   */
+  headline: { before: 'When something', broken: 'breaks,', between: 'you make', call: 'one call', after: '.', highlight: 'We fix the rest.' },
   description:
     'We run your product end to end: the servers, the deployments and the code. One team, one point of contact, on call 24/7. Stop chasing your host, your DevOps freelancer and your developers, and get back to building the business.',
   primary: { label: 'Book a free production review', href: routes.book },

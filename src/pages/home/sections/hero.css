@@ -15,14 +15,83 @@
   }
 }
 
-/* Hand-drawn underline under "We fix the rest." draws itself after the headline lands */
+/* ---------- Headline: acts out "breaks → one call → fixed" ([data-phase] on the h1) ---------- */
+.hl-word {
+  display: inline-block;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.hl-letter {
+  --x: 0px;
+  --y: 0px;
+  --r: 0deg;
+  display: inline-block;
+  will-change: transform;
+  transform: translate(calc(var(--x) + var(--px, 0px)), calc(var(--y) + var(--py, 0px))) rotate(var(--r));
+  transition:
+    transform var(--hl-t, 0.35s) var(--hl-e, cubic-bezier(0.22, 1, 0.36, 1)),
+    color 0.35s ease;
+}
+/* Broken and ringing: letters scatter and turn rose */
+.hl[data-phase="broken"] .hl-letter,
+.hl[data-phase="called"] .hl-letter {
+  --x: var(--sx);
+  --y: var(--sy);
+  --r: var(--sr);
+  color: #e11d48;
+}
+.dark .hl[data-phase="broken"] .hl-letter,
+.dark .hl[data-phase="called"] .hl-letter {
+  color: #fb7185;
+}
+
+/* "one call" pill fills in once the call is made */
+.hl-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.14em;
+  padding: 0 0.26em 0.03em 0.2em;
+  border: 0.045em solid rgb(10 10 10 / 0.14);
+  border-radius: 9999px;
+  transition:
+    background-color 0.45s ease,
+    color 0.45s ease,
+    border-color 0.45s ease;
+}
+.dark .hl-call {
+  border-color: rgb(255 255 255 / 0.2);
+}
+.hl[data-phase="called"] .hl-call,
+.hl[data-phase="fixed"] .hl-call {
+  background: #0a0a0a;
+  border-color: #0a0a0a;
+  color: #fff;
+}
+.dark .hl[data-phase="called"] .hl-call,
+.dark .hl[data-phase="fixed"] .hl-call {
+  background: #fff;
+  border-color: #fff;
+  color: #0a0a0a;
+}
+.hl-phone {
+  display: inline-flex;
+}
+.hl[data-phase="called"] .hl-phone svg {
+  animation: hl-ring 0.45s ease-in-out infinite;
+}
+@keyframes hl-ring {
+  25% { transform: rotate(-18deg); }
+  75% { transform: rotate(18deg); }
+}
+
+/* Hand-drawn underline under "We fix the rest." is drawn once everything is fixed */
 .hero-underline path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: hero-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards 0.75s;
+  transition: stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1);
 }
-@keyframes hero-draw {
-  to { stroke-dashoffset: 0; }
+.hl[data-phase="fixed"] .hero-underline path {
+  stroke-dashoffset: 0;
 }
 
 /* Primary buttons: arrow nudges forward on hover (site-wide) */

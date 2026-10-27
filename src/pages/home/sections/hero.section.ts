@@ -145,13 +145,16 @@ const stage = () => `
     </div>
   </div>`
 
+const hl = hero.headline
+const headlineText = `${hl.before} ${hl.broken} ${hl.between} ${hl.call}${hl.after} ${hl.highlight}`
+
 const html = () => `
 <section id="top" class="hero relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
   <div class="container-page pt-36 pb-16 sm:pt-44 sm:pb-20">
     <div class="text-center">
       <p class="hero-in text-sm font-medium text-neutral-500" style="--i:0">${hero.eyebrow}</p>
-      <h1 class="hero-in mx-auto mt-6 max-w-5xl text-[2.75rem] leading-[1] font-semibold tracking-[-0.04em] text-balance text-neutral-950 sm:text-7xl lg:text-[5.25rem] dark:text-white" style="--i:1">
-        ${hero.title} <span class="relative inline-block whitespace-nowrap text-brand-600 dark:text-brand-400">${hero.highlight}<svg class="hero-underline pointer-events-none absolute -bottom-[0.12em] left-0 h-[0.28em] w-full" viewBox="0 0 300 20" preserveAspectRatio="none" fill="none" aria-hidden="true"><path pathLength="1" d="M3 14 C 60 5, 140 4, 297 9" stroke="currentColor" stroke-width="5" stroke-linecap="round" /></svg></span>
+      <h1 class="hl hero-in mx-auto mt-6 max-w-6xl text-[2.75rem] leading-[1.02] font-semibold tracking-[-0.04em] text-balance text-neutral-950 sm:text-7xl lg:text-[4.75rem] dark:text-white" style="--i:1" data-phase="intact" aria-label="${headlineText}">
+        <span aria-hidden="true">${hl.before} <span class="hl-word" data-hl-word>${[...hl.broken].map((ch) => `<span class="hl-letter">${ch}</span>`).join('')}</span> ${hl.between} <span class="hl-call"><span class="hl-phone">${icon('phone', 'h-[0.5em] w-[0.5em]')}</span>${hl.call}</span>${hl.after} <span class="relative inline-block whitespace-nowrap text-brand-600 dark:text-brand-400">${hl.highlight}<svg class="hero-underline pointer-events-none absolute -bottom-[0.12em] left-0 h-[0.28em] w-full" viewBox="0 0 300 20" preserveAspectRatio="none" fill="none" aria-hidden="true"><path pathLength="1" d="M3 14 C 60 5, 140 4, 297 9" stroke="currentColor" stroke-width="5" stroke-linecap="round" /></svg></span></span>
       </h1>
       <p class="hero-in mx-auto mt-7 max-w-3xl text-lg leading-relaxed sm:text-xl" style="--i:2">${hero.description}</p>
       <div class="hero-in mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-6" style="--i:3">
@@ -309,10 +312,115 @@ function initCounters(): void {
   })
 }
 
+/**
+ * The headline acts out its own meaning, driven by [data-phase] on the <h1>:
+ *   intact → broken (letters of "breaks" scatter, rose) → called ("one call" fills and rings)
+ *   → fixed (letters spring back, "We fix the rest." gets underlined)
+ * It plays once on load. A mouse pushes the letters of "breaks" around, and clicking the word replays it.
+ * The visual copy is aria-hidden; the <h1> carries the full sentence as its accessible name.
+ * With reduced motion it simply shows the final state.
+ */
+function initHeadline(): void {
+  const h = qs('.hl')
+  const word = qs('[data-hl-word]', h)
+  const letters = qsa('.hl-letter', word)
+  const reduced = prefersReducedMotion()
+  if (reduced) {
+    h.dataset.phase = 'fixed'
+    word.style.cursor = 'default'
+    return
+  }
+
+  const k = window.matchMedia('(max-width: 640px)').matches ? 0.55 : 1
+  // Fixed offsets (x px, y px, rotation deg) so the break looks the same on every visit
+  const scatter = [[-54, -36, -26], [40, -48, 18], [-26, 42, -32], [60, 24, 28], [-46, -20, -12], [32, 50, 34], [-62, 30, -20]]
+  letters.forEach((l, i) => {
+    const [x, y, r] = scatter[i % scatter.length]
+    l.style.setProperty('--sx', `${x * k}px`)
+    l.style.setProperty('--sy', `${y * k}px`)
+    l.style.setProperty('--sr', `${r}deg`)
+  })
+
+  const timers: number[] = []
+  const at = (ms: number, fn: () => void) => timers.push(window.setTimeout(fn, ms))
+  let busy = true
+
+  const play = (delay: number) => {
+    timers.splice(0).forEach((t) => window.clearTimeout(t))
+    busy = true
+    at(delay, () => (h.dataset.phase = 'broken'))
+    at(delay + 1100, () => (h.dataset.phase = 'called'))
+    at(delay + 2100, () => {
+      h.style.setProperty('--hl-t', '0.9s')
+      h.style.setProperty('--hl-e', 'cubic-bezier(0.34, 1.56, 0.64, 1)')
+      h.dataset.phase = 'fixed'
+    })
+    at(delay + 3200, () => {
+      h.style.removeProperty('--hl-t')
+      h.style.removeProperty('--hl-e')
+      busy = false
+    })
+  }
+  play(1500)
+  word.addEventListener('click', () => !busy && play(0))
+
+  // Mouse: letters of "breaks" are pushed away from the cursor and spring back when it leaves.
+  // Resting positions are measured once (relative to the h1), because a letter's own rect moves with its offset.
+  let rest: { x: number; y: number }[] = []
+  const measure = () => {
+    const base = h.getBoundingClientRect()
+    rest = letters.map((l) => {
+      const r = l.getBoundingClientRect()
+      return { x: r.left + r.width / 2 - base.left, y: r.top + r.height / 2 - base.top }
+    })
+  }
+  measure()
+  window.addEventListener('resize', () => {
+    if (h.dataset.phase === 'intact' || h.dataset.phase === 'fixed') measure()
+  })
+
+  const RADIUS = 130
+  let frame = 0
+  let pointer: { x: number; y: number } | null = null
+  const push = () => {
+    frame = 0
+    const base = h.getBoundingClientRect()
+    letters.forEach((l, i) => {
+      let dx = 0
+      let dy = 0
+      if (pointer && !busy && rest[i]) {
+        const ox = base.left + rest[i].x - pointer.x
+        const oy = base.top + rest[i].y - pointer.y
+        const d = Math.hypot(ox, oy)
+        if (d < RADIUS && d > 0.5) {
+          const s = Math.pow(1 - d / RADIUS, 1.4) * 46 * k
+          dx = (ox / d) * s
+          dy = (oy / d) * s
+        }
+      }
+      l.style.setProperty('--px', `${dx}px`)
+      l.style.setProperty('--py', `${dy}px`)
+    })
+  }
+  const queue = () => {
+    if (!frame) frame = requestAnimationFrame(push)
+  }
+  h.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return
+    pointer = { x: e.clientX, y: e.clientY }
+    queue()
+  })
+  h.addEventListener('pointerleave', () => {
+    pointer = null
+    queue()
+  })
+}
+
 export function heroSection(): Section {
   return {
     html: html(),
     init() {
+      initHeadline()
       initDemo()
       initCounters()
     },
