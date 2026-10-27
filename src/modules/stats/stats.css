@@ -1,7 +1,7 @@
 /* "By the numbers" scroll story: frosted-glass panels over soft neutral shapes.
    Drawings replay each time a panel gets `.is-shown`. */
 
-/* ---------- Background (gives the glass something to blur) ---------- */
+/* ---------- Background ---------- */
 .stats-dots {
   background-image: radial-gradient(rgb(10 10 10 / 0.08) 1px, transparent 1px);
   background-size: 24px 24px;
@@ -10,47 +10,6 @@
 .dark .stats-dots {
   background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
 }
-.stats-shape {
-  position: absolute;
-  border-radius: 9999px;
-}
-.stats-shape--a {
-  top: 18%;
-  right: 22%;
-  height: 300px;
-  width: 300px;
-  background: linear-gradient(135deg, #e5e5e5, #fafafa);
-  animation: stats-float 14s ease-in-out infinite alternate;
-}
-.stats-shape--b {
-  right: 4%;
-  bottom: 14%;
-  height: 220px;
-  width: 220px;
-  background: linear-gradient(135deg, rgb(61 105 204 / 0.16), rgb(61 105 204 / 0.04));
-  animation: stats-float 18s ease-in-out infinite alternate-reverse;
-}
-.stats-shape--c {
-  top: 8%;
-  right: 6%;
-  height: 120px;
-  width: 120px;
-  border: 1px solid #e5e5e5;
-  animation: stats-float 11s ease-in-out infinite alternate;
-}
-.dark .stats-shape--a {
-  background: linear-gradient(135deg, #262626, #171717);
-}
-.dark .stats-shape--b {
-  background: linear-gradient(135deg, rgb(100 140 219 / 0.18), rgb(100 140 219 / 0.03));
-}
-.dark .stats-shape--c {
-  border-color: #262626;
-}
-@keyframes stats-float {
-  to { transform: translate(-30px, 24px) scale(1.06); }
-}
-
 /* ---------- Glass surface ---------- */
 .stats-glass {
   isolation: isolate;

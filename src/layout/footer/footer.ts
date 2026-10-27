@@ -38,7 +38,7 @@ const html = () => `
     <div class="grid gap-12 lg:grid-cols-12">
       <div class="lg:col-span-4">
         ${brandLink()}
-        <p class="mt-5 max-w-sm leading-relaxed">The hosting platform behind your product. Bring your app, we get it live and keep it running, with engineers on call 24/7.</p>
+        <p class="mt-5 max-w-sm leading-relaxed">VavenCloud, by Vavensoft. One team for your servers, your deployments and your code.</p>
         <ul class="mt-6 flex gap-2">
           ${site.socials
             .map(

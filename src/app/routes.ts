@@ -5,16 +5,20 @@
 export const routes = {
   home: '/',
   top: '/#top',
-  builtBy: '/#built-by',
-  find: '/#find',
-  services: '/#services',
-  process: '/#process',
-  whyUs: '/#why-us',
+  problem: '/#problem',
+  oneTeam: '/#one-team',
+  compare: '/#compare',
+  process: '/#how-it-works',
   plans: '/#plans',
+  scope: '/#what-we-own',
+  platform: '/#platform',
+  proof: '/#proof',
   faq: '/#faq',
-  contact: '/#contact',
-  // Kept for the (currently unused) pricing modules; there is no pricing page right now.
-  clients: '/#clients',
+  /** Every "Book a free review" button leads here (final call to action + booking form) */
+  book: '/#book',
+  contact: '/#book',
+  // Kept for the older, currently unused pricing modules.
+  clients: '/#proof',
   pricing: '/#plans',
   webHosting: '/#plans',
   cloudServices: '/#plans',

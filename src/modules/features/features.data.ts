@@ -6,36 +6,18 @@ export interface Feature {
   description: string
 }
 
-/** Partner, not vendor: support language from docs/messaging.md. */
+/** "The platform" tiles (VavenCloud-Sample-Content.md). */
 export const features: Feature[] = [
-  {
-    icon: 'support',
-    title: "We're on call",
-    description: 'Real engineers, day and night. When something breaks, you talk to a person who can fix it.',
-  },
-  {
-    icon: 'rocket',
-    title: "We're behind your launch",
-    description: 'We set up, deploy and test with you, then stay close on go-live day.',
-  },
-  {
-    icon: 'activity',
-    title: 'We keep it running',
-    description: 'Monitoring, nightly backups and security patches, handled quietly in the background.',
-  },
-  {
-    icon: 'lock',
-    title: 'Your product stays yours',
-    description: 'Your code, your data, your accounts. We run it, you own it.',
-  },
-  {
-    icon: 'zap',
-    title: 'Fast where your users are',
-    description: 'NVMe storage, caching and a global CDN keep your app quick, wherever people open it.',
-  },
-  {
-    icon: 'wallet',
-    title: 'Clear, simple pricing',
-    description: 'Plans without surprises. Grow or scale back whenever you need.',
-  },
+  { icon: 'layers', title: 'High-availability load balancers', description: 'Automatic failover, so one failing node never takes you offline.' },
+  { icon: 'activity', title: 'Auto scaling', description: 'More servers when traffic spikes, fewer when it’s quiet. You pay for what you use.' },
+  { icon: 'server', title: 'Managed databases', description: 'MySQL and PostgreSQL, private to your network, backed up on schedule.' },
+  { icon: 'lock', title: 'Private networking', description: 'Your own isolated network. Nothing is exposed unless you choose.' },
+  { icon: 'shield', title: 'Hypervisor firewalls', description: 'Security rules enforced outside your servers, so a misconfigured server can’t switch them off.' },
+  { icon: 'cloud', title: 'Backups and snapshots', description: 'Daily or weekly, kept separately from your servers, with retention you choose.' },
+]
+
+/** TODO: confirm the data centre cities before launch. */
+export const regions = [
+  { name: 'United States', city: '[US city]' },
+  { name: 'Europe', city: '[EU city]' },
 ]

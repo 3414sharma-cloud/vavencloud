@@ -3,6 +3,7 @@ import type { PageOptions } from './types.ts'
 import { header } from '@/layout/header/header.ts'
 import { footer } from '@/layout/footer/footer.ts'
 import { qs } from '@/shared/lib/dom.ts'
+import { initAutoReveal } from '@/shared/lib/reveal.ts'
 import { initTheme } from '@/shared/lib/theme.ts'
 
 const skipLink = `
@@ -29,5 +30,6 @@ export function createPage({ sections, init }: PageOptions): void {
 
   // Sections first, header last: the header observes the rendered section anchors.
   ;[...sections, siteFooter, siteHeader].forEach((s) => s.init?.())
+  initAutoReveal()
   init?.()
 }

@@ -39,18 +39,18 @@ const panel = (s: PipelineStage, i: number) => `
   </div>`
 
 const html = () => `
-<section id="process" class="relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
+<section id="how-it-works" class="relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
   <div class="pipeline-bg pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="container-page">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div class="max-w-2xl">
         ${sectionHeading({
-          eyebrow: 'We take it from here',
-          title: 'Bring your product. We handle the rest.',
-          description: "Launch day shouldn't be scary. Here is what happens once you hand it over.",
+          eyebrow: 'How it works',
+          title: 'From first call to fully covered, without a single surprise.',
+          description: 'Five clear steps. You always know what happens next, and who is on it.',
         })}
       </div>
-      <a href="${routes.contact}" class="btn-secondary self-start lg:self-auto">Talk about your launch ${icon('arrow-right', 'h-4 w-4')}</a>
+      <a href="${routes.book}" class="btn-secondary self-start lg:self-auto">Book a free review ${icon('arrow-right', 'h-4 w-4')}</a>
     </div>
 
     <div id="pipeline" class="mt-14">
@@ -61,7 +61,7 @@ const html = () => `
             <span class="pipeline-packet"></span>
           </div>
         </div>
-        <div role="tablist" aria-label="What happens after you bring your product" class="relative grid grid-cols-5">
+        <div role="tablist" aria-label="The five steps" class="relative grid grid-cols-5">
           ${pipeline.map(node).join('')}
         </div>
       </div>
@@ -75,7 +75,7 @@ const html = () => `
         <div class="flex flex-col overflow-hidden rounded-3xl border border-neutral-800 bg-neutral-950 text-neutral-300 shadow-xl shadow-neutral-950/10" aria-hidden="true">
           <div class="flex items-center gap-3 border-b border-neutral-800 px-4 py-3">
             <span class="flex gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span><span class="h-2.5 w-2.5 rounded-full bg-neutral-700"></span></span>
-            <span class="font-mono text-xs text-neutral-500">vavencloud — your launch</span>
+            <span class="font-mono text-xs text-neutral-500">vavencloud — your onboarding</span>
             <span class="ml-auto inline-flex items-center gap-1.5 rounded-full border border-neutral-800 px-2.5 py-0.5 text-[11px] font-medium" data-pipeline-status>
               <span class="pipeline-status-dot h-1.5 w-1.5 rounded-full bg-emerald-400"></span><span data-pipeline-status-text>Running</span>
             </span>
@@ -100,6 +100,7 @@ const html = () => `
         </button>
       </div>
     </div>
+    <p class="mt-10 text-center text-lg font-medium text-neutral-950 dark:text-white">You get a fixed monthly price before any work starts. No hourly meter, no surprise invoices.</p>
   </div>
 </section>`
 

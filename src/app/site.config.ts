@@ -10,6 +10,21 @@ export interface SocialLink {
 export const site = {
   name: 'VavenCloud',
 
+  /** TODO: confirm the legal entity name (shown in the footer). */
+  legalName: '[Legal entity name]',
+
+  /** The parent software company, linked from the footer and the proof section. */
+  vavensoftUrl: 'https://vavensoft.com/',
+
+  /** TODO: link to the Vavensoft agency profile on Upwork (used in the proof section). */
+  upworkUrl: 'https://www.upwork.com/',
+
+  /**
+   * Calendar link opened after the booking form (Cal.com, Calendly...). Leave empty until a tool is
+   * chosen: the form still sends the request and the team follows up by email.
+   */
+  bookingCalendarUrl: '',
+
   /**
    * YouTube/Vimeo embed URL played by every [data-video] button (e.g. "https://www.youtube.com/embed/VIDEO_ID").
    * Leave empty to show a "coming soon" placeholder.

@@ -1,74 +1,54 @@
 # VavenCloud messaging guide
 
-The source of truth for landing page copy. Check new sections and copy changes against it.
+The source of truth for landing page copy. Full, approved copy lives in `VavenCloud-Sample-Content.md`; this is the short version to check new copy against.
 
 ## Positioning
 
-VavenCloud is a **hosting platform that backs the customer's product**. We are not an agency that builds it.
+VavenCloud, by Vavensoft, offers **production ownership for founders**. One team owns the product in production: the servers, the deployments and the code.
 
-- The customer owns the product. We are the platform that makes it work.
-- Say "your app", "your idea", "your launch" much more often than "our services".
-- Platform first. Extra help (fixes, features) comes second.
+- The buyer is a founder or CTO of a **live product**, often reading late at night or right after something broke.
+- They don't want more features. They want to **stop worrying**, stop chasing three vendors and stop being the person who gets the 2am call.
+- We take responsibility for **availability and the outcome**, not just the server. We fix problems in the code too (within the plan's monthly hours). New features are quoted separately.
 
-## Words to use and avoid
+## The one job of the page
 
-| Avoid (agency)                     | Use (platform partner)                |
-| ---------------------------------- | ------------------------------------- |
-| We develop your app                | Bring your app. We get it live.       |
-| Development services               | Launch support                        |
-| Hire our developers                | Engineers on your side                |
-| DevOps and development packages    | Everything your product needs to run  |
-| We build for you                   | We back what you build                |
-| We provide development             | We're behind your launch / we keep it running / we're on call |
+Get a founder with a live product to **book a free production review**. Every button leads to the same booking form (`#book`).
 
-## Hero
+## Buyer's journey (section order)
 
-Headlines (the hero slider rotates through all four):
+| Stage | Sections |
+| --- | --- |
+| Recognition: "this is exactly my situation" | Hero, The problem |
+| Relief: "someone would actually own this" | One team, every layer |
+| Belief: "they're specific" | How we compare, How it works, Plans |
+| Safety: "I can try this without getting trapped" | What we own + exit promise, Platform and regions, Proof, Founder note |
+| Action: "booking costs me nothing" | FAQ, Final call to action + booking form |
 
-1. Bring your product. We'll get it live.
-2. Hosting that backs your idea, not just your server.
-3. Your app, live and supported. Built by anyone, hosted by us.
-4. Whoever built it, we'll make it run.
+## Voice
 
-Subline: **Server, setup, deployment and a real team behind your launch.**
+- Calm, direct, specific. Short sentences. Numbers over adjectives.
+- Sound like the senior engineer they wish they had, not like a vendor.
+- No hype, no exclamation marks, no "cutting-edge" or "world-class".
 
-## Supporting messages
+## Key lines
 
-1. **Built by anyone.** In-house team, freelancer, agency or AI tools: it doesn't matter. This removes the fear that we only support certain apps.
-2. **We take it from here.** What happens once they bring the product:
-   - Moved to your platform
-   - Deployed and tested
-   - Monitored and backed up
-   - Someone to call when it breaks
-3. **Support language, not service language.** "We're behind your launch", "we keep it running", "we're on call".
-4. **Tone: partner, not vendor.** Short, calm sentences. Reassure rather than impress with technical detail. Example: "Launch day shouldn't be scary."
+- Headline: "When something breaks, you make one call. We fix the rest."
+- Problem: "Your app has three vendors. When it breaks, it has none."
+- Promise: "If your product is down, we treat it as our problem until it's back, whatever the cause."
+- Comparison: "Others own a piece of your product. We own the outcome."
+- Safety: "You're never locked in. Ever."
+- Final call to action: "Stop running servers. Start running your business."
 
-## Where development goes
+## Rules
 
-Don't hide it, but keep it out of headlines. It shows up only as a quiet extra:
-
-- "Need a fix or a new feature? Our engineers can help."
-- A "Need extra hands?" card placed **after** the plans.
-
-## How the landing page uses this
-
-| Order | Section (id)                     | Message it carries                                     |
-| ----- | -------------------------------- | ------------------------------------------------------ |
-| 1     | Hero slider (`top`)              | The four headlines + subline                           |
-| 1b    | The problem (`problem`)          | "Most hosting stops at the server…" (the gap we close) |
-| 2     | Stats (`stats`)                  | Proof: products kept live, people on call              |
-| 3     | Built by anyone (`built-by`)     | Supporting message 1                                   |
-| 4     | We take it from here (`process`) | Supporting message 2, as an animated pipeline          |
-| 5     | Platform (`services`)            | "Everything your product needs to run"                 |
-| 6     | Picker (`find`)                  | "Where is your product today?"                         |
-| 7     | Why VavenCloud (`why-us`)        | Partner, not vendor; support language                  |
-| 8     | Plans + Need extra hands? (`plans`) | Pricing, then development as a quiet extra          |
-| 9     | FAQ (`faq`)                      | Built by anyone, AI-built apps, "Do you build apps?"   |
-| 10    | Contact (`contact`)              | "Let's talk about your launch"                         |
+- **Never invent quotes, customers or engineers.** Placeholders stay visibly marked until real content exists.
+- **Every promise must be true on launch day.** If one isn't ready, soften the line rather than launch with it. See "Numbers and facts to confirm before launch" in `VavenCloud-Sample-Content.md`.
+- **No prices on the page.** Plans say "fixed monthly fee, agreed after your review".
+- Name no competitors.
 
 ## Quick checklist for new copy
 
-- Is the customer the subject? ("Your app…", not "We offer…")
-- Would it still be true if a freelancer or an AI tool built the product?
-- Is development a headline? If so, move it into a quiet extra.
-- Short sentences, calm tone, no hype.
+- Does it move the reader one step closer to booking a review?
+- Is it specific (a number, a time, a named thing) rather than an adjective?
+- Would a senior engineer say it out loud to a founder?
+- Is it true today?

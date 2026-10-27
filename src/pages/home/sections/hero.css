@@ -1,249 +1,392 @@
-/* Hero slider: background motion, slide transitions and tab progress. Colours follow the light/dark theme. */
+/*
+ * Hero. The headline rises in once; the demo below it is a small state machine driven by
+ * [data-state] on .hs: calm → down → calling → fixing → resolved. All colour changes come from two
+ * registered custom properties (--hs-tone, --hs-ink) so they blend smoothly between states.
+ */
 
-/* Registered so the accent glow can fade between slide colours */
-@property --hero-accent {
+.hero-in {
+  animation: hero-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* Hand-drawn underline under "We fix the rest." draws itself after the headline lands */
+.hero-underline path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: hero-draw 0.9s cubic-bezier(0.65, 0, 0.35, 1) forwards 0.75s;
+}
+@keyframes hero-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Primary buttons: arrow nudges forward on hover (site-wide) */
+.btn-primary svg,
+.btn-secondary svg {
+  transition: transform 0.2s ease;
+}
+.btn-primary:hover svg,
+.btn-secondary:hover svg {
+  transform: translateX(3px);
+}
+
+/* ---------- Demo: colour states ---------- */
+@property --hs-tone {
   syntax: "<color>";
   inherits: true;
-  initial-value: #3d69cc;
+  initial-value: #10b981;
+}
+@property --hs-ink {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #047857;
+}
+.hs {
+  --hs-tone: #10b981;
+  --hs-ink: #047857;
+  transition:
+    --hs-tone 0.6s ease,
+    --hs-ink 0.6s ease;
+}
+.hs[data-state="down"],
+.hs[data-state="calling"] {
+  --hs-tone: #f43f5e;
+  --hs-ink: #be123c;
+}
+.hs[data-state="fixing"] {
+  --hs-tone: #f59e0b;
+  --hs-ink: #b45309;
+}
+.dark .hs { --hs-ink: #6ee7b7; }
+.dark .hs[data-state="down"],
+.dark .hs[data-state="calling"] { --hs-ink: #fda4af; }
+.dark .hs[data-state="fixing"] { --hs-ink: #fcd34d; }
+
+.hero-stage {
+  animation: hero-stage 1s cubic-bezier(0.22, 1, 0.36, 1) both 0.5s;
+}
+@keyframes hero-stage {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(0.98);
+  }
 }
 
-.hero {
-  transition: --hero-accent 1.2s ease;
-}
-
-/* ---------- Background ---------- */
-/* WebGL waves rising from the bottom edge; faded in at the top so they never sit behind the headline */
-.hero-waves {
-  mask-image: linear-gradient(to bottom, transparent 0%, #000 45%);
-}
-/* Shown only when WebGL2 is unavailable (the effect adds .has-waves to the hero when it mounts) */
-.hero-waves-fallback {
-  background:
-    radial-gradient(60% 90% at 30% 100%, color-mix(in srgb, var(--hero-accent) 35%, transparent), transparent 70%),
-    radial-gradient(50% 80% at 75% 100%, rgb(147 178 232 / 0.45), transparent 70%);
-}
-.has-waves .hero-waves-fallback {
+/* Status pills: only the one for the current state is shown */
+.hs [data-for] {
   display: none;
 }
-/* Soft glow behind the headline, tinted by the active slide */
-.hero-glow {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--hero-accent) 28%, transparent), transparent);
-  animation: hero-breathe 9s ease-in-out infinite alternate;
+.hs[data-state="calm"] [data-for~="calm"],
+.hs[data-state="down"] [data-for~="down"],
+.hs[data-state="calling"] [data-for~="calling"],
+.hs[data-state="fixing"] [data-for~="fixing"],
+.hs[data-state="resolved"] [data-for~="resolved"] {
+  display: inline-flex;
 }
-.dark .hero-glow {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--hero-accent) 38%, transparent), transparent);
+.hs-pill {
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--hs-ink);
+  background: color-mix(in srgb, var(--hs-tone) 14%, transparent);
 }
-@keyframes hero-breathe {
-  from { transform: scale(0.94); opacity: 0.8; }
-  to { transform: scale(1.08); opacity: 1; }
+.hs-pill-dot {
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: 9999px;
+  background: var(--hs-tone);
+}
+.hs[data-state="down"] .hs-pill-dot,
+.hs[data-state="calling"] .hs-pill-dot {
+  animation: hs-blink 0.9s ease-in-out infinite;
+}
+@keyframes hs-blink {
+  50% { opacity: 0.25; }
 }
 
-.hero-orb {
-  position: absolute;
+/* ---------- Demo: the app on the left ---------- */
+.hs-checkout {
+  transition: border-color 0.5s ease;
+}
+.hs[data-state="down"] .hs-checkout,
+.hs[data-state="calling"] .hs-checkout {
+  border-color: color-mix(in srgb, var(--hs-tone) 55%, transparent);
+}
+.hs-pay {
+  transition: opacity 0.4s ease;
+}
+.hs[data-state="down"] .hs-pay,
+.hs[data-state="calling"] .hs-pay,
+.hs[data-state="fixing"] .hs-pay {
+  opacity: 0.4;
+}
+.hs-skel {
   border-radius: 9999px;
-  filter: blur(90px);
-  opacity: 0.35;
+  background: #e5e5e5;
 }
-.dark .hero-orb {
-  opacity: 0.22;
+.dark .hs-skel {
+  background: #262626;
 }
-.hero-orb--a {
-  top: -12%;
-  left: -8%;
-  height: 420px;
-  width: 420px;
-  background: #93b2e8;
-  animation: hero-drift-a 22s ease-in-out infinite alternate;
-}
-@keyframes hero-drift-a {
-  to { transform: translate(18vw, 12vh) scale(1.15); }
-}
-/* Tool chips orbiting the headline. Faded near the centre so they never sit behind the text. */
-.hero-orbits {
-  mask-image: radial-gradient(ellipse 40% 34% at 50% 50%, transparent 72%, #000 100%);
-}
-.hero-ring {
+.hs-toast {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  height: calc(var(--r) * 2);
-  width: calc(var(--r) * 2);
-  margin: calc(var(--r) * -1) 0 0 calc(var(--r) * -1);
-  border-radius: 9999px;
-  border: 1px dashed rgb(10 10 10 / 0.1);
-  animation: hero-spin var(--dur) linear infinite;
-}
-.dark .hero-ring {
-  border-color: rgb(255 255 255 / 0.1);
-}
-.hero-ring--reverse {
-  border-style: solid;
-  animation-direction: reverse;
-}
-/* Placed on the ring by angle, then the inner pill spins the other way to stay upright */
-.hero-chip {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  height: 0;
-  width: 0;
-  transform: rotate(var(--a)) translateX(var(--r)) rotate(calc(var(--a) * -1));
-}
-.hero-chip-inner {
-  display: inline-flex;
-  translate: -50% -50%;
+  top: 1rem;
+  right: 1.25rem;
+  display: flex;
   align-items: center;
   gap: 0.4rem;
-  white-space: nowrap;
   border-radius: 9999px;
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #404040;
-  background: linear-gradient(140deg, rgb(255 255 255 / 0.85), rgb(255 255 255 / 0.5));
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgb(255 255 255 / 0.9);
-  box-shadow: 0 0 0 1px rgb(10 10 10 / 0.05), 0 8px 20px -12px rgb(10 10 10 / 0.25);
-  animation: hero-spin var(--dur) linear infinite reverse;
-}
-.hero-ring--reverse .hero-chip-inner {
-  animation-direction: normal;
-}
-.dark .hero-chip-inner {
-  color: #d4d4d4;
-  background: linear-gradient(140deg, rgb(23 23 23 / 0.85), rgb(23 23 23 / 0.55));
-  border-color: rgb(255 255 255 / 0.1);
-  box-shadow: 0 8px 20px -12px rgb(0 0 0 / 0.8);
-}
-
-/* Soft light following the cursor */
-.hero-spot {
+  padding: 0.35rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #fff;
   opacity: 0;
-  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 40%), rgb(61 105 204 / 0.14), transparent 70%);
-  transition: opacity 0.5s ease;
+  transform: translateY(8px) scale(0.95);
+  pointer-events: none;
+  transition:
+    opacity 0.35s ease,
+    transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.dark .hero-spot {
-  background: radial-gradient(420px circle at var(--sx, 50%) var(--sy, 40%), rgb(100 140 219 / 0.2), transparent 70%);
-}
-.has-spot .hero-spot {
+.hs-toast--bad { background: #e11d48; }
+.hs-toast--good { background: #059669; }
+.hs[data-state="down"] .hs-toast--bad,
+.hs[data-state="calling"] .hs-toast--bad,
+.hs[data-state="fixing"] .hs-toast--bad,
+.hs[data-state="resolved"] .hs-toast--good {
   opacity: 1;
+  transform: none;
 }
-@keyframes hero-spin {
-  to { transform: rotate(360deg); }
+.hs[data-state="down"] .hs-toast--bad {
+  animation: hs-shake 0.5s ease;
+}
+@keyframes hs-shake {
+  20% { transform: translateX(-5px); }
+  40% { transform: translateX(5px); }
+  60% { transform: translateX(-3px); }
+  80% { transform: translateX(3px); }
+}
+.hs-latency {
+  color: var(--hs-ink);
+}
+.hs-bar {
+  flex: 1;
+  border-radius: 2px;
+  background: #10b981;
+  opacity: 0.7;
+  transition:
+    height 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.6s ease;
+  transform-origin: bottom;
+  animation: hs-grow 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--d, 0) * 18ms + 700ms);
+}
+.hs-bar--hot {
+  background: var(--hs-tone);
+  opacity: 0.95;
+}
+@keyframes hs-grow {
+  from { transform: scaleY(0.1); }
 }
 
-/* ---------- Slides ---------- */
-.hero-track {
-  touch-action: pan-y;
-}
-.hero-slide {
+/* ---------- Demo: scenes on the right (one visible at a time) ---------- */
+.hs-scene {
   grid-area: 1 / 1;
-  position: relative;
-  /* Slides share one grid cell (height = tallest slide); keep shorter ones vertically centred */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transform: translateY(-16px) scale(0.985);
-  filter: blur(6px);
+  transform: translateY(8px);
   transition:
-    opacity 0.5s ease,
-    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
-    filter 0.5s ease,
-    visibility 0s linear 0.7s;
+    opacity 0.45s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.45s;
 }
-.hero-slide[data-active] {
+.hs[data-state="calm"] .hs-scene--calm,
+.hs[data-state="down"] .hs-scene--incident,
+.hs[data-state="calling"] .hs-scene--incident,
+.hs[data-state="fixing"] .hs-scene--fix,
+.hs[data-state="resolved"] .hs-scene--fix {
   opacity: 1;
   visibility: visible;
   transform: none;
-  filter: none;
   transition-delay: 0s;
 }
 
-/* Each block of the active slide rises in, staggered by --i */
-.hero-slide[data-active] .hero-in {
-  animation: hero-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+.hs-okring {
+  position: relative;
 }
-/* Headline rises in word by word */
-.hero-word {
-  display: inline-block;
+.hs-okring::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid #10b981;
+  animation: hs-ripple 2s ease-out infinite;
 }
-.hero-slide[data-active] .hero-word {
-  animation: hero-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--w, 0) * 55ms + 230ms);
+
+/* Vendors each say why it isn't theirs, one after another */
+.hs-vendor {
+  opacity: 0;
+  transform: translateX(-10px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.hero-slide[data-active] .hero-word.hero-highlight {
-  animation:
-    hero-word 0.9s cubic-bezier(0.22, 1, 0.36, 1) both,
-    hero-shimmer 6s linear infinite;
-  animation-delay: calc(var(--w, 0) * 55ms + 230ms), 0s;
+.hs-vendor.is-in {
+  opacity: 1;
+  transform: none;
 }
-@keyframes hero-word {
-  from {
-    opacity: 0;
-    transform: translateY(0.45em) rotate(2deg);
-    filter: blur(10px);
+.hs[data-state="calling"] .hs-vendor.is-in {
+  opacity: 0.35;
+  transform: scale(0.985);
+}
+.hs-incident-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+.hs-call {
+  opacity: 0;
+  transform: translateY(10px) scale(0.97);
+  pointer-events: none;
+  transition:
+    opacity 0.4s ease,
+    transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.hs[data-state="calling"] .hs-call {
+  opacity: 1;
+  transform: none;
+}
+.hs-call [data-call-b] { display: none; }
+.hs-call.is-connected [data-call-a] { display: none; }
+.hs-call.is-connected [data-call-b] { display: inline; }
+.hs-ring {
+  position: relative;
+}
+.hs-ring i {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid currentColor;
+  opacity: 0;
+  animation: hs-ripple 1.4s ease-out infinite;
+}
+.hs-ring i + i {
+  animation-delay: 0.5s;
+}
+.hs-ring svg {
+  animation: hs-wobble 0.7s ease-in-out infinite;
+}
+.hs-call.is-connected .hs-ring i,
+.hs-call.is-connected .hs-ring svg {
+  animation: none;
+}
+@keyframes hs-ripple {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+@keyframes hs-wobble {
+  25% { transform: rotate(-14deg); }
+  75% { transform: rotate(14deg); }
+}
+
+/* Incident thread: rows appear as the engineer works; replies show typing dots first */
+/* Connector from each dot down to the next one; it takes the state colour once the next row has arrived */
+.hs-ev:not(:last-child)::before {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 1.5rem;
+  bottom: -1.3rem;
+  width: 1px;
+  background: var(--hs-tone);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+/* Only drawn once the next row has arrived, so no line hangs in empty space */
+.hs-ev:has(+ .hs-ev.is-in)::before {
+  opacity: 1;
+}
+
+/* Final line appears once everything is fixed */
+.hs-result {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.5s ease 0.2s,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.2s;
+}
+.hs[data-state="resolved"] .hs-result {
+  opacity: 1;
+  transform: none;
+}
+
+/* While the example is calm, the button invites a click with a soft red ripple */
+.hs-invite {
+  position: relative;
+}
+.hs[data-state="calm"] .hs-invite::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid #f43f5e;
+  pointer-events: none;
+  animation: hs-invite 1.8s ease-out infinite;
+}
+/* Smaller than the card ripples so it is never clipped by the header */
+@keyframes hs-invite {
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.14, 1.4); opacity: 0; }
+}
+.hs-ev-dot,
+.hs-ev-body {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hs-ev.is-in .hs-ev-dot,
+.hs-ev.is-in .hs-ev-body {
+  opacity: 1;
+  transform: none;
+}
+.hs-typing {
+  position: absolute;
+  left: 1.625rem;
+  top: 50%;
+  display: flex;
+  gap: 0.25rem;
+  margin-top: -0.2rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.hs-typing i {
+  height: 0.4rem;
+  width: 0.4rem;
+  border-radius: 9999px;
+  background: #a3a3a3;
+  animation: hs-bounce 0.9s ease-in-out infinite;
+}
+.hs-typing i:nth-child(2) { animation-delay: 0.15s; }
+.hs-typing i:nth-child(3) { animation-delay: 0.3s; }
+.hs-ev.is-typing .hs-typing {
+  opacity: 1;
+}
+@keyframes hs-bounce {
+  50% { transform: translateY(-4px); opacity: 0.5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-okring::after,
+  .hs-ring i,
+  .hs-ring svg {
+    animation: none;
   }
-}@keyframes hero-in {
-  from {
-    opacity: 0;
-    transform: translateY(28px);
-    filter: blur(8px);
-  }
-}
-
-.hero-highlight {
-  /* brand-600 → accent → brand-300 */
-  background-image: linear-gradient(90deg, #3157b3, var(--hero-accent), #93b2e8, #3157b3);
-  background-size: 300% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: hero-shimmer 6s linear infinite;
-}
-.dark .hero-highlight {
-  background-image: linear-gradient(90deg, #93b2e8, var(--hero-accent), #fff, #93b2e8);
-}
-@keyframes hero-shimmer {
-  to { background-position: 300% center; }
-}
-
-/* ---------- Tab progress ---------- */
-.hero-progress {
-  transform: scaleX(0);
-  transform-origin: left;
-}
-.hero-progress.is-running {
-  animation: hero-progress var(--hero-interval, 6500ms) linear forwards;
-}
-#hero-slider[data-paused] .hero-progress.is-running {
-  animation-play-state: paused;
-}
-.is-static [aria-selected="true"] .hero-progress {
-  transform: scaleX(1);
-}
-@keyframes hero-progress {
-  to { transform: scaleX(1); }
-}
-
-/* ---------- Control dock (frosted glass over the waves) ---------- */
-.hero-dock {
-  background: linear-gradient(140deg, rgb(255 255 255 / 0.7), rgb(255 255 255 / 0.4));
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  backdrop-filter: blur(18px) saturate(150%);
-  border: 1px solid rgb(255 255 255 / 0.8);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.9),
-    0 0 0 1px rgb(10 10 10 / 0.04),
-    0 20px 40px -28px rgb(10 10 10 / 0.25);
-}
-.dark .hero-dock {
-  background: linear-gradient(140deg, rgb(10 10 10 / 0.65), rgb(10 10 10 / 0.45));
-  border-color: rgb(255 255 255 / 0.1);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.08),
-    0 20px 40px -28px rgb(0 0 0 / 0.8);
 }

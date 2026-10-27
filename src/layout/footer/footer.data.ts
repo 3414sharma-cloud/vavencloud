@@ -6,29 +6,26 @@ export interface FooterColumn {
   links: { label: string; href: string; external?: boolean }[]
 }
 
+// TODO: point the "#" links at real pages once they exist
 export const footerColumns: FooterColumn[] = [
   {
-    title: 'Platform',
+    title: 'Product',
     links: [
-      { label: 'Web Hosting', href: routes.services },
-      { label: 'Cloud Servers', href: routes.services },
-      { label: 'Launch Support', href: routes.services },
-      { label: 'CDN & Backups', href: routes.services },
-      { label: 'Engineers on call', href: routes.services },
+      { label: 'How it works', href: routes.process },
+      { label: 'Plans', href: routes.plans },
+      { label: 'What we own', href: routes.scope },
+      { label: 'Platform', href: routes.platform },
     ],
   },
   {
     title: 'Company',
     links: [
-      { label: 'How it works', href: routes.process },
-      { label: 'Why VavenCloud', href: routes.whyUs },
-      { label: 'Plans', href: routes.plans },
-      { label: 'FAQ', href: routes.faq },
-      { label: 'Contact', href: routes.contact },
+      { label: 'About Vavensoft', href: site.vavensoftUrl, external: true },
+      { label: 'Careers', href: '#' },
+      { label: 'Contact', href: routes.book },
       { label: 'Blog', href: site.blogUrl, external: true },
     ],
   },
 ]
 
-// TODO: point these at real pages once they exist
-export const legalLinks = ['Privacy Policy', 'Terms of Service'].map((label) => ({ label, href: '#' }))
+export const legalLinks = ['Terms', 'Privacy', 'Acceptable use', 'SLA'].map((label) => ({ label, href: '#' }))

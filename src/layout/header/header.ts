@@ -4,7 +4,7 @@ import { qs, qsa } from '@/shared/lib/dom.ts'
 import { getTheme, onThemeChange, setThemePreference } from '@/shared/lib/theme.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { brandLink } from '@/shared/ui/logo.ts'
-import { navLinks } from './nav.data.ts'
+import { navLinks, topBar } from './nav.data.ts'
 
 const desktopLink =
   'rounded-full px-3.5 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
@@ -12,9 +12,18 @@ const desktopLink =
 const iconButton =
   'inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-950 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white'
 
+const announcement = () => `
+<div id="top-bar" class="relative z-[60] hidden bg-neutral-950 text-sm text-neutral-300 dark:bg-white dark:text-neutral-600">
+  <div class="container-page flex min-h-10 items-center justify-center py-2 pr-12 pl-6 text-center">
+    <p>${topBar.text} <a href="${topBar.link.href}" class="font-medium whitespace-nowrap text-white underline-offset-4 hover:underline dark:text-neutral-950">${topBar.link.label} →</a></p>
+    <button type="button" data-top-bar-close class="absolute right-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 hover:text-white focus-visible:outline-2 focus-visible:outline-brand-400 dark:hover:text-neutral-950" aria-label="Dismiss announcement">${icon('x', 'h-4 w-4')}</button>
+  </div>
+</div>`
+
 const html = () => `
+${announcement()}
 <!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
-<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-white/55 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(10_10_10/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/45 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-white/85 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(10_10_10/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/80 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
   <nav class="container-page flex h-18 items-center justify-between gap-6" aria-label="Main">
     ${brandLink()}
 
@@ -27,7 +36,7 @@ const html = () => `
         <span class="dark:hidden">${icon('moon', 'h-4 w-4')}</span>
         <span class="hidden dark:block">${icon('sun', 'h-4 w-4')}</span>
       </button>
-      <a href="${routes.contact}" class="btn-primary hidden sm:inline-flex">Get in touch</a>
+      <a href="${routes.book}" class="btn-primary hidden sm:inline-flex">Book a free review</a>
       <button id="menu-toggle" type="button" class="${iconButton} lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
         <span data-icon-open>${icon('menu', 'h-4 w-4')}</span>
         <span data-icon-close class="hidden">${icon('x', 'h-4 w-4')}</span>
@@ -43,10 +52,31 @@ const html = () => `
             `<li><a href="${l.href}" class="block rounded-xl px-3 py-3 text-base font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white">${l.label}</a></li>`,
         )
         .join('')}
-      <li class="pt-2 pb-2"><a href="${routes.contact}" class="btn-primary w-full">Get in touch</a></li>
+      <li class="pt-2 pb-2"><a href="${routes.book}" class="btn-primary w-full">Book a free review</a></li>
     </ul>
   </div>
 </header>`
+
+/** Shows the top bar unless this message was dismissed before. */
+function initTopBar(): void {
+  const bar = qs('#top-bar')
+  const key = `vc-topbar-${topBar.id}`
+  let dismissed = false
+  try {
+    dismissed = localStorage.getItem(key) === '1'
+  } catch {
+    /* storage blocked: just show it */
+  }
+  bar.classList.toggle('hidden', dismissed)
+  qs('[data-top-bar-close]', bar).addEventListener('click', () => {
+    bar.classList.add('hidden')
+    try {
+      localStorage.setItem(key, '1')
+    } catch {
+      /* not persisted */
+    }
+  })
+}
 
 function initThemeToggle(siteHeader: HTMLElement): void {
   const toggle = qs<HTMLButtonElement>('#theme-toggle', siteHeader)
@@ -113,6 +143,7 @@ export function header(): Section {
     html: html(),
     init() {
       const siteHeader = qs('#site-header')
+      initTopBar()
       initSolidOnScroll(siteHeader)
       initThemeToggle(siteHeader)
       initMobileMenu(siteHeader)

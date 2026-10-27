@@ -2,8 +2,9 @@ import './stats.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
-import { icon, type IconName } from '@/shared/ui/icons.ts'
-import { secondary, stats, stories, technologies, type Stat, type StatId } from './stats.data.ts'
+import { site } from '@/app/site.config.ts'
+import { icon } from '@/shared/ui/icons.ts'
+import { clientStories, engineers, stats, stories, type Stat, type StatId } from './stats.data.ts'
 
 /*
  * "By the numbers" as a scroll story.
@@ -52,16 +53,14 @@ const clock = () => `
     <circle cx="50" cy="50" r="4" fill="#3d69cc" />
   </svg>`
 
-const globe = () => `
-  <div class="relative h-40 w-40 xl:h-44 xl:w-44" aria-hidden="true">
-    <div class="stats-globe absolute inset-0 overflow-hidden rounded-full"></div>
-    <span class="stats-pin" style="top:30%;left:34%;--d:0s"></span>
-    <span class="stats-pin" style="top:46%;left:68%;--d:0.8s"></span>
-    <span class="stats-pin" style="top:68%;left:42%;--d:1.6s"></span>
-    <span class="stats-pin" style="top:58%;left:22%;--d:2.2s"></span>
-  </div>`
-
-const art: Partial<Record<StatId, () => string>> = { live: growthChart, uptime: uptimeRing, oncall: clock, regions: globe }
+/** Circular arrow drawing itself: clients coming back */
+const returning = () => `
+  <svg class="h-40 w-40 xl:h-44 xl:w-44" viewBox="0 0 100 100" fill="none" aria-hidden="true">
+    <circle cx="50" cy="50" r="38" class="stats-ring-track" stroke-width="8" />
+    <path class="stats-line" pathLength="1" d="M50 12 A38 38 0 1 1 15.7 33.6" stroke="#3d69cc" stroke-width="8" stroke-linecap="round" />
+    <path class="stats-check" pathLength="1" d="M6 22 L15.7 33.6 L28 27" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>`
+const art: Record<StatId, () => string> = { products: growthChart, years: clock, jobSuccess: uptimeRing, returning }
 
 /* ---------- Markup ---------- */
 
@@ -78,7 +77,7 @@ const panel = (i: number) => {
         <p class="mt-5 text-xl font-semibold text-neutral-950 dark:text-white">${stats[id].label}</p>
         <p class="mt-2 max-w-sm leading-relaxed">${stats[id].note}</p>
       </div>
-      <div class="stats-art relative flex justify-center xl:justify-end">${art[id]?.() ?? ''}</div>
+      <div class="stats-art relative flex justify-center xl:justify-end">${art[id]()}</div>
     </div>
   </li>`
 }
@@ -96,36 +95,39 @@ const stepButton = (i: number) => `
     </button>
   </li>`
 
-const secondaryIcons: Partial<Record<StatId, IconName>> = { businesses: 'users', launches: 'rocket', response: 'clock', rating: 'star' }
-
-const secondaryItem = (id: StatId) => `
-  <li class="stats-mini stats-glass flex items-center gap-4 rounded-3xl p-5">
-    <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-neutral-950/5 text-neutral-900 dark:bg-white/10 dark:text-white">${icon(secondaryIcons[id] ?? 'check', 'h-5 w-5')}</span>
-    <span class="flex flex-col">
-      <span class="text-2xl font-semibold tracking-tight text-neutral-950 tabular-nums dark:text-white">${value(id)}</span>
-      <span class="text-sm text-neutral-500">${stats[id].label}</span>
-    </span>
+const storyCard = (s: (typeof clientStories)[number]) => `
+  <li class="card flex flex-col p-7">
+    <p class="text-lg leading-relaxed text-neutral-950 dark:text-white">“${s.quote}”</p>
+    <p class="mt-5 text-sm"><span class="font-semibold text-neutral-950 dark:text-white">${s.name}</span>, ${s.role}, ${s.company}, ${s.country}</p>
+    <p class="mt-auto pt-5 text-sm font-medium text-emerald-700 dark:text-emerald-400">Result: ${s.result}</p>
   </li>`
 
-const techList = (hidden: boolean) => `
-  <ul class="flex shrink-0 gap-3 pr-3" ${hidden ? 'aria-hidden="true"' : 'aria-label="Technologies we run"'}>
-    ${technologies.map((t) => `<li class="rounded-full border border-neutral-200 bg-white px-4 py-1.5 text-sm font-medium whitespace-nowrap text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-300">${t}</li>`).join('')}
-  </ul>`
+const storySlot = () => `
+  <li class="flex flex-col justify-center rounded-3xl border border-dashed border-neutral-300 p-7 text-center dark:border-neutral-700">
+    <p class="text-sm font-medium text-neutral-950 dark:text-white">Founding client story</p>
+    <p class="mt-1 text-sm text-neutral-500">Shared here once our first pilot clients have been live for 90 days.</p>
+  </li>`
 
+const engineerCard = (e: (typeof engineers)[number]) => `
+  <li class="card p-6">
+    <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-neutral-400 dark:bg-neutral-800" aria-hidden="true">${icon('users', 'h-6 w-6')}</span>
+    <p class="mt-5 font-semibold text-neutral-950 dark:text-white">${e.name}</p>
+    <p class="mt-0.5 text-sm text-neutral-500">${e.speciality}</p>
+    <p class="mt-3 text-sm leading-relaxed">${e.line}</p>
+  </li>`
 const html = () => `
-<section id="stats" aria-labelledby="stats-title">
+<section id="proof" class="border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="stats-title">
   <div id="stats-story" class="relative lg:h-[400vh]">
     <div class="relative overflow-hidden lg:sticky lg:top-18 lg:flex lg:h-[calc(100svh-4.5rem)] lg:items-center">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-        <div class="stats-shapes absolute inset-y-0 right-0 w-full lg:w-[70%]"><span class="stats-shape stats-shape--a"></span><span class="stats-shape stats-shape--b"></span><span class="stats-shape stats-shape--c"></span></div>
         <div class="stats-dots absolute inset-0"></div>
       </div>
 
       <div class="container-page grid w-full gap-10 py-20 sm:py-24 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-center lg:gap-14 lg:py-0">
         <div>
-          <p class="eyebrow">VavenCloud by the numbers</p>
-          <h2 id="stats-title" class="section-title mt-5 lg:!text-5xl lg:!text-wrap">Thousands of products, <span class="text-neutral-400 dark:text-neutral-500">kept live.</span></h2>
-          <p class="section-lead mt-4">Real infrastructure and real people, behind every launch.</p>
+          <p class="eyebrow">Proof</p>
+          <h2 id="stats-title" class="section-title mt-5 lg:!text-5xl lg:!text-wrap">Built by the team behind <span class="text-neutral-400 dark:text-neutral-500">210+ products.</span></h2>
+          <p class="section-lead mt-4">VavenCloud is run by Vavensoft, the software company behind the numbers below.</p>
           <ol class="mt-10 hidden space-y-1 lg:block" aria-label="Numbers">
             ${stories.map((_, i) => stepButton(i)).join('')}
           </ol>
@@ -141,16 +143,19 @@ const html = () => `
     </div>
   </div>
 
-  <div class="container-page lg:pt-8">
-    <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" role="list" id="stats-mini">
-      ${secondary.map(secondaryItem).join('')}
+  <div class="container-page pb-24 sm:pb-32 lg:pt-8">
+    <h3 class="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Founding client stories</h3>
+    <p class="mt-3 max-w-2xl">Until our pilot clients have their own stories, you can read real reviews of Vavensoft projects on <a href="${site.upworkUrl}" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">Upwork<span class="sr-only"> (opens in a new tab)</span></a>.</p>
+    <ul class="mt-8 grid gap-5 md:grid-cols-3" role="list">
+      ${clientStories.length ? clientStories.map(storyCard).join('') : storySlot().repeat(3)}
     </ul>
-    <p class="mt-14 text-center text-sm text-neutral-500">Bring it in whatever it's built with</p>
-  </div>
-  <div class="stats-marquee mt-5 overflow-hidden pb-20 sm:pb-24">
-    <div class="stats-marquee-track flex w-max">${techList(false)}${techList(true)}</div>
-  </div>
-</section>`
+
+    <h3 class="mt-20 text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Meet your engineers</h3>
+    <p class="mt-3 max-w-2xl">Real people with names, in your chat. These are the people who pick up when something breaks.</p>
+    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" role="list">
+      ${engineers.map(engineerCard).join('')}
+    </ul>
+  </div></section>`
 
 /* ---------- Behaviour ---------- */
 
@@ -186,7 +191,7 @@ function initStats(): void {
   let active = -1
 
   // Glass sheen follows the cursor
-  qsa('.stats-glass', qs('#stats')).forEach((g) =>
+  qsa('.stats-glass', qs('#proof')).forEach((g) =>
     g.addEventListener('pointermove', (e) => {
       const r = g.getBoundingClientRect()
       g.style.setProperty('--mx', `${e.clientX - r.left}px`)
@@ -267,18 +272,6 @@ function initStats(): void {
   desktop.addEventListener('change', setup)
   setup()
 
-  /* Supporting row counts up once */
-  const mini = qs('#stats-mini')
-  const miniObserver = new IntersectionObserver(
-    ([e]) => {
-      if (!e.isIntersecting) return
-      miniObserver.disconnect()
-      mini.classList.add('is-shown')
-      qsa('[data-count]', mini).forEach((el) => countUp(el, reduced))
-    },
-    { threshold: 0.4 },
-  )
-  miniObserver.observe(mini)
 }
 
 export function statsSection(): Section {

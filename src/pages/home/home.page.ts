@@ -1,29 +1,32 @@
 import { createPage } from '@/app/create-page.ts'
-import { builtBySection } from '@/modules/built-by/built-by.section.ts'
+import { compareSection } from '@/modules/compare/compare.section.ts'
 import { contactSection } from '@/modules/contact/contact.section.ts'
 import { faqSection } from '@/modules/faq/faq.section.ts'
 import { featuresSection } from '@/modules/features/features.section.ts'
-import { needsSection } from '@/modules/needs/needs.section.ts'
+import { founderSection } from '@/modules/founder/founder.section.ts'
+import { oneTeamSection } from '@/modules/one-team/one-team.section.ts'
 import { pipelineSection } from '@/modules/pipeline/pipeline.section.ts'
-import { problemSection } from '@/modules/problem/problem.section.ts'
 import { plansSection } from '@/modules/pricing/plans.section.ts'
-import { servicesSection } from '@/modules/services/services.section.ts'
+import { problemSection } from '@/modules/problem/problem.section.ts'
+import { scopeSection } from '@/modules/scope/scope.section.ts'
 import { statsSection } from '@/modules/stats/stats.section.ts'
 import { heroSection } from './sections/hero.section.ts'
 
-// Section order and the message each one carries: docs/messaging.md → "How the landing page uses this"
+// Page order follows the buyer's journey in docs/messaging.md:
+// recognition → relief → belief → safety → action
 createPage({
   sections: [
-    heroSection(),
+    heroSection(), // recognition
     problemSection(),
-    statsSection(),
-    builtBySection(),
+    oneTeamSection(), // relief
+    compareSection(), // belief
     pipelineSection(),
-    servicesSection(),
-    needsSection(),
-    featuresSection(),
     plansSection(),
-    faqSection(),
+    scopeSection(), // safety (what we own + exit promise)
+    featuresSection(),
+    statsSection(), // proof
+    founderSection(),
+    faqSection(), // action
     contactSection(),
   ],
 })

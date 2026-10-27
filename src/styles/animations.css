@@ -1,3 +1,48 @@
+/* Scroll reveal (shared/lib/reveal.ts): rise in once, then the class is removed so hovers stay snappy */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Comparison: the VavenCloud column's answers appear row by row (modules/compare) */
+.cmp-wait .cmp-v {
+  opacity: 0;
+}
+.cmp-play .cmp-v {
+  animation: cmp-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--r, 0) * 140ms + 300ms);
+}
+@keyframes cmp-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+}
+
+/* Cards lift slightly on hover */
+.card {
+  transition:
+    border-color 0.2s ease,
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -28px rgb(10 10 10 / 0.35);
+}
+form.card:hover,
+#book .card:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 /*
  * Section-specific motion lives next to each section (hero.css, stats.css, pipeline.css).
  * Visitors who ask for reduced motion get it switched off here; sliders also skip autoplay in JS.

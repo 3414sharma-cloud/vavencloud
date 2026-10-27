@@ -1,0 +1,63 @@
+/* "One team": three connectors drop from the pillars into one rail and merge into the promise */
+.one-team-drop,
+.one-team-rail {
+  position: absolute;
+  overflow: hidden;
+  background: #d4d4d4;
+}
+.dark .one-team-drop,
+.dark .one-team-rail {
+  background: #262626;
+}
+.one-team-drop {
+  top: 0;
+  height: 50%;
+  width: 1px;
+}
+.one-team-drop--center {
+  top: 50%;
+}
+.one-team-rail {
+  top: 50%;
+  left: 16.66%;
+  right: 16.67%;
+  height: 1px;
+}
+
+/* Light pulses travelling down and along the lines */
+.one-team-drop::after,
+.one-team-rail::after {
+  content: "";
+  position: absolute;
+  background: #3d69cc;
+  box-shadow: 0 0 8px #3d69cc;
+}
+.one-team-drop::after {
+  left: 0;
+  width: 1px;
+  height: 14px;
+  animation: one-team-down 2.4s ease-in infinite;
+}
+.one-team-drop--center::after {
+  animation-delay: 1.2s;
+}
+.one-team-rail::after {
+  top: 0;
+  left: 50%;
+  height: 1px;
+  width: 40px;
+  animation: one-team-in 2.4s ease-in-out infinite 0.6s;
+}
+@keyframes one-team-down {
+  from { transform: translateY(-14px); }
+  to { transform: translateY(40px); }
+}
+/* Pulse sweeps from the outer edges towards the centre */
+@keyframes one-team-in {
+  0% { transform: translateX(-30vw); opacity: 0; }
+  30% { opacity: 1; }
+  50% { transform: translateX(-20px); opacity: 0; }
+  51% { transform: translateX(30vw); opacity: 0; }
+  80% { opacity: 1; }
+  100% { transform: translateX(-20px); opacity: 0; }
+}

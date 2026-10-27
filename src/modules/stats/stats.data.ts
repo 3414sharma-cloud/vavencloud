@@ -1,4 +1,4 @@
-export type StatId = 'live' | 'uptime' | 'oncall' | 'regions' | 'businesses' | 'launches' | 'response' | 'rating'
+export type StatId = 'products' | 'years' | 'jobSuccess' | 'returning'
 
 export interface Stat {
   /** Number the counter animates to */
@@ -10,16 +10,12 @@ export interface Stat {
   note: string
 }
 
-/* Placeholder figures: replace with your verified numbers before going live. */
+/* Vavensoft figures from the content doc. TODO: confirm every one before launch. */
 export const stats: Record<StatId, Stat> = {
-  live: { value: 12000, suffix: '+', label: 'Sites and apps kept live', note: 'Built by teams, freelancers, agencies and AI tools. All of them run here.' },
-  uptime: { value: 99.99, decimals: 2, suffix: '%', label: 'Uptime SLA', note: 'Backed by service credits. We watch your product day and night.' },
-  oncall: { value: 24, suffix: '/7', label: 'Engineers on call', note: 'A real person picks up, every day of the year.' },
-  regions: { value: 15, suffix: '+', label: 'Data center locations', note: 'Host your product close to the people who use it.' },
-  businesses: { value: 2000, suffix: '+', label: 'Businesses served', note: '' },
-  launches: { value: 350, suffix: '+', label: 'Launches supported', note: '' },
-  response: { value: 15, prefix: '< ', suffix: ' min', label: 'Avg. first response', note: '' },
-  rating: { value: 4.9, decimals: 1, suffix: '/5', label: 'Customer rating', note: '' },
+  products: { value: 210, suffix: '+', label: 'Products delivered by Vavensoft', note: 'Web apps, SaaS platforms and mobile apps, built and shipped.' },
+  years: { value: 12, suffix: '+', label: 'Years running production systems', note: 'Long enough to have seen most of the ways things break.' },
+  jobSuccess: { value: 100, suffix: '%', label: 'Job Success on Upwork', note: 'A Top Rated agency, rated by the clients who paid for the work.' },
+  returning: { value: 99, suffix: '%', label: 'Of clients come back', note: 'Most of our work comes from people we have worked with before.' },
 }
 
 export interface Story {
@@ -30,31 +26,22 @@ export interface Story {
 
 /** The scroll story: one big number per step, in this order. */
 export const stories: Story[] = [
-  { id: 'live', kicker: 'Whoever built it' },
-  { id: 'uptime', kicker: 'We keep it running' },
-  { id: 'oncall', kicker: "We're on call" },
-  { id: 'regions', kicker: 'Close to your users' },
+  { id: 'products', kicker: 'Built by the team behind them' },
+  { id: 'years', kicker: 'Running production for over a decade' },
+  { id: 'jobSuccess', kicker: 'Top Rated on Upwork' },
+  { id: 'returning', kicker: 'People come back' },
 ]
 
-/** Supporting figures in the row under the story. */
-export const secondary: StatId[] = ['businesses', 'launches', 'response', 'rating']
+/**
+ * Founding client stories. Empty until real pilot clients go live: never invent a quote.
+ * Shape: { quote, name, role, company, country, result }
+ */
+export const clientStories: { quote: string; name: string; role: string; company: string; country: string; result: string }[] = []
 
-/** Technologies shown in the scrolling strip at the bottom. */
-export const technologies = [
-  'Linux',
-  'Docker',
-  'Kubernetes',
-  'cPanel',
-  'WordPress',
-  'Nginx',
-  'Cloudflare',
-  'PostgreSQL',
-  'MySQL',
-  'Redis',
-  'Node.js',
-  'React',
-  'Laravel',
-  'Python',
-  'Terraform',
-  'GitHub Actions',
+/** "Meet your engineers". TODO: add real photos, first names, specialities and real numbers. */
+export const engineers = [
+  { name: '[First name]', speciality: '[Speciality, e.g. Kubernetes and AWS]', line: '[One true, human line, e.g. “Has rescued 40+ production outages”]' },
+  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
+  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
+  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
 ]

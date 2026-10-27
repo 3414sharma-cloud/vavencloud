@@ -15,15 +15,3 @@
 .dark .problem-word.is-lit[data-strong] {
   color: #fff;
 }
-
-.problem-cta {
-  opacity: 0;
-  translate: 0 12px;
-  transition:
-    opacity 0.6s ease,
-    translate 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.problem-cta.is-lit {
-  opacity: 1;
-  translate: 0 0;
-}

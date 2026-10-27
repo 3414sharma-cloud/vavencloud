@@ -13,10 +13,10 @@ export function faqSection({ items = defaultFaqs }: { items?: Faq[] } = {}): Sec
     <div class="lg:sticky lg:top-28 lg:self-start">
       ${sectionHeading({
         eyebrow: 'FAQ',
-        title: 'Frequently asked questions',
-        description: "Still unsure? Ask us anything about your product. A real person will answer.",
+        title: 'Questions founders ask before they hand over production.',
+        description: 'Something else on your mind? Ask it in your free review. You’ll get a straight answer from an engineer.',
       })}
-      <a href="${routes.contact}" class="btn-secondary mt-8">Ask an engineer</a>
+      <a href="${routes.book}" class="btn-secondary mt-8">Book a free review</a>
     </div>
 
     <div class="border-t border-neutral-200 dark:border-neutral-800">
