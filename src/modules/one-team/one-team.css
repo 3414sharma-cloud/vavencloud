@@ -61,3 +61,50 @@
   80% { opacity: 1; }
   100% { transform: translateX(-20px); opacity: 0; }
 }
+
+/* Each connector carries its pillar's colour down into the promise */
+.one-team-drop:nth-of-type(1)::after { background: #0ea5e9; box-shadow: 0 0 8px #0ea5e9; }
+.one-team-drop:nth-of-type(2)::after { background: #10b981; box-shadow: 0 0 8px #10b981; }
+.one-team-drop:nth-of-type(3)::after { background: #8b5cf6; box-shadow: 0 0 8px #8b5cf6; }
+
+/* ---------- Pillar cards: a coloured scene of each layer at work ---------- */
+@media (min-width: 768px) {
+  .ot-scene {
+    min-height: 17.5rem;
+  }
+}
+
+/* Rows appear one after another once the card is in view (`.is-in` from one-team.section.ts) */
+.ot-row {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 0.45s ease,
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ot-card.is-in .ot-row {
+  opacity: 1;
+  transform: none;
+  transition-delay: calc(var(--k, 0) * 220ms + 250ms);
+}
+
+/* 24-hour coverage bar fills hour by hour */
+.ot-hour {
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+.ot-card.is-in .ot-hour {
+  opacity: 0.85;
+  transition-delay: calc(var(--h, 0) * 35ms + 450ms);
+}
+
+.ot-live {
+  animation: ot-blink 1.3s ease-in-out infinite;
+}
+@keyframes ot-blink {
+  50% { opacity: 0.3; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ot-live { animation: none; }
+}

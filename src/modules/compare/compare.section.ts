@@ -42,7 +42,6 @@ export function compareSection(): Section {
   <div class="container-page">
     <div class="max-w-3xl">
       ${sectionHeading({
-        eyebrow: 'Why VavenCloud',
         title: 'Others own a piece of your product. We own the outcome.',
         description: 'You have options. Here’s what each one actually takes responsibility for, in plain terms.',
       })}

@@ -26,7 +26,6 @@ export function scopeSection(): Section {
   <div class="container-page">
     <div class="max-w-3xl">
       ${sectionHeading({
-        eyebrow: 'What we own',
         title: 'Clear about what we take on. In writing.',
         description: 'Most managed hosting stops at the server and hides the limits in the small print. We publish ours.',
       })}

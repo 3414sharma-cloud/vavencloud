@@ -116,7 +116,8 @@ const engineerCard = (e: (typeof engineers)[number]) => `
     <p class="mt-3 text-sm leading-relaxed">${e.line}</p>
   </li>`
 const html = () => `
-<section id="proof" class="border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="stats-title">
+<!-- lg:pt-24: the sticky stage below is exactly one screen tall, so on short laptops its content would touch the top line -->
+<section id="proof" class="border-t border-neutral-200 lg:pt-24 dark:border-neutral-800" aria-labelledby="stats-title">
   <div id="stats-story" class="relative lg:h-[400vh]">
     <div class="relative overflow-hidden lg:sticky lg:top-18 lg:flex lg:h-[calc(100svh-4.5rem)] lg:items-center">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
@@ -125,8 +126,7 @@ const html = () => `
 
       <div class="container-page grid w-full gap-10 py-20 sm:py-24 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-center lg:gap-14 lg:py-0">
         <div>
-          <p class="eyebrow">Proof</p>
-          <h2 id="stats-title" class="section-title mt-5 lg:!text-5xl lg:!text-wrap">Built by the team behind <span class="text-neutral-400 dark:text-neutral-500">210+ products.</span></h2>
+          <h2 id="stats-title" class="section-title lg:!text-5xl lg:!text-wrap">Built by the team behind <span class="text-neutral-400 dark:text-neutral-500">210+ products.</span></h2>
           <p class="section-lead mt-4">VavenCloud is run by Vavensoft, the software company behind the numbers below.</p>
           <ol class="mt-10 hidden space-y-1 lg:block" aria-label="Numbers">
             ${stories.map((_, i) => stepButton(i)).join('')}

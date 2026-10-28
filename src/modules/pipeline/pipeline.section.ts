@@ -45,7 +45,6 @@ const html = () => `
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div class="max-w-2xl">
         ${sectionHeading({
-          eyebrow: 'How it works',
           title: 'From first call to fully covered, without a single surprise.',
           description: 'Five clear steps. You always know what happens next, and who is on it.',
         })}

@@ -12,7 +12,6 @@ export function faqSection({ items = defaultFaqs }: { items?: Faq[] } = {}): Sec
   <div class="container-page grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
     <div class="lg:sticky lg:top-28 lg:self-start">
       ${sectionHeading({
-        eyebrow: 'FAQ',
         title: 'Questions founders ask before they hand over production.',
         description: 'Something else on your mind? Ask it in your free review. You’ll get a straight answer from an engineer.',
       })}

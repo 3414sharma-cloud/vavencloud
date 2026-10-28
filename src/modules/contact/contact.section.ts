@@ -126,8 +126,7 @@ export function contactSection(): Section {
 <section id="book" class="border-t border-neutral-200 bg-neutral-50 py-24 sm:py-32 dark:border-neutral-800 dark:bg-neutral-900/40">
   <div class="container-page grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
     <div class="lg:sticky lg:top-28">
-      <p class="eyebrow">Free production review</p>
-      <h2 class="section-title mt-5">Stop running servers. Start running your business.</h2>
+      <h2 class="section-title">Stop running servers. Start running your business.</h2>
       <p class="section-lead mt-5">Book a free 45-minute production review. A senior engineer will look at how your product runs today, tell you honestly what’s at risk, and send you a written growth roadmap within 48 hours. Whether or not you work with us, you’ll leave knowing exactly where you stand.</p>
       <ul class="mt-8 space-y-3">
         ${checklist.map((c) => `<li class="flex items-center gap-3 font-medium text-neutral-950 dark:text-white"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">${icon('check', 'h-3.5 w-3.5')}</span>${c}</li>`).join('')}

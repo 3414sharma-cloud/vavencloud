@@ -11,7 +11,6 @@ export function featuresSection(): Section {
   <div class="container-page grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
     <div class="lg:sticky lg:top-28 lg:self-start">
       ${sectionHeading({
-        eyebrow: 'The platform',
         title: 'A real cloud, built for products that can’t go down.',
         description: 'When you run on VavenCloud, your product sits on infrastructure we operate ourselves, from the virtualisation layer to your dashboard. No reselling, no black boxes.',
       })}
@@ -26,8 +25,11 @@ export function featuresSection(): Section {
         ${features
           .map(
             (f) => `
-        <li class="card p-6">
-          <span class="icon-box">${icon(f.icon, 'h-5 w-5')}</span>
+        <li class="group card p-6">
+          <!-- Coloured tile at rest; turns solid black (white in dark mode) when the card is hovered -->
+          <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl ring-1 transition-all duration-300 ${f.tone ?? 'bg-neutral-50 text-neutral-700 ring-neutral-200 dark:bg-neutral-900 dark:text-neutral-300 dark:ring-neutral-800'} group-hover:bg-neutral-950 group-hover:text-white group-hover:ring-neutral-950 dark:group-hover:bg-white dark:group-hover:text-neutral-950 dark:group-hover:ring-white">
+            ${icon(f.icon, 'h-5 w-5 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6')}
+          </span>
           <h3 class="mt-5 font-semibold text-neutral-950 dark:text-white">${f.title}</h3>
           <p class="mt-2 leading-relaxed">${f.description}</p>
         </li>`,

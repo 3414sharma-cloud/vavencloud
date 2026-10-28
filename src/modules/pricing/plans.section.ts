@@ -80,7 +80,6 @@ export function plansSection(): Section {
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center">
       ${sectionHeading({
-        eyebrow: 'Plans',
         title: 'Two ways to hand over production. Both with one team, 24/7.',
         description: 'Every plan includes your engineers, your client portal and round-the-clock cover. What changes is how much of your product we take on.',
       })}
