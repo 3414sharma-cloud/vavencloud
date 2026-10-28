@@ -1,3 +1,5 @@
+import type { Look } from '@/shared/ui/portrait.ts'
+
 export type StatId = 'products' | 'years' | 'jobSuccess' | 'returning'
 
 export interface Stat {
@@ -33,15 +35,41 @@ export const stories: Story[] = [
 ]
 
 /**
- * Founding client stories. Empty until real pilot clients go live: never invent a quote.
- * Shape: { quote, name, role, company, country, result }
+ * "Meet your engineers". SAMPLE CONTENT: the names, specialities and lines are made up for layout.
+ * Replace them with the real team before launch. `photo`: real portrait path (put the file in /public),
+ * used instead of the illustrated `look` when set.
  */
-export const clientStories: { quote: string; name: string; role: string; company: string; country: string; result: string }[] = []
+export interface Engineer {
+  name: string
+  speciality: string
+  line: string
+  look: Look
+  photo?: string
+}
 
-/** "Meet your engineers". TODO: add real photos, first names, specialities and real numbers. */
-export const engineers = [
-  { name: '[First name]', speciality: '[Speciality, e.g. Kubernetes and AWS]', line: '[One true, human line, e.g. “Has rescued 40+ production outages”]' },
-  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
-  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
-  { name: '[First name]', speciality: '[Speciality]', line: '[One true, human line]' },
+export const engineers: Engineer[] = [
+  {
+    name: 'Arjun',
+    speciality: 'Kubernetes and AWS',
+    line: 'Has rescued more than 40 production outages.',
+    look: { bg: ['#bfd1f2', '#93b2e8'], skin: '#b9774f', hair: '#17120f', style: 'short', shirt: '#3157b3', glasses: true },
+  },
+  {
+    name: 'Lena',
+    speciality: 'Databases and performance',
+    line: 'Once turned a nine second query into a 40 millisecond one.',
+    look: { bg: ['#fde68a', '#fdba74'], skin: '#f3d2b3', hair: '#b4532a', style: 'bun', shirt: '#0f766e' },
+  },
+  {
+    name: 'Marcus',
+    speciality: 'Security and backups',
+    line: 'Restore-tests every client backup, every month.',
+    look: { bg: ['#ddd6fe', '#c4b5fd'], skin: '#8d5a3b', hair: '#17120f', style: 'short', shirt: '#334155', beard: true },
+  },
+  {
+    name: 'Nadia',
+    speciality: 'Deployments and monitoring',
+    line: 'Knows your alerts by name, and answers them herself.',
+    look: { bg: ['#bbf7d0', '#6ee7b7'], skin: '#e0ac86', hair: '#1c1311', style: 'long', shirt: '#be123c' },
+  },
 ]

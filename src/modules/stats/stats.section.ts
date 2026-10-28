@@ -2,9 +2,8 @@ import './stats.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
-import { site } from '@/app/site.config.ts'
-import { icon } from '@/shared/ui/icons.ts'
-import { clientStories, engineers, stats, stories, type Stat, type StatId } from './stats.data.ts'
+import { personImage } from '@/shared/ui/portrait.ts'
+import { engineers, stats, stories, type Engineer, type Stat, type StatId } from './stats.data.ts'
 
 /*
  * "By the numbers" as a scroll story.
@@ -95,29 +94,17 @@ const stepButton = (i: number) => `
     </button>
   </li>`
 
-const storyCard = (s: (typeof clientStories)[number]) => `
-  <li class="card flex flex-col p-7">
-    <p class="text-lg leading-relaxed text-neutral-950 dark:text-white">“${s.quote}”</p>
-    <p class="mt-5 text-sm"><span class="font-semibold text-neutral-950 dark:text-white">${s.name}</span>, ${s.role}, ${s.company}, ${s.country}</p>
-    <p class="mt-auto pt-5 text-sm font-medium text-emerald-700 dark:text-emerald-400">Result: ${s.result}</p>
-  </li>`
-
-const storySlot = () => `
-  <li class="flex flex-col justify-center rounded-3xl border border-dashed border-neutral-300 p-7 text-center dark:border-neutral-700">
-    <p class="text-sm font-medium text-neutral-950 dark:text-white">Founding client story</p>
-    <p class="mt-1 text-sm text-neutral-500">Shared here once our first pilot clients have been live for 90 days.</p>
-  </li>`
-
-const engineerCard = (e: (typeof engineers)[number]) => `
-  <li class="card p-6">
-    <span class="flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-neutral-400 dark:bg-neutral-800" aria-hidden="true">${icon('users', 'h-6 w-6')}</span>
+const engineerCard = (e: Engineer) => `
+  <li class="card group p-6">
+    <div class="pt-avatar pt-avatar--hover h-16 w-16"><span class="pt-ring" aria-hidden="true"></span><span class="pt-photo">${personImage({ look: e.look, photo: e.photo, name: e.name })}</span></div>
     <p class="mt-5 font-semibold text-neutral-950 dark:text-white">${e.name}</p>
     <p class="mt-0.5 text-sm text-neutral-500">${e.speciality}</p>
     <p class="mt-3 text-sm leading-relaxed">${e.line}</p>
   </li>`
+
 const html = () => `
 <!-- lg:pt-24: the sticky stage below is exactly one screen tall, so on short laptops its content would touch the top line -->
-<section id="proof" class="border-t border-neutral-200 lg:pt-24 dark:border-neutral-800" aria-labelledby="stats-title">
+<section id="proof" class="band-sky border-t border-neutral-200 lg:pt-24 dark:border-neutral-800" aria-labelledby="stats-title">
   <div id="stats-story" class="relative lg:h-[400vh]">
     <div class="relative overflow-hidden lg:sticky lg:top-18 lg:flex lg:h-[calc(100svh-4.5rem)] lg:items-center">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
@@ -144,13 +131,7 @@ const html = () => `
   </div>
 
   <div class="container-page pb-24 sm:pb-32 lg:pt-8">
-    <h3 class="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Founding client stories</h3>
-    <p class="mt-3 max-w-2xl">Until our pilot clients have their own stories, you can read real reviews of Vavensoft projects on <a href="${site.upworkUrl}" target="_blank" rel="noopener noreferrer" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">Upwork<span class="sr-only"> (opens in a new tab)</span></a>.</p>
-    <ul class="mt-8 grid gap-5 md:grid-cols-3" role="list">
-      ${clientStories.length ? clientStories.map(storyCard).join('') : storySlot().repeat(3)}
-    </ul>
-
-    <h3 class="mt-20 text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Meet your engineers</h3>
+    <h3 class="text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Meet your engineers</h3>
     <p class="mt-3 max-w-2xl">Real people with names, in your chat. These are the people who pick up when something breaks.</p>
     <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" role="list">
       ${engineers.map(engineerCard).join('')}

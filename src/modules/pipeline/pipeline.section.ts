@@ -39,7 +39,7 @@ const panel = (s: PipelineStage, i: number) => `
   </div>`
 
 const html = () => `
-<section id="how-it-works" class="relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
+<section id="how-it-works" class="band-sky relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
   <div class="pipeline-bg pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="container-page">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">

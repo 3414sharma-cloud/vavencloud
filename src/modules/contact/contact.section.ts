@@ -17,7 +17,7 @@ const label = (id: string, text: string, required = true) =>
 const help = (id: string, text: string) => `<p id="${id}-help" class="mt-1.5 text-xs text-neutral-500">${text}</p>`
 
 const choice = (name: string, value: string, required: boolean, first: boolean) => `
-  <label class="flex cursor-pointer items-center gap-2.5 rounded-2xl border border-neutral-200 px-4 py-3 text-sm text-neutral-800 transition-colors hover:border-neutral-400 has-checked:border-neutral-950 has-checked:bg-neutral-950 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:has-checked:border-white dark:has-checked:bg-white dark:has-checked:text-neutral-950">
+  <label class="flex cursor-pointer items-center gap-2.5 rounded-2xl border border-neutral-200 px-4 py-3 text-sm text-neutral-800 transition-colors hover:border-neutral-400 has-checked:border-brand-600 has-checked:bg-brand-600 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-500 dark:has-checked:text-white">
     <input type="radio" name="${name}" value="${value}" class="sr-only" ${required && first ? 'required' : ''} />
     ${value}
   </label>`
@@ -123,13 +123,13 @@ const confirmation = `
 export function contactSection(): Section {
   return {
     html: `
-<section id="book" class="border-t border-neutral-200 bg-neutral-50 py-24 sm:py-32 dark:border-neutral-800 dark:bg-neutral-900/40">
+<section id="book" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
     <div class="lg:sticky lg:top-28">
       <h2 class="section-title">Stop running servers. Start running your business.</h2>
       <p class="section-lead mt-5">Book a free 45-minute production review. A senior engineer will look at how your product runs today, tell you honestly what’s at risk, and send you a written growth roadmap within 48 hours. Whether or not you work with us, you’ll leave knowing exactly where you stand.</p>
       <ul class="mt-8 space-y-3">
-        ${checklist.map((c) => `<li class="flex items-center gap-3 font-medium text-neutral-950 dark:text-white"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-neutral-950 text-white dark:bg-white dark:text-neutral-950">${icon('check', 'h-3.5 w-3.5')}</span>${c}</li>`).join('')}
+        ${checklist.map((c) => `<li class="flex items-center gap-3 font-medium text-neutral-950 dark:text-white"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white">${icon('check', 'h-3.5 w-3.5')}</span>${c}</li>`).join('')}
       </ul>
       <p class="mt-8 text-sm">Prefer email? Write to <a href="mailto:${site.contact.email}" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">${site.contact.email}</a> and a senior engineer will reply within one business day.</p>
     </div>

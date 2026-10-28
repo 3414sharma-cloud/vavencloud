@@ -138,7 +138,7 @@ const tools = [
 export function oneTeamSection(): Section {
   return {
     html: `
-<section id="one-team" class="border-t border-neutral-200 bg-neutral-50 py-24 sm:py-32 dark:border-neutral-800 dark:bg-neutral-900/40">
+<section id="one-team" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center">
       ${sectionHeading({
@@ -155,7 +155,7 @@ export function oneTeamSection(): Section {
       <li class="ot-card card flex flex-col overflow-hidden p-2">
         <div class="ot-scene rounded-[1.25rem] p-4 ${p.tone.panel}" aria-hidden="true">${p.scene(p.tone)}</div>
         <div class="flex flex-1 flex-col px-5 pt-6 pb-5">
-          <h3 class="flex items-center gap-2.5 text-xl font-semibold tracking-tight text-neutral-950 dark:text-white"><i class="h-2 w-2 rounded-full ${p.tone.dot}" aria-hidden="true"></i>${p.title}</h3>
+          <h3 class="text-xl font-semibold tracking-tight text-neutral-950 dark:text-white">${p.title}</h3>
           <p class="mt-3 leading-relaxed">${p.text}</p>
         </div>
       </li>`,
@@ -172,7 +172,7 @@ export function oneTeamSection(): Section {
       <span class="one-team-drop one-team-drop--center" style="left:50%"></span>
     </div>
 
-    <p data-reveal class="mx-auto mt-10 max-w-4xl rounded-3xl bg-neutral-950 px-8 py-10 text-center text-2xl leading-snug font-semibold tracking-tight text-balance text-white sm:text-3xl md:mt-0 dark:bg-white dark:text-neutral-950">
+    <p data-reveal class="mx-auto mt-10 max-w-4xl surface-brand rounded-3xl px-8 py-10 text-center text-2xl leading-snug font-semibold tracking-tight text-balance sm:text-3xl md:mt-0">
       If your product is down, we treat it as our problem until it’s back, whatever the cause.
     </p>
 

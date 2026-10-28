@@ -1,15 +1,25 @@
-/* Reusable class-based building blocks (layout, buttons, headings, cards, form fields). */
+/* Reusable class-based building blocks (layout, buttons, headings, cards, form fields, section surfaces). */
 @layer components {
   .container-page {
     @apply mx-auto w-full max-w-6xl px-6;
   }
 
-  /* Black in light mode, white in dark mode */
+  /* Brand-blue button with a lit top edge and a soft coloured glow, like a real pressable control */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-neutral-950 px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-neutral-950 dark:hover:bg-neutral-200 dark:focus-visible:outline-brand-400;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-linear-to-b from-brand-500 to-brand-600 px-5 py-2.5 text-sm font-semibold text-white transition-[box-shadow,filter,transform] duration-200 hover:brightness-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 dark:focus-visible:outline-brand-400;
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.28),
+      0 1px 2px rgb(23 37 84 / 0.35),
+      0 10px 22px -10px rgb(49 87 179 / 0.75);
+  }
+  .btn-primary:hover:not(:disabled) {
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.32),
+      0 1px 2px rgb(23 37 84 / 0.35),
+      0 14px 28px -10px rgb(49 87 179 / 0.9);
   }
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-950 transition-colors hover:border-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:hover:border-white dark:focus-visible:outline-brand-400;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-950 shadow-sm transition-[border-color,color,box-shadow] duration-200 hover:border-brand-400 hover:text-brand-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:hover:border-brand-400 dark:hover:text-brand-300 dark:focus-visible:outline-brand-400;
   }
 
   /* Small label above a heading, shown as a highlighted pill with a dot */
@@ -27,11 +37,73 @@
     @apply text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-400;
   }
 
+  /* Cards sit on the page with a soft blue-tinted shadow instead of a flat outline */
   .card {
-    @apply rounded-3xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900;
+    @apply rounded-3xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-900;
+    box-shadow: var(--shadow-card);
+  }
+  .dark .card {
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.3), 0 18px 40px -24px rgb(0 0 0 / 0.6);
   }
   .icon-box {
-    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-neutral-200 text-neutral-950 dark:border-neutral-700 dark:text-white;
+    @apply inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-brand-100 bg-brand-50 text-brand-600 dark:border-brand-900 dark:bg-brand-950/60 dark:text-brand-300;
+  }
+
+  /* ---------- Section surfaces: tinted bands so the page is not one flat white ---------- */
+  /* Soft blue wash that fades to white */
+  .band-blue {
+    background-image: linear-gradient(180deg, #e9f0fc 0%, #f4f7fd 38%, #ffffff 100%);
+  }
+  .dark .band-blue {
+    background-image: linear-gradient(180deg, #141414 0%, #0e0e0e 45%, #0a0a0a 100%);
+  }
+  /* Blue wash that starts light and deepens, for sections that follow a white one */
+  .band-blue-up {
+    background-image: linear-gradient(0deg, #e9f0fc 0%, #f4f7fd 45%, #ffffff 100%);
+  }
+  .dark .band-blue-up {
+    background-image: linear-gradient(0deg, #141414 0%, #0e0e0e 55%, #0a0a0a 100%);
+  }
+  /* Cool sky tint */
+  .band-sky {
+    background-image: linear-gradient(180deg, #eaf5fc 0%, #f5fafe 45%, #ffffff 100%);
+  }
+  .dark .band-sky {
+    background-image: linear-gradient(180deg, #121212 0%, #0d0d0d 50%, #0a0a0a 100%);
+  }
+
+  /* Deep navy block with a lit corner, used wherever the page used a flat black block */
+  .surface-ink {
+    color: #c9d2e3;
+    background-color: #0d1735;
+    background-image:
+      radial-gradient(120% 140% at 0% 0%, rgb(61 105 204 / 0.5) 0%, rgb(61 105 204 / 0) 55%),
+      linear-gradient(160deg, #15275a 0%, #0d1735 60%, #0a1020 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.1),
+      0 28px 56px -30px rgb(20 40 100 / 0.7);
+  }
+  /* In dark mode the block is charcoal with only a faint brand glow in the corner */
+  .dark .surface-ink {
+    color: #d4d4d4;
+    background-color: #161616;
+    background-image:
+      radial-gradient(120% 140% at 0% 0%, rgb(61 105 204 / 0.16) 0%, rgb(61 105 204 / 0) 55%),
+      linear-gradient(160deg, #1f1f1f 0%, #151515 60%, #0e0e0e 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.08),
+      0 28px 56px -30px rgb(0 0 0 / 0.8);
+  }
+  /* Brand-blue block for the single most important statement on a section */
+  .surface-brand {
+    color: #fff;
+    background-color: #3157b3;
+    background-image:
+      radial-gradient(100% 140% at 100% 0%, rgb(147 178 232 / 0.55) 0%, rgb(147 178 232 / 0) 55%),
+      linear-gradient(150deg, #3d69cc 0%, #2a4791 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      0 28px 56px -28px rgb(49 87 179 / 0.8);
   }
 
   /* Radio-card group with a missing answer (booking form) */
@@ -40,6 +112,6 @@
   }
 
   .field {
-    @apply mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-950 transition-colors placeholder:text-neutral-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-500 dark:focus:border-brand-400 dark:focus:ring-brand-400/20;
+    @apply mt-1.5 block w-full rounded-xl border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-950 shadow-sm transition-colors placeholder:text-neutral-400 focus:border-brand-600 focus:ring-2 focus:ring-brand-600/20 focus:outline-none dark:border-neutral-700 dark:bg-neutral-950 dark:text-white dark:placeholder:text-neutral-500 dark:focus:border-brand-400 dark:focus:ring-brand-400/20;
   }
 }

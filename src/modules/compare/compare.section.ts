@@ -17,7 +17,7 @@ const rows: { label: string; values: string[] }[] = [
 
 /** Plain Yes/No get an icon; everything else stays as text. Icons are decorative, the word is kept for screen readers. */
 const cell = (v: string, ours: boolean) => {
-  if (v === 'Yes') return `<span class="inline-flex items-center gap-1.5">${icon('check', `h-4 w-4 ${ours ? 'text-brand-300 dark:text-brand-600' : 'text-neutral-950 dark:text-white'}`)}Yes</span>`
+  if (v === 'Yes') return `<span class="inline-flex items-center gap-1.5">${icon('check', `h-4 w-4 ${ours ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`)}Yes</span>`
   if (v === 'No') return `<span class="inline-flex items-center gap-1.5 text-neutral-400">${icon('minus', 'h-4 w-4')}No</span>`
   return v
 }
@@ -47,7 +47,7 @@ export function compareSection(): Section {
       })}
     </div>
 
-    <div class="mt-12 overflow-x-auto overflow-y-hidden rounded-3xl border border-neutral-200 dark:border-neutral-800" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways on small screens">
+    <div class="mt-12 overflow-x-auto overflow-y-hidden rounded-3xl border border-neutral-200 bg-white shadow-card dark:border-neutral-800 dark:bg-neutral-950" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways on small screens">
       <table class="w-full min-w-[760px] border-collapse text-left text-sm">
         <caption class="sr-only">What each kind of provider takes responsibility for</caption>
         <thead>
@@ -56,7 +56,7 @@ export function compareSection(): Section {
             ${columns
               .map((c, i) => {
                 const ours = i === columns.length - 1
-                return `<th scope="col" class="px-5 py-5 text-base font-semibold ${ours ? 'rounded-t-2xl bg-neutral-950 text-white dark:bg-white dark:text-neutral-950' : 'text-neutral-950 dark:text-white'}">${c}</th>`
+                return `<th scope="col" class="px-5 py-5 text-base font-semibold ${ours ? 'rounded-t-2xl bg-brand-600 text-white' : 'text-neutral-950 dark:text-white'}">${c}</th>`
               })
               .join('')}
           </tr>
@@ -70,7 +70,7 @@ export function compareSection(): Section {
             ${r.values
               .map((v, i) => {
                 const ours = i === columns.length - 1
-                return `<td ${ours ? `style="--r:${ri}"` : ''} class="px-5 py-4 ${ours ? `cmp-ours bg-neutral-950 font-semibold text-white dark:bg-white dark:text-neutral-950 ${ri === last ? 'rounded-b-2xl text-2xl' : ''}` : ''}">${ours ? `<span class="cmp-v inline-block">${cell(v, ours)}</span>` : cell(v, ours)}</td>`
+                return `<td ${ours ? `style="--r:${ri}"` : ''} class="px-5 py-4 ${ours ? `cmp-ours bg-brand-600 font-semibold text-white ${ri === last ? 'rounded-b-2xl text-2xl' : ''}` : ''}">${ours ? `<span class="cmp-v inline-block">${cell(v, ours)}</span>` : cell(v, ours)}</td>`
               })
               .join('')}
           </tr>`,

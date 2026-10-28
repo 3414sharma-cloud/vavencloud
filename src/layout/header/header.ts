@@ -13,10 +13,10 @@ const iconButton =
   'inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-950 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white'
 
 const announcement = () => `
-<div id="top-bar" class="relative z-[60] hidden bg-neutral-950 text-sm text-neutral-300 dark:bg-white dark:text-neutral-600">
+<div id="top-bar" class="relative z-[60] hidden bg-linear-to-r from-brand-700 via-brand-600 to-brand-700 text-sm text-brand-50">
   <div class="container-page flex min-h-10 items-center justify-center py-2 pr-12 pl-6 text-center">
-    <p>${topBar.text} <a href="${topBar.link.href}" class="font-medium whitespace-nowrap text-white underline-offset-4 hover:underline dark:text-neutral-950">${topBar.link.label} →</a></p>
-    <button type="button" data-top-bar-close class="absolute right-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-neutral-400 hover:text-white focus-visible:outline-2 focus-visible:outline-brand-400 dark:hover:text-neutral-950" aria-label="Dismiss announcement">${icon('x', 'h-4 w-4')}</button>
+    <p>${topBar.text} <a href="${topBar.link.href}" class="font-medium whitespace-nowrap text-white underline-offset-4 hover:underline">${topBar.link.label} →</a></p>
+    <button type="button" data-top-bar-close class="absolute right-3 inline-flex h-8 w-8 items-center justify-center rounded-full text-brand-200 hover:text-white focus-visible:outline-2 focus-visible:outline-white" aria-label="Dismiss announcement">${icon('x', 'h-4 w-4')}</button>
   </div>
 </div>`
 

@@ -49,26 +49,26 @@ const plans: Plan[] = [
 const planCard = (p: Plan) => `
   <article class="flex flex-col rounded-3xl p-7 sm:p-9 ${
     p.popular
-      ? 'bg-neutral-950 text-neutral-300 dark:bg-white dark:text-neutral-600'
-      : 'border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900'
+      ? 'surface-ink'
+      : 'card'
   }">
     <div class="flex items-center justify-between gap-3">
-      <h3 class="text-2xl font-semibold tracking-tight ${p.popular ? 'text-white dark:text-neutral-950' : 'text-neutral-950 dark:text-white'}">${p.name}</h3>
+      <h3 class="text-2xl font-semibold tracking-tight ${p.popular ? 'text-white' : 'text-neutral-950 dark:text-white'}">${p.name}</h3>
       ${p.popular ? '<span class="rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white">Most chosen</span>' : ''}
     </div>
     <p class="mt-2">Best for: ${p.bestFor.toLowerCase()}</p>
-    <dl class="mt-8 flex-1 divide-y ${p.popular ? 'divide-white/10 dark:divide-neutral-200' : 'divide-neutral-200 dark:divide-neutral-800'}">
+    <dl class="mt-8 flex-1 divide-y ${p.popular ? 'divide-white/10' : 'divide-neutral-200 dark:divide-neutral-800'}">
       ${p.rows
         .map(
           (r) => `
       <div class="grid gap-1 py-3.5 text-sm sm:grid-cols-[11rem_1fr] sm:gap-4">
-        <dt class="${p.popular ? 'text-neutral-400 dark:text-neutral-500' : 'text-neutral-500'}">${r.label}</dt>
-        <dd class="font-medium ${p.popular ? 'text-white dark:text-neutral-950' : 'text-neutral-950 dark:text-white'}">${r.value}</dd>
+        <dt class="${p.popular ? 'text-neutral-400' : 'text-neutral-500'}">${r.label}</dt>
+        <dd class="font-medium ${p.popular ? 'text-white' : 'text-neutral-950 dark:text-white'}">${r.value}</dd>
       </div>`,
         )
         .join('')}
     </dl>
-    <a href="${routes.book}" class="${p.popular ? 'btn-secondary !border-white dark:!border-neutral-950' : 'btn-primary'} mt-8 w-full !py-3">
+    <a href="${routes.book}" class="${p.popular ? 'btn-primary' : 'btn-secondary'} mt-8 w-full !py-3">
       Book a free review<span class="sr-only"> for the ${p.name} plan</span> ${icon('arrow-right', 'h-4 w-4')}
     </a>
   </article>`
@@ -76,7 +76,7 @@ const planCard = (p: Plan) => `
 export function plansSection(): Section {
   return {
     html: `
-<section id="plans" class="border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
+<section id="plans" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center">
       ${sectionHeading({

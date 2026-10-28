@@ -1,7 +1,40 @@
 /*
- * Design tokens. The site is black & white (Tailwind `neutral`); brand blue is an accent only
- * (eyebrows, focus rings, selected states, "popular" badges).
+ * Design tokens.
+ *
+ * The greys are NOT Tailwind's pure greys any more. `neutral-*` is remapped to a cool, navy-tinted scale,
+ * so every existing text, border and surface class picks up a hint of blue and the page stops reading as
+ * black and white. The darkest step (950) is a deep navy, not black.
+ * Brand blue carries the buttons, links and highlights; section bands, cards and dark blocks use the
+ * helpers in components.css (.band-*, .surface-ink).
  */
+
+/*
+ * Dark mode uses true neutral greys (black / charcoal), not the navy scale above. Re-pointing the same
+ * tokens under .dark means every `dark:` class, and every `neutral-*` class that is shared by both modes,
+ * turns neutral without touching the sections. Light mode keeps the blue-tinted palette.
+ */
+.dark {
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-500: #737373;
+  --color-neutral-600: #525252;
+  --color-neutral-700: #404040;
+  --color-neutral-800: #262626;
+  --color-neutral-900: #171717;
+  --color-neutral-950: #0a0a0a;
+
+  --color-ink-700: #2a2a2a;
+  --color-ink-800: #1f1f1f;
+  --color-ink-900: #141414;
+  --color-ink-950: #0a0a0a;
+
+  /* Tinted brand surfaces (icon tiles, labels) fade to charcoal instead of navy */
+  --color-brand-900: #26292f;
+  --color-brand-950: #181a1f;
+}
 
 /* `dark:` follows the .dark class on <html>, set from the user's saved preference or the OS (see shared/lib/theme.ts). */
 @custom-variant dark (&:where(.dark, .dark *));
@@ -22,13 +55,30 @@
   --color-brand-900: #233561;
   --color-brand-950: #172240;
 
-  /* Legacy navy surfaces, only used by modules that are no longer on the landing page */
+  /* Cool slate-navy greys (replace Tailwind's neutral). Text contrast on white: 500 = 4.8:1, 600 = 7:1 */
+  --color-neutral-50: #f6f8fc;
+  --color-neutral-100: #eef2f9;
+  --color-neutral-200: #e0e6f1;
+  --color-neutral-300: #c9d2e3;
+  --color-neutral-400: #8f9bb4;
+  --color-neutral-500: #68768f;
+  --color-neutral-600: #475472;
+  --color-neutral-700: #343f5a;
+  --color-neutral-800: #222b44;
+  --color-neutral-900: #141b2f;
+  --color-neutral-950: #0a1020;
+
+  /* Deep navy surfaces used by dark blocks */
   --color-ink-700: #1b2b52;
   --color-ink-800: #132142;
   --color-ink-900: #0d1731;
   --color-ink-950: #070e21;
 
-  /* Quiet, short transitions: colour changes only, no movement */
+  /* Soft, blue-tinted shadows instead of grey ones */
+  --shadow-card: 0 1px 2px rgb(10 16 32 / 0.05), 0 18px 40px -24px rgb(30 58 138 / 0.22);
+  --shadow-lift: 0 2px 4px rgb(10 16 32 / 0.05), 0 28px 56px -26px rgb(30 58 138 / 0.34);
+
+  /* Quiet, short transitions */
   --default-transition-timing-function: ease;
   --default-transition-duration: 150ms;
 }

@@ -1,0 +1,45 @@
+/* Cartoon founder: waving hand, drifting clouds, a gentle bob of the whole card */
+.fc-card {
+  animation: pt-float 5s ease-in-out infinite;
+}
+.fc-wave {
+  animation: fc-wave 2.4s ease-in-out infinite;
+}
+.fc-cloud--a {
+  animation: fc-drift 9s ease-in-out infinite alternate;
+}
+.fc-cloud--b {
+  animation: fc-drift 12s ease-in-out infinite alternate-reverse;
+}
+@keyframes fc-wave {
+  0%,
+  55%,
+  100% {
+    transform: rotate(0deg);
+  }
+  15% {
+    transform: rotate(-16deg);
+  }
+  30% {
+    transform: rotate(6deg);
+  }
+  45% {
+    transform: rotate(-12deg);
+  }
+}
+@keyframes fc-drift {
+  from {
+    transform: translateX(-8px);
+  }
+  to {
+    transform: translateX(8px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fc-card,
+  .fc-wave,
+  .fc-cloud--a,
+  .fc-cloud--b {
+    animation: none;
+  }
+}

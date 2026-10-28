@@ -37,7 +37,7 @@ export function featuresSection(): Section {
           .join('')}
       </ul>
 
-      <div data-reveal class="mt-5 rounded-3xl bg-neutral-950 p-7 text-neutral-300 sm:p-9 dark:bg-neutral-900">
+      <div data-reveal class="mt-5 surface-ink rounded-3xl p-7 sm:p-9">
         <h3 class="text-2xl font-semibold tracking-tight text-white">Your data stays where your customers are.</h3>
         <p class="mt-3 leading-relaxed">Choose the United States or Europe. Your servers, databases and backups stay in the region you pick.</p>
         <ul class="mt-6 grid gap-3 sm:grid-cols-2" role="list">

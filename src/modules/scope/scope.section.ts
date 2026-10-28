@@ -31,7 +31,7 @@ export function scopeSection(): Section {
       })}
     </div>
 
-    <div class="mt-12 overflow-x-auto overflow-y-hidden rounded-3xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950" tabindex="0" role="region" aria-label="What we own, by layer. Scrolls sideways on small screens">
+    <div class="mt-12 overflow-x-auto overflow-y-hidden rounded-3xl border border-neutral-200 bg-white shadow-card dark:border-neutral-800 dark:bg-neutral-950" tabindex="0" role="region" aria-label="What we own, by layer. Scrolls sideways on small screens">
       <table class="w-full min-w-[720px] border-collapse text-left text-sm">
         <caption class="sr-only">What each plan covers, layer by layer</caption>
         <thead>
@@ -60,7 +60,7 @@ export function scopeSection(): Section {
     <p class="mt-6 text-sm text-neutral-500">Anything beyond your monthly hours is quoted before we start. We never begin paid work without your written approval.</p>
 
     <!-- Exit promise -->
-    <div data-reveal class="mt-20 grid gap-10 rounded-3xl border border-neutral-200 bg-white p-8 sm:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center dark:border-neutral-800 dark:bg-neutral-950">
+    <div data-reveal class="mt-20 grid gap-10 rounded-3xl border border-neutral-200 bg-white p-8 shadow-card sm:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center dark:border-neutral-800 dark:bg-neutral-950">
       <div>
         <h3 class="text-4xl font-semibold tracking-tight text-neutral-950 sm:text-5xl dark:text-white">You’re never locked in. Ever.</h3>
         <p class="mt-5 text-lg leading-relaxed">

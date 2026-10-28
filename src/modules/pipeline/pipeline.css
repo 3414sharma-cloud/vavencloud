@@ -1,7 +1,7 @@
 /* "How we work" pipeline: flowing rail, travelling packet, pulsing active node, streamed console lines */
 
 .pipeline-bg {
-  background-image: radial-gradient(rgb(10 10 10 / 0.07) 1px, transparent 1px);
+  background-image: radial-gradient(rgb(10 16 32 / 0.07) 1px, transparent 1px);
   background-size: 22px 22px;
   mask-image: radial-gradient(ellipse 70% 60% at 50% 55%, #000 20%, transparent 75%);
 }
@@ -11,7 +11,7 @@
 
 /* Unfilled part of the rail: dashes flowing towards the next stage */
 .pipeline-rail {
-  background-image: repeating-linear-gradient(90deg, #d4d4d4 0 8px, transparent 8px 14px);
+  background-image: repeating-linear-gradient(90deg, #c9d2e3 0 8px, transparent 8px 14px);
   background-size: 14px 100%;
   animation: pipeline-flow 0.8s linear infinite;
 }
@@ -92,7 +92,7 @@
   height: 1em;
   width: 0.55em;
   margin-top: 0.25rem;
-  background: #a3a3a3;
+  background: #8f9bb4;
   vertical-align: middle;
   animation: pipeline-caret 1s steps(1) infinite;
 }

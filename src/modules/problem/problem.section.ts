@@ -86,16 +86,19 @@ const neverHardened = () => `
 const cards = [
   {
     scene: hostTicket,
+    panel: 'bg-rose-50 dark:bg-rose-950/30',
     title: '“The server is fine.”',
     text: 'Your site is down, and your host’s support confirms the server is healthy. Your code, your config and your deployment are outside their scope. They said so in the small print.',
   },
   {
     scene: lostKnowledge,
+    panel: 'bg-amber-50 dark:bg-amber-950/30',
     title: 'The person who knew has left.',
     text: 'The agency finished. The freelancer took a full-time job. Six months later something breaks, and nobody knows how the app is deployed, where the backups are, or whether there are any.',
   },
   {
     scene: neverHardened,
+    panel: 'bg-orange-50 dark:bg-orange-950/30',
     title: 'Built fast. Never hardened.',
     text: 'Deadlines and AI tools ship products quickly. Monitoring, backups, security and scaling were always “next sprint”. Usually they arrive the week after the first serious outage.',
   },
@@ -124,7 +127,7 @@ export function problemSection(): Section {
         .map(
           (c, i) => `
       <li class="problem-card card flex flex-col overflow-hidden p-2" style="--i:${i}">
-        <div class="rounded-[1.25rem] bg-neutral-100 p-4 dark:bg-neutral-800/50" aria-hidden="true">${c.scene()}</div>
+        <div class="rounded-[1.25rem] p-4 ${c.panel}" aria-hidden="true">${c.scene()}</div>
         <div class="flex flex-1 flex-col px-5 pt-6 pb-5">
           <h3 class="text-xl font-semibold tracking-tight text-neutral-950 dark:text-white">${c.title}</h3>
           <p class="mt-3 leading-relaxed">${c.text}</p>
@@ -134,7 +137,7 @@ export function problemSection(): Section {
         .join('')}
     </ul>
 
-    <div data-reveal class="mt-5 grid gap-6 rounded-3xl bg-neutral-950 p-7 text-neutral-300 sm:p-9 lg:grid-cols-[auto_1fr_auto] lg:items-center dark:bg-neutral-900">
+    <div data-reveal class="mt-5 grid gap-6 rounded-3xl surface-ink p-7 sm:p-9 lg:grid-cols-[auto_1fr_auto] lg:items-center">
       <p class="text-sm font-semibold tracking-wide text-white uppercase">The cost of doing nothing</p>
       <p class="leading-relaxed">${cost}</p>
       <a href="${routes.oneTeam}" class="inline-flex items-center gap-2 font-semibold whitespace-nowrap text-white underline-offset-4 hover:underline">There's another way ${icon('arrow-right', 'h-4 w-4')}</a>

@@ -1,4 +1,5 @@
 import { createPage } from '@/app/create-page.ts'
+import { clientStoriesSection } from '@/modules/client-stories/client-stories.section.ts'
 import { compareSection } from '@/modules/compare/compare.section.ts'
 import { contactSection } from '@/modules/contact/contact.section.ts'
 import { faqSection } from '@/modules/faq/faq.section.ts'
@@ -25,6 +26,7 @@ createPage({
     scopeSection(), // safety (what we own + exit promise)
     featuresSection(),
     statsSection(), // proof
+    clientStoriesSection(),
     founderSection(),
     faqSection(), // action
     contactSection(),
