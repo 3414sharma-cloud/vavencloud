@@ -2,6 +2,7 @@ import './stats.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
+import { scrollToY } from '@/shared/lib/smooth-scroll.ts'
 import { personImage } from '@/shared/ui/portrait.ts'
 import { engineers, stats, stories, type Engineer, type Stat, type StatId } from './stats.data.ts'
 
@@ -224,7 +225,7 @@ function initStats(): void {
     b.addEventListener('click', () => {
       const total = story.offsetHeight - window.innerHeight
       const top = story.getBoundingClientRect().top + window.scrollY
-      window.scrollTo({ top: top + (total * (i + 0.5)) / stories.length, behavior: reduced ? 'auto' : 'smooth' })
+      scrollToY(top + (total * (i + 0.5)) / stories.length)
     }),
   )
 

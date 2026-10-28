@@ -416,10 +416,73 @@ function initHeadline(): void {
   })
 }
 
+/**
+ * Scroll-linked entrance for the example stage. As it climbs into the screen it grows from a smaller,
+ * slightly tilted-back card to full size; as it leaves at the top it shrinks again. Scrolling back
+ * plays the same thing in reverse. The target comes from the stage's position; the displayed value
+ * eases towards it each frame, so the motion stays smooth even with a notched mouse wheel.
+ * With reduced motion the stage is left alone.
+ */
+function initStageScroll(): void {
+  if (prefersReducedMotion()) return
+  const stage = qs('.hero-stage')
+  const small = window.matchMedia('(max-width: 640px)')
+  const clamp = (n: number) => Math.min(Math.max(n, 0), 1)
+  const ease = (t: number) => 1 - Math.pow(1 - t, 3)
+
+  const target = () => {
+    const r = stage.getBoundingClientRect()
+    const vh = window.innerHeight
+    return {
+      enter: clamp((vh - r.top) / (vh * 0.7)), // 0 while it is below the screen, 1 once it sits in the upper half
+      leave: clamp((vh * 0.08 - r.top) / (vh * 0.7)), // 0 until its top passes the top of the screen
+    }
+  }
+
+  let current = target()
+  let goal = current
+  let running = false
+
+  const paint = () => {
+    const from = small.matches ? 0.9 : 0.78
+    const tilt = small.matches ? 6 : 14
+    const grow = ease(current.enter)
+    const scale = from + (1 - from) * grow - 0.12 * ease(current.leave)
+    const rotate = tilt * (1 - grow)
+    stage.style.transform = `perspective(1400px) rotateX(${rotate.toFixed(2)}deg) scale(${scale.toFixed(4)})`
+  }
+
+  const step = () => {
+    current = {
+      enter: current.enter + (goal.enter - current.enter) * 0.14,
+      leave: current.leave + (goal.leave - current.leave) * 0.14,
+    }
+    paint()
+    const settled = Math.abs(goal.enter - current.enter) < 0.001 && Math.abs(goal.leave - current.leave) < 0.001
+    if (settled) {
+      current = goal
+      paint()
+      running = false
+    } else requestAnimationFrame(step)
+  }
+
+  const onScroll = () => {
+    goal = target()
+    if (!running) {
+      running = true
+      requestAnimationFrame(step)
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('resize', onScroll)
+  paint()
+}
+
 export function heroSection(): Section {
   return {
     html: html(),
     init() {
+      initStageScroll()
       initHeadline()
       initDemo()
       initCounters()

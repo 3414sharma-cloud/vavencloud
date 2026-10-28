@@ -142,8 +142,12 @@
 @keyframes hero-stage {
   from {
     opacity: 0;
-    transform: translateY(36px) scale(0.98);
   }
+}
+/* Size and tilt come from the scroll position (initStageScroll in hero.section.ts) */
+.hero-stage {
+  transform-origin: 50% 35%;
+  will-change: transform;
 }
 
 /* Status pills: only the one for the current state is shown */
