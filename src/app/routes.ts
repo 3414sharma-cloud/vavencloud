@@ -10,7 +10,6 @@ export const routes = {
   compare: '/#compare',
   process: '/#how-it-works',
   plans: '/#plans',
-  scope: '/#what-we-own',
   platform: '/#platform',
   proof: '/#proof',
   faq: '/#faq',

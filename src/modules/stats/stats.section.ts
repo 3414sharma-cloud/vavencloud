@@ -28,11 +28,11 @@ const pad = (n: number) => String(n).padStart(2, '0')
 const growthChart = () => `
   <svg class="h-auto w-64 xl:w-56" viewBox="0 0 220 120" fill="none" aria-hidden="true">
     <defs>
-      <linearGradient id="stats-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#3d69cc" stop-opacity="0.3" /><stop offset="1" stop-color="#3d69cc" stop-opacity="0" /></linearGradient>
+      <linearGradient id="stats-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" class="stats-area-stop" stop-opacity="0.3" /><stop offset="1" class="stats-area-stop" stop-opacity="0" /></linearGradient>
     </defs>
     ${[24, 54, 84].map((y) => `<line x1="0" x2="220" y1="${y}" y2="${y}" class="stats-gridline" />`).join('')}
     <path class="stats-area" d="M0 106 C30 102 45 94 70 88 S110 72 130 64 S170 40 190 28 L208 18 V120 H0 Z" fill="url(#stats-area)" />
-    <path class="stats-line" pathLength="1" d="M0 106 C30 102 45 94 70 88 S110 72 130 64 S170 40 190 28 L208 18" stroke="#3d69cc" stroke-width="3" stroke-linecap="round" />
+    <path class="stats-line" pathLength="1" d="M0 106 C30 102 45 94 70 88 S110 72 130 64 S170 40 190 28 L208 18" stroke-width="3" stroke-linecap="round" />
     <circle class="stats-dot-halo" cx="208" cy="18" r="11" />
     <circle class="stats-dot" cx="208" cy="18" r="5" />
   </svg>`
@@ -50,14 +50,14 @@ const clock = () => `
     ${Array.from({ length: 12 }, (_, i) => `<line x1="50" y1="10" x2="50" y2="${i % 3 === 0 ? 17 : 14}" class="stats-tick" stroke-width="${i % 3 === 0 ? 3 : 2}" stroke-linecap="round" transform="rotate(${i * 30} 50 50)" />`).join('')}
     <line x1="50" y1="50" x2="50" y2="28" class="stats-hand stats-hand--hour" stroke-width="4" stroke-linecap="round" />
     <line x1="50" y1="50" x2="50" y2="18" class="stats-hand stats-hand--minute" stroke-width="2.5" stroke-linecap="round" />
-    <circle cx="50" cy="50" r="4" fill="#3d69cc" />
+    <circle cx="50" cy="50" r="4" class="stats-hub" />
   </svg>`
 
 /** Circular arrow drawing itself: clients coming back */
 const returning = () => `
   <svg class="h-40 w-40 xl:h-44 xl:w-44" viewBox="0 0 100 100" fill="none" aria-hidden="true">
     <circle cx="50" cy="50" r="38" class="stats-ring-track" stroke-width="8" />
-    <path class="stats-line" pathLength="1" d="M50 12 A38 38 0 1 1 15.7 33.6" stroke="#3d69cc" stroke-width="8" stroke-linecap="round" />
+    <path class="stats-line" pathLength="1" d="M50 12 A38 38 0 1 1 15.7 33.6" stroke-width="8" stroke-linecap="round" />
     <path class="stats-check" pathLength="1" d="M6 22 L15.7 33.6 L28 27" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
   </svg>`
 const art: Record<StatId, () => string> = { products: growthChart, years: clock, jobSuccess: uptimeRing, returning }
@@ -105,7 +105,7 @@ const engineerCard = (e: Engineer) => `
 
 const html = () => `
 <!-- lg:pt-24: the sticky stage below is exactly one screen tall, so on short laptops its content would touch the top line -->
-<section id="proof" class="band-sky border-t border-neutral-200 lg:pt-24 dark:border-neutral-800" aria-labelledby="stats-title">
+<section id="proof" class="band-mist border-t border-neutral-200 lg:pt-24 dark:border-neutral-800" aria-labelledby="stats-title">
   <div id="stats-story" class="relative lg:h-[400vh]">
     <div class="relative overflow-hidden lg:sticky lg:top-18 lg:flex lg:h-[calc(100svh-4.5rem)] lg:items-center">
       <div class="pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
@@ -114,7 +114,8 @@ const html = () => `
 
       <div class="container-page grid w-full gap-10 py-20 sm:py-24 lg:grid-cols-[20rem_minmax(0,1fr)] lg:items-center lg:gap-14 lg:py-0">
         <div>
-          <h2 id="stats-title" class="section-title lg:!text-5xl lg:!text-wrap">Built by the team behind <span class="text-neutral-400 dark:text-neutral-500">210+ products.</span></h2>
+          <!-- Narrow sticky column (20rem): a smaller size, and the phrases never split, so it reads "Built by the / team behind / 210+ products." -->
+          <h2 id="stats-title" class="section-title lg:!text-[2.5rem] lg:!text-wrap">Built by the <span class="whitespace-nowrap">team behind</span> <span class="whitespace-nowrap text-neutral-500">210+ products.</span></h2>
           <p class="section-lead mt-4">VavenCloud is run by Vavensoft, the software company behind the numbers below.</p>
           <ol class="mt-10 hidden space-y-1 lg:block" aria-label="Numbers">
             ${stories.map((_, i) => stepButton(i)).join('')}

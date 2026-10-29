@@ -73,10 +73,31 @@ const planCard = (p: Plan) => `
     </a>
   </article>`
 
+const handover = ['Documentation', 'Access', 'Runbooks', 'A full backup', 'A handover call']
+
+/** Exit promise (VavenCloud-Sample-Content.md, "Safety"): right after the plans, where the commitment is weighed */
+const exitPromise = () => `
+    <div data-reveal class="mx-auto mt-16 grid max-w-5xl gap-10 rounded-3xl border border-neutral-200 bg-white p-8 shadow-card sm:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center dark:border-neutral-800 dark:bg-neutral-950">
+      <div>
+        <h3 class="text-4xl font-semibold tracking-tight text-neutral-950 sm:text-5xl dark:text-white">You’re never locked in. Ever.</h3>
+        <p class="mt-5 text-lg leading-relaxed">
+          Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.
+          We’d rather keep you by being good than by making it hard to go.
+        </p>
+      </div>
+      <div>
+        <p class="text-sm font-medium text-neutral-500">If you leave, you get</p>
+        <ul class="mt-4 flex flex-wrap gap-2.5">
+          ${handover.map((h) => `<li class="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-950 dark:border-neutral-800 dark:text-white">${icon('check', 'h-4 w-4 text-emerald-600 dark:text-emerald-400')}${h}</li>`).join('')}
+        </ul>
+        <p class="mt-4 text-sm text-neutral-500">With whoever takes over from us.</p>
+      </div>
+    </div>`
+
 export function plansSection(): Section {
   return {
     html: `
-<section id="plans" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
+<section id="plans" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center">
       ${sectionHeading({
@@ -92,6 +113,11 @@ export function plansSection(): Section {
     <p class="mx-auto mt-8 max-w-2xl text-center text-sm text-neutral-500">
       Already on AWS, Azure or Google Cloud? Both plans are available on your own cloud account. We’ll talk it through in your review.
     </p>
+    <p class="mx-auto mt-2 max-w-2xl text-center text-sm text-neutral-500">
+      New features are quoted separately. Anything beyond your monthly hours is quoted before we start, and we never begin paid work without your written approval.
+    </p>
+
+    ${exitPromise()}
   </div>
 </section>`,
   }

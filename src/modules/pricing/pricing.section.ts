@@ -410,7 +410,7 @@ function initPricing(groups: PlanGroup[]): void {
 function initParticles(): void {
   const mobile = isMobileViewport()
   mountAntigravity(qs('#pricing-antigravity'), {
-    colors: ['#3d69cc', '#93b2e8', '#648cdb', '#bfd1f2'], // brand-500, -300, -400, -200
+    colors: ['#0f828d', '#8dd4dd', '#54b2bd', '#b8e8ee'], // brand-500, -300, -400, -200
     count: mobile ? 700 : 1400,
     magnetRadius: 10,
     ringRadius: 7,

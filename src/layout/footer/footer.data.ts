@@ -13,7 +13,6 @@ export const footerColumns: FooterColumn[] = [
     links: [
       { label: 'How it works', href: routes.process },
       { label: 'Plans', href: routes.plans },
-      { label: 'What we own', href: routes.scope },
       { label: 'Platform', href: routes.platform },
     ],
   },

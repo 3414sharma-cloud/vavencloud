@@ -9,7 +9,6 @@ import { oneTeamSection } from '@/modules/one-team/one-team.section.ts'
 import { pipelineSection } from '@/modules/pipeline/pipeline.section.ts'
 import { plansSection } from '@/modules/pricing/plans.section.ts'
 import { problemSection } from '@/modules/problem/problem.section.ts'
-import { scopeSection } from '@/modules/scope/scope.section.ts'
 import { statsSection } from '@/modules/stats/stats.section.ts'
 import { heroSection } from './sections/hero.section.ts'
 
@@ -22,8 +21,7 @@ createPage({
     oneTeamSection(), // relief
     compareSection(), // belief
     pipelineSection(),
-    plansSection(),
-    scopeSection(), // safety (what we own + exit promise)
+    plansSection(), // ends with the exit promise (safety)
     featuresSection(),
     statsSection(), // proof
     clientStoriesSection(),

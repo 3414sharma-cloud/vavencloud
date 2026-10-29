@@ -1,5 +1,5 @@
 /**
- * Light / dark theme. Light (white background, black text) is the default for everyone;
+ * Light / dark theme. Light (warm paper background, near-black text) is the default for everyone;
  * dark is opt-in via the header toggle or the footer switch ("System" follows the OS).
  * The first paint is handled by the inline boot script in vite.config.ts (same storage key).
  */
@@ -8,7 +8,8 @@ export type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'vc-theme-choice'
 const EVENT = 'vc:themechange'
-const THEME_COLORS: Record<Theme, string> = { light: '#ffffff', dark: '#0a0a0a' }
+/** Browser UI colour per theme: the page background (--color-paper, and neutral-950 in dark mode) */
+const THEME_COLORS: Record<Theme, string> = { light: '#fbfaf7', dark: '#0b0b09' }
 
 const systemDark = window.matchMedia('(prefers-color-scheme: dark)')
 

@@ -31,6 +31,13 @@ export const site = {
    */
   videoUrl: '',
 
+  /**
+   * Shows the floating Petrol / Sky switch (bottom left) for comparing the two colour palettes on the
+   * live page (see styles/theme.css). Set to false once a palette is chosen: the saved choice is then
+   * ignored and everyone sees Petrol.
+   */
+  paletteSwitcher: true,
+
   /** Customer control panel where plans are ordered ("Choose plan" buttons on the pricing page). */
   panelUrl: 'https://panel.vavencloud.com/',
 

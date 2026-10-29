@@ -6,18 +6,19 @@ import './founder.css'
  * in founder.data.ts once there is a real photo.
  */
 
-const INK = '#1e1b2e' // outline colour
+const INK = '#1a1814' // outline colour (warm near-black)
 const SKIN = '#f2c29b'
 const SKIN_SHADE = '#d9a07a'
 const HAIR = '#2f2018'
-const SHIRT = '#27324f'
-const BRAND = '#3d69cc'
+// Palette colours are CSS variables, so they are set with style="" (SVG fill/stroke attributes can't read var())
+const SHIRT = 'var(--color-brand-800)'
+const BRAND = 'var(--color-brand-500)'
 
 export function founderCartoon(): string {
   return `
   <svg viewBox="0 0 240 280" class="block h-full w-full" role="img" aria-label="Cartoon portrait of Jerry Bopara, waving, wearing a headset" preserveAspectRatio="xMidYMid slice">
     <defs>
-      <linearGradient id="fc-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cfe0fb"/><stop offset="1" stop-color="#eef4fd"/></linearGradient>
+      <linearGradient id="fc-sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:color-mix(in oklab, var(--color-brand-100), var(--color-brand-200))"/><stop offset="1" style="stop-color:var(--color-brand-50)"/></linearGradient>
     </defs>
     <rect width="240" height="280" fill="url(#fc-sky)"/>
 
@@ -28,13 +29,13 @@ export function founderCartoon(): string {
     </g>
 
     <!-- body -->
-    <path d="M44 280c0-46 32-80 76-80s76 34 76 80z" fill="${SHIRT}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M44 280c0-46 32-80 76-80s76 34 76 80z" style="fill:${SHIRT}" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
     <path d="M102 202l18 26 18-26z" fill="#fff" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>
     <path d="M102 202l-10 14 14 4zM138 202l10 14-14 4z" fill="#fff" stroke="${INK}" stroke-width="2.5" stroke-linejoin="round"/>
 
     <!-- waving arm -->
     <g class="fc-wave" style="transform-origin:186px 232px">
-      <path d="M186 234L206 178" stroke="${SHIRT}" stroke-width="26" stroke-linecap="round"/>
+      <path d="M186 234L206 178" style="stroke:${SHIRT}" stroke-width="26" stroke-linecap="round"/>
       <path d="M186 234L206 178" stroke="${INK}" stroke-width="29" stroke-linecap="round" opacity="0.0"/>
       <circle cx="209" cy="160" r="14" fill="${SKIN}" stroke="${INK}" stroke-width="3"/>
       <path d="M200 150q-2-9 2-12M208 146q0-10 4-12M216 148q2-9 6-9" stroke="${INK}" stroke-width="3" stroke-linecap="round" fill="none"/>
@@ -74,16 +75,16 @@ export function founderCartoon(): string {
     <path d="M90 108a15 15 0 0 1 10-5" stroke="#fff" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.8"/>
 
     <!-- headset -->
-    <path d="M70 118C66 56 174 56 170 118" stroke="${BRAND}" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M70 118C66 56 174 56 170 118" style="stroke:${BRAND}" stroke-width="7" fill="none" stroke-linecap="round"/>
     <path d="M70 118C66 56 174 56 170 118" stroke="${INK}" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5" transform="translate(0 -1)"/>
-    <rect x="62" y="112" width="15" height="30" rx="7" fill="${BRAND}" stroke="${INK}" stroke-width="3"/>
+    <rect x="62" y="112" width="15" height="30" rx="7" style="fill:${BRAND}" stroke="${INK}" stroke-width="3"/>
     <path d="M68 142q-2 30 28 36" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-    <circle cx="99" cy="178" r="6" fill="${BRAND}" stroke="${INK}" stroke-width="3"/>
+    <circle cx="99" cy="178" r="6" style="fill:${BRAND}" stroke="${INK}" stroke-width="3"/>
 
     <!-- desk and laptop -->
-    <rect x="0" y="252" width="240" height="28" fill="#b9c6de" stroke="${INK}" stroke-width="3"/>
-    <rect x="82" y="214" width="76" height="46" rx="6" fill="#dbe4f2" stroke="${INK}" stroke-width="3"/>
-    <path d="M110 244a8 8 0 0 1 2-15 10 10 0 0 1 19-2 9 9 0 0 1 2 17z" fill="${BRAND}"/>
-    <rect x="72" y="258" width="96" height="7" rx="3.5" fill="#c1cce0" stroke="${INK}" stroke-width="3"/>
+    <rect x="0" y="252" width="240" height="28" fill="#ccc8c0" stroke="${INK}" stroke-width="3"/>
+    <rect x="82" y="214" width="76" height="46" rx="6" fill="#e1ded7" stroke="${INK}" stroke-width="3"/>
+    <path d="M110 244a8 8 0 0 1 2-15 10 10 0 0 1 19-2 9 9 0 0 1 2 17z" style="fill:${BRAND}"/>
+    <rect x="72" y="258" width="96" height="7" rx="3.5" fill="#cfc9bf" stroke="${INK}" stroke-width="3"/>
   </svg>`
 }

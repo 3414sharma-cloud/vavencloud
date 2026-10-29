@@ -3,7 +3,7 @@
  * Same options/defaults as the React props, minus className/style (style the container instead).
  *
  * Usage:
- *   const waves = mountGradientWaves(element, { horizonColor: '#2a4791' })
+ *   const waves = mountGradientWaves(element, { horizonColor: '#03555d' })
  *   waves.update({ paused: true })
  *   waves.destroy()
  */

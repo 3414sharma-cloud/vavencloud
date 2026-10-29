@@ -12,7 +12,7 @@ const PAD = 72
 const FONT = '"Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif'
 
 /** One shared accent for every card (brand-300) so the gallery reads as a single set. */
-const ACCENT = { hex: '#93b2e8', rgb: '147 178 232' }
+const ACCENT = { hex: '#8dd4dd', rgb: '141 212 221' }
 
 const loadImage = (src: string) =>
   new Promise<HTMLImageElement>((resolve, reject) => {

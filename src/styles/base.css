@@ -24,7 +24,7 @@
     }
   }
   body {
-    @apply bg-white font-sans text-neutral-600 antialiased dark:bg-neutral-950 dark:text-neutral-400;
+    @apply bg-paper font-sans text-neutral-600 antialiased dark:bg-neutral-950 dark:text-neutral-400;
   }
   ::selection {
     @apply bg-brand-600 text-white;

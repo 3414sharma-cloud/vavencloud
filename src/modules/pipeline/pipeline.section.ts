@@ -39,7 +39,7 @@ const panel = (s: PipelineStage, i: number) => `
   </div>`
 
 const html = () => `
-<section id="how-it-works" class="band-sky relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
+<section id="how-it-works" class="band-mist relative overflow-hidden border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
   <div class="pipeline-bg pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <div class="container-page">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -86,7 +86,7 @@ const html = () => `
               <span data-pipeline-pct>0%</span>
             </div>
             <div class="mt-2 h-1 overflow-hidden rounded-full bg-neutral-800">
-              <div class="pipeline-total h-full rounded-full bg-linear-to-r from-brand-500 to-sky-400" data-pipeline-total style="width:0%"></div>
+              <div class="pipeline-total h-full rounded-full bg-linear-to-r from-brand-500 to-brand-300" data-pipeline-total style="width:0%"></div>
             </div>
           </div>
         </div>

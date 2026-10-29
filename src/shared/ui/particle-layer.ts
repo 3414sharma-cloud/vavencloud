@@ -10,9 +10,9 @@ import { isMobileViewport } from '@/shared/lib/motion.ts'
 export const particleLayer = () =>
   `<div data-particles class="pointer-events-none absolute inset-0" aria-hidden="true"></div>`
 
-/** Shared look: brand blues on ink, small and subtle so text on top stays readable. */
+/** Shared look: brand petrol tints on ink, small and subtle so text on top stays readable. */
 const brandParticles = (): ParticlesOptions => ({
-  particleColors: ['#ffffff', '#bfd1f2', '#93b2e8', '#648cdb'], // white, brand-200, -300, -400
+  particleColors: ['#ffffff', '#b8e8ee', '#8dd4dd', '#54b2bd'], // white, brand-200, -300, -400
   particleCount: isMobileViewport() ? 90 : 160,
   particleSpread: 10,
   speed: 0.08,

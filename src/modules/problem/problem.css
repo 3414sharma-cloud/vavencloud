@@ -1,16 +1,16 @@
 /* "The problem" statement: words go from faint to their final colour as they are reached */
 .problem-word {
-  color: #e0e6f1; /* neutral-200 */
+  color: var(--color-neutral-200);
   transition: color 0.35s ease;
 }
 .dark .problem-word {
-  color: #262626; /* neutral-800 */
+  color: var(--color-neutral-800);
 }
 .problem-word.is-lit {
-  color: #68768f;
+  color: var(--color-neutral-500);
 }
 .problem-word.is-lit[data-strong] {
-  color: #0a1020;
+  color: var(--color-neutral-950);
 }
 .dark .problem-word.is-lit[data-strong] {
   color: #fff;

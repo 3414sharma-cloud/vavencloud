@@ -7,9 +7,12 @@ export interface NavLink {
 
 /** Landing page sections, in page order (docs/messaging.md). */
 export const navLinks: NavLink[] = [
+  { label: 'One team', href: routes.oneTeam },
+  { label: 'Compare', href: routes.compare },
   { label: 'How it works', href: routes.process },
-  { label: 'What we own', href: routes.scope },
   { label: 'Plans', href: routes.plans },
+  { label: 'Platform', href: routes.platform },
+  { label: 'Proof', href: routes.proof },
   { label: 'FAQ', href: routes.faq },
 ]
 

@@ -4,7 +4,7 @@
  * A slowly rotating 3D cloud of glowing particles, optionally joined by constellation lines.
  *
  * Usage:
- *   const particles = mountParticles(element, { particleColors: ['#93b2e8'] })
+ *   const particles = mountParticles(element, { particleColors: ['#8dd4dd'] })
  *   particles?.update({ paused: true })
  *   particles?.destroy()
  */

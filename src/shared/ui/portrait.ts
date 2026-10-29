@@ -8,11 +8,12 @@ import './portrait.css'
 export type HairStyle = 'short' | 'long' | 'bun' | 'curly' | 'bald'
 
 export interface Look {
-  /** Background gradient, top-left to bottom-right */
+  /** Background gradient, top-left to bottom-right. Any CSS colour, including var(--color-…) to follow the palette */
   bg: [string, string]
   skin: string
   hair: string
   style: HairStyle
+  /** Any CSS colour, including var(--color-…) */
   shirt: string
   glasses?: boolean
   beard?: boolean
@@ -44,10 +45,10 @@ export function portrait(l: Look): string {
   const mouth = l.beard ? '#f5e6df' : '#7c2d12'
   return `
   <svg viewBox="0 0 96 96" class="block h-full w-full" aria-hidden="true">
-    <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${l.bg[0]}"/><stop offset="1" stop-color="${l.bg[1]}"/></linearGradient></defs>
+    <defs><linearGradient id="${id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:${l.bg[0]}"/><stop offset="1" style="stop-color:${l.bg[1]}"/></linearGradient></defs>
     <rect width="96" height="96" fill="url(#${id})"/>
     ${hairBack(l)}
-    <path d="M10 98c1-20 15-30 38-30s37 10 38 30z" fill="${l.shirt}"/>
+    <path d="M10 98c1-20 15-30 38-30s37 10 38 30z" style="fill:${l.shirt}"/>
     <rect x="41" y="55" width="14" height="18" rx="6" fill="${l.skin}"/>
     <path d="M41 63q7 6 14 0v-7H41z" fill="rgb(0 0 0 / 0.12)"/>
     <ellipse cx="48" cy="42" rx="16" ry="19" fill="${l.skin}"/>

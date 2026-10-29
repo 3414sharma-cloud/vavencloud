@@ -21,10 +21,10 @@ interface Tone {
   dot: string
 }
 
-const tones: Record<'sky' | 'emerald' | 'violet', Tone> = {
-  sky: { panel: 'bg-sky-50 dark:bg-sky-950/40', chip: 'bg-sky-100 text-sky-700 dark:bg-sky-900/60 dark:text-sky-300', dot: 'bg-sky-500' },
-  emerald: { panel: 'bg-emerald-50 dark:bg-emerald-950/40', chip: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-300', dot: 'bg-emerald-500' },
-  violet: { panel: 'bg-violet-50 dark:bg-violet-950/40', chip: 'bg-violet-100 text-violet-700 dark:bg-violet-900/60 dark:text-violet-300', dot: 'bg-violet-500' },
+const tones: Record<'brand' | 'sage' | 'clay', Tone> = {
+  brand: { panel: 'bg-brand-50 dark:bg-brand-950/40', chip: 'bg-brand-100 text-brand-700 dark:bg-brand-900/60 dark:text-brand-300', dot: 'bg-brand-500' },
+  sage: { panel: 'bg-sage-50 dark:bg-sage-950/40', chip: 'bg-sage-100 text-sage-700 dark:bg-sage-900/60 dark:text-sage-300', dot: 'bg-sage-500' },
+  clay: { panel: 'bg-clay-50 dark:bg-clay-950/40', chip: 'bg-clay-100 text-clay-700 dark:bg-clay-900/60 dark:text-clay-300', dot: 'bg-clay-500' },
 }
 
 const surface = 'rounded-2xl bg-white shadow-sm ring-1 ring-neutral-950/5 dark:bg-neutral-950 dark:ring-white/10'
@@ -54,7 +54,7 @@ const infraScene = (t: Tone) => {
   return `
   ${sceneHeader(t, 'server', 'Your infrastructure', status('All healthy'))}
   <svg viewBox="0 0 260 196" class="mt-3 h-auto w-full" fill="none">
-    <g class="stroke-sky-400" stroke-width="1.6" stroke-linecap="round">
+    <g class="stroke-brand-400" stroke-width="1.6" stroke-linecap="round">
       <path class="ot-flow" d="M130 38C130 62 64 60 64 84"/>
       <path class="ot-flow" d="M130 38C130 62 196 60 196 84"/>
       <path class="ot-flow" d="M64 136C64 150 130 144 130 158"/>
@@ -104,7 +104,7 @@ const engineersScene = (t: Tone) => {
   ${row(
     1,
     'mt-3 flex items-center gap-3',
-    `<span class="flex -space-x-2">${engineers.map((e) => face(e.look, 'h-9 w-9 ring-2 ring-emerald-50 dark:ring-emerald-950')).join('')}</span>
+    `<span class="flex -space-x-2">${engineers.map((e) => face(e.look, 'h-9 w-9 ring-2 ring-sage-50 dark:ring-sage-950')).join('')}</span>
      <p class="text-xs leading-snug text-neutral-600 dark:text-neutral-400">Real people, in your chat.<br /><span class="font-medium text-neutral-900 dark:text-white">On call today: ${on.name}</span></p>`,
   )}
   ${row(
@@ -163,19 +163,19 @@ const devScene = (t: Tone) => {
 
 const pillars: { tone: Tone; scene: (t: Tone) => string; title: string; text: string }[] = [
   {
-    tone: tones.sky,
+    tone: tones.brand,
     scene: infraScene,
     title: 'The infrastructure',
     text: 'Run your product on VavenCloud, our own cloud platform in US and European data centres, built for availability from day one. Already on AWS, Azure or Google Cloud? We can take ownership there too.',
   },
   {
-    tone: tones.emerald,
+    tone: tones.sage,
     scene: engineersScene,
     title: 'The engineers',
     text: 'Senior DevOps engineers who learn your product, set up your deployments and monitoring, and watch it 24 hours a day, 7 days a week. Real people with names, in your chat, not a ticket queue.',
   },
   {
-    tone: tones.violet,
+    tone: tones.clay,
     scene: devScene,
     title: 'The developers',
     text: 'Behind them sits Vavensoft, the software company that has delivered 210+ products. When the problem is in the code, the people who fix it are already on your team.',
@@ -200,7 +200,7 @@ const tools = [
 export function oneTeamSection(): Section {
   return {
     html: `
-<section id="one-team" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
+<section id="one-team" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center">
       ${sectionHeading({

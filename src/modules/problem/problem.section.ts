@@ -86,19 +86,19 @@ const neverHardened = () => `
 const cards = [
   {
     scene: hostTicket,
-    panel: 'bg-rose-50 dark:bg-rose-950/30',
+    panel: 'bg-clay-50 dark:bg-clay-950/30',
     title: '“The server is fine.”',
     text: 'Your site is down, and your host’s support confirms the server is healthy. Your code, your config and your deployment are outside their scope. They said so in the small print.',
   },
   {
     scene: lostKnowledge,
-    panel: 'bg-amber-50 dark:bg-amber-950/30',
+    panel: 'bg-clay-50 dark:bg-clay-950/30',
     title: 'The person who knew has left.',
     text: 'The agency finished. The freelancer took a full-time job. Six months later something breaks, and nobody knows how the app is deployed, where the backups are, or whether there are any.',
   },
   {
     scene: neverHardened,
-    panel: 'bg-orange-50 dark:bg-orange-950/30',
+    panel: 'bg-clay-50 dark:bg-clay-950/30',
     title: 'Built fast. Never hardened.',
     text: 'Deadlines and AI tools ship products quickly. Monitoring, backups, security and scaling were always “next sprint”. Usually they arrive the week after the first serious outage.',
   },

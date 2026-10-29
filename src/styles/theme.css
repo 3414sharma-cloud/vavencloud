@@ -1,84 +1,162 @@
 /*
- * Design tokens.
+ * Design tokens. Two palettes share everything except the brand colour and the dark blocks:
+ *  - Petrol (default): deep blue-green brand, near-black petrol blocks. Values in `@theme static` below.
+ *  - Sky (preview): sky blue brand, night-blue blocks. Switched on by data-palette="sky" on <html>
+ *    (shared/lib/palette.ts, from the floating switch); values at the end of this file.
  *
- * The greys are NOT Tailwind's pure greys any more. `neutral-*` is remapped to a cool, navy-tinted scale,
- * so every existing text, border and surface class picks up a hint of blue and the page stops reading as
- * black and white. The darkest step (950) is a deep navy, not black.
- * Brand blue carries the buttons, links and highlights; section bands, cards and dark blocks use the
- * helpers in components.css (.band-*, .surface-ink).
+ * Light mode sits on warm paper (`paper`, the page background) with white cards on top, so the page
+ * reads like printed material instead of a white template. `neutral-*` is NOT Tailwind's grey: it is
+ * remapped to a warm paper-to-graphite scale, so every existing text, border and surface class turns
+ * warm without touching the sections. The darkest step (950) is a warm near-black.
+ * `brand-*` carries buttons, links and highlights; `ink-*` is the dark blocks (.surface-ink in
+ * components.css). `sage-*` (muted green) and `clay-*` (muted terracotta) are the two supporting tones
+ * for scenes, icon tiles and illustrations.
+ * Status colours stay Tailwind's emerald (healthy), amber (in progress) and rose (down / error).
  */
 
 /*
- * Dark mode uses true neutral greys (black / charcoal), not the navy scale above. Re-pointing the same
- * tokens under .dark means every `dark:` class, and every `neutral-*` class that is shared by both modes,
- * turns neutral without touching the sections. Light mode keeps the blue-tinted palette.
+ * Dark mode uses near-neutral charcoal greys (a breath of warmth, no tint), not the paper scale above.
+ * Re-pointing the same tokens under .dark means every `dark:` class, and every `neutral-*` class that
+ * is shared by both modes, turns charcoal without touching the sections. Light mode keeps the warm palette.
  */
 .dark {
-  --color-neutral-50: #fafafa;
-  --color-neutral-100: #f5f5f5;
-  --color-neutral-200: #e5e5e5;
-  --color-neutral-300: #d4d4d4;
-  --color-neutral-400: #a3a3a3;
-  --color-neutral-500: #737373;
-  --color-neutral-600: #525252;
-  --color-neutral-700: #404040;
-  --color-neutral-800: #262626;
-  --color-neutral-900: #171717;
-  --color-neutral-950: #0a0a0a;
+  --color-neutral-50: #fbfaf9;
+  --color-neutral-100: #f5f4f2;
+  --color-neutral-200: #e6e5e2;
+  --color-neutral-300: #d6d4d0;
+  --color-neutral-400: #a5a39f;
+  --color-neutral-500: #84817d; /* 4.6:1 on dark cards (900), 5.1:1 on the page (950) */
+  --color-neutral-600: #54524e;
+  --color-neutral-700: #413f3c;
+  --color-neutral-800: #272624;
+  --color-neutral-900: #181715;
+  --color-neutral-950: #0b0b09;
 
-  --color-ink-700: #2a2a2a;
-  --color-ink-800: #1f1f1f;
-  --color-ink-900: #141414;
-  --color-ink-950: #0a0a0a;
+  --color-ink-700: #363533;
+  --color-ink-800: #272624;
+  --color-ink-900: #1b1a18;
+  --color-ink-950: #0b0b09;
 
-  /* Tinted brand surfaces (icon tiles, labels) fade to charcoal instead of navy */
-  --color-brand-900: #26292f;
-  --color-brand-950: #181a1f;
+  /* Tinted brand surfaces (icon tiles, labels) fade to charcoal with only a hint of petrol */
+  --color-brand-900: #132b2e;
+  --color-brand-950: #0a1b1e;
+  /* Clay panels would read brown on charcoal; keep them as quiet as the petrol and sage ones */
+  --color-clay-950: #2b1910;
 }
 
 /* `dark:` follows the .dark class on <html>, set from the user's saved preference or the OS (see shared/lib/theme.ts). */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* `static`: always emit these as CSS variables, because module stylesheets read them with var() */
+@theme static {
+  /* Page background (light mode). Cards stay white on top of it */
+  --color-paper: #fbfaf7;
+  /* Cream at the top of tinted section bands (.band-linen), fading into the paper */
+  --color-linen: #f5f1e7;
+
+  /* Brand: VavenCloud petrol. 600 #036972 carries buttons and links (6.4:1 with white), 500 #0f828d (4.6:1) */
+  --color-brand-50: #edfafb;
+  --color-brand-100: #d8f4f8;
+  --color-brand-200: #b8e8ee;
+  --color-brand-300: #8dd4dd;
+  --color-brand-400: #54b2bd;
+  --color-brand-500: #0f828d;
+  --color-brand-600: #036972;
+  --color-brand-700: #03555d;
+  --color-brand-800: #00434a;
+  --color-brand-900: #023237;
+  --color-brand-950: #011e22;
+
+  /* Warm paper-to-graphite greys (replace Tailwind's neutral). Text contrast on paper: 500 = 5.1:1, 600 = 7.4:1 */
+  --color-neutral-50: #f8f5f1;
+  --color-neutral-100: #f0ede7;
+  --color-neutral-200: #e1ded7;
+  --color-neutral-300: #ccc8c0;
+  --color-neutral-400: #9e9990;
+  --color-neutral-500: #706b62;
+  --color-neutral-600: #56524a;
+  --color-neutral-700: #413e37;
+  --color-neutral-800: #2b2923;
+  --color-neutral-900: #1a1814;
+  --color-neutral-950: #0e0d0a;
+
+  /* Near-black petrol for dark blocks, and the body text on them (11.8:1 on ink-900) */
+  --color-ink-700: #103f45;
+  --color-ink-800: #053237;
+  --color-ink-900: #021e21;
+  --color-ink-950: #041214;
+  --color-ink-text: #c6d8db;
+
+  /* Supporting tone: sage, a muted grey-green */
+  --color-sage-50: #f0f9f1;
+  --color-sage-100: #def2e1;
+  --color-sage-200: #c4e5ca;
+  --color-sage-300: #a1cea9;
+  --color-sage-400: #78ae82;
+  --color-sage-500: #548c60;
+  --color-sage-600: #3e704a;
+  --color-sage-700: #325b3b;
+  --color-sage-800: #26452d;
+  --color-sage-900: #1c3422;
+  --color-sage-950: #0f2013;
+
+  /* Supporting tone: clay, a muted terracotta (also the warm accent under the hero line) */
+  --color-clay-50: #fff3ee;
+  --color-clay-100: #ffe6db;
+  --color-clay-200: #fed1bd;
+  --color-clay-300: #f6b294;
+  --color-clay-400: #e28b63;
+  --color-clay-500: #ca6b3d;
+  --color-clay-600: #ae5528;
+  --color-clay-700: #8d4521;
+  --color-clay-800: #6e361b;
+  --color-clay-900: #532a17;
+  --color-clay-950: #35190c;
+}
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  /* Brand: VavenCloud blue #3d69cc (hue 222°) */
-  --color-brand-50: #eff4fc;
-  --color-brand-100: #dde7f8;
-  --color-brand-200: #bfd1f2;
-  --color-brand-300: #93b2e8;
-  --color-brand-400: #648cdb;
-  --color-brand-500: #3d69cc;
-  --color-brand-600: #3157b3;
-  --color-brand-700: #2a4791;
-  --color-brand-800: #263d76;
-  --color-brand-900: #233561;
-  --color-brand-950: #172240;
-
-  /* Cool slate-navy greys (replace Tailwind's neutral). Text contrast on white: 500 = 4.8:1, 600 = 7:1 */
-  --color-neutral-50: #f6f8fc;
-  --color-neutral-100: #eef2f9;
-  --color-neutral-200: #e0e6f1;
-  --color-neutral-300: #c9d2e3;
-  --color-neutral-400: #8f9bb4;
-  --color-neutral-500: #68768f;
-  --color-neutral-600: #475472;
-  --color-neutral-700: #343f5a;
-  --color-neutral-800: #222b44;
-  --color-neutral-900: #141b2f;
-  --color-neutral-950: #0a1020;
-
-  /* Deep navy surfaces used by dark blocks */
-  --color-ink-700: #1b2b52;
-  --color-ink-800: #132142;
-  --color-ink-900: #0d1731;
-  --color-ink-950: #070e21;
-
-  /* Soft, blue-tinted shadows instead of grey ones */
-  --shadow-card: 0 1px 2px rgb(10 16 32 / 0.05), 0 18px 40px -24px rgb(30 58 138 / 0.22);
-  --shadow-lift: 0 2px 4px rgb(10 16 32 / 0.05), 0 28px 56px -26px rgb(30 58 138 / 0.34);
+  /* Soft, warm shadows (paper on a desk) instead of blue-tinted ones */
+  --shadow-card: 0 1px 2px rgb(40 32 20 / 0.05), 0 18px 40px -24px rgb(48 38 24 / 0.2);
+  --shadow-lift: 0 2px 4px rgb(40 32 20 / 0.05), 0 28px 56px -26px rgb(48 38 24 / 0.3);
 
   /* Quiet, short transitions */
   --default-transition-timing-function: ease;
   --default-transition-duration: 150ms;
+}
+
+/*
+ * ---------- Sky palette (preview) ----------
+ * Only the brand scale and the dark blocks change, so comparing it with Petrol shows the main colour alone.
+ * Bright sky blue can't carry white text (#38bdf8 is 2.1:1), so 500/600 are a deeper sky for buttons and
+ * links (white on 500 = 4.7:1, on 600 = 6.3:1); 300/400 are the airy tones for glows, rings and dark mode.
+ * The selectors don't depend on their order against .dark: `:not(.dark)` and `.dark[...]` keep each
+ * value in its own mode.
+ */
+[data-palette="sky"] {
+  --color-brand-50: #f0f9fe;
+  --color-brand-100: #def3ff;
+  --color-brand-200: #bfe6fd;
+  --color-brand-300: #90d2fb;
+  --color-brand-400: #49b5f0;
+  --color-brand-500: #117ab4;
+  --color-brand-600: #0c649b;
+  --color-brand-700: #0f5180;
+  --color-brand-800: #123e63;
+  --color-brand-900: #102d49;
+  --color-brand-950: #081a2e;
+}
+/* Night-blue dark blocks (light mode only; dark mode keeps the shared charcoal from .dark) */
+[data-palette="sky"]:not(.dark) {
+  --color-ink-700: #213a53;
+  --color-ink-800: #172d43;
+  --color-ink-900: #0c1a2a;
+  --color-ink-950: #07101a;
+  --color-ink-text: #c8d9e5;
+}
+/* Dark mode: tinted brand surfaces fade to charcoal with only a hint of sky */
+.dark[data-palette="sky"] {
+  --color-brand-900: #1a2834;
+  --color-brand-950: #0f1821;
 }

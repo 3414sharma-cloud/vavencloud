@@ -22,7 +22,7 @@ const pages = Object.fromEntries(
 )
 
 /**
- * Applies the saved theme before first paint. Default is light (white background, black text);
+ * Applies the saved theme before first paint. Default is light (warm paper background, near-black text);
  * dark only when the visitor picks it (or picks "System" and their OS is dark).
  * Keep the storage key in sync with src/shared/lib/theme.ts.
  */
@@ -33,7 +33,7 @@ function sharedHead(): Plugin {
   const tags: HtmlTagDescriptor[] = [
     { tag: 'script', children: themeBootScript, injectTo: 'head-prepend' },
     { tag: 'meta', attrs: { name: 'viewport', content: 'width=device-width, initial-scale=1.0' } },
-    { tag: 'meta', attrs: { name: 'theme-color', content: '#ffffff' } },
+    { tag: 'meta', attrs: { name: 'theme-color', content: '#fbfaf7' } },
     { tag: 'link', attrs: { rel: 'icon', type: 'image/png', href: '/favicon.png' } },
     { tag: 'link', attrs: { rel: 'apple-touch-icon', href: '/favicon.png' } },
     { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },

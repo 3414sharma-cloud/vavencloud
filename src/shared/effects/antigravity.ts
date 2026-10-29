@@ -4,7 +4,7 @@
  * A field of particles that gathers into a rippling ring around the cursor.
  *
  * Usage:
- *   const field = mountAntigravity(element, { colors: ['#3d69cc', '#93b2e8'] })
+ *   const field = mountAntigravity(element, { colors: ['#0f828d', '#8dd4dd'] })
  *   field?.update({ count: 800 })
  *   field?.destroy()
  */

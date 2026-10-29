@@ -7,7 +7,7 @@ import { brandLink } from '@/shared/ui/logo.ts'
 import { navLinks, topBar } from './nav.data.ts'
 
 const desktopLink =
-  'rounded-full px-3.5 py-2 text-sm font-medium text-neutral-600 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
+  'rounded-full px-2.5 py-2 text-sm font-medium whitespace-nowrap text-neutral-600 xl:px-3.5 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
 
 const iconButton =
   'inline-flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 text-neutral-700 transition-colors hover:border-neutral-950 hover:text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-300 dark:hover:border-white dark:hover:text-white'
@@ -23,11 +23,11 @@ const announcement = () => `
 const html = () => `
 ${announcement()}
 <!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
-<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-white/85 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(10_10_10/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/80 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/85 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(40_32_20/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/80 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
   <nav class="container-page flex h-18 items-center justify-between gap-6" aria-label="Main">
     ${brandLink()}
 
-    <ul class="hidden items-center gap-1 lg:flex">
+    <ul class="hidden items-center gap-0.5 lg:flex xl:gap-1">
       ${navLinks.map((l) => `<li><a href="${l.href}" class="${desktopLink}" data-nav-link>${l.label}</a></li>`).join('')}
     </ul>
 
@@ -36,7 +36,7 @@ ${announcement()}
         <span class="dark:hidden">${icon('moon', 'h-4 w-4')}</span>
         <span class="hidden dark:block">${icon('sun', 'h-4 w-4')}</span>
       </button>
-      <a href="${routes.book}" class="btn-primary hidden sm:inline-flex">Book a free review</a>
+      <a href="${routes.book}" class="btn-primary hidden whitespace-nowrap sm:inline-flex">Book a free review</a>
       <button id="menu-toggle" type="button" class="${iconButton} lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
         <span data-icon-open>${icon('menu', 'h-4 w-4')}</span>
         <span data-icon-close class="hidden">${icon('x', 'h-4 w-4')}</span>
@@ -44,7 +44,7 @@ ${announcement()}
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-white/60 lg:hidden dark:border-white/10 dark:bg-neutral-950/60">
+  <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-paper/60 lg:hidden dark:border-white/10 dark:bg-neutral-950/60">
     <ul class="container-page flex flex-col py-3">
       ${navLinks
         .map(

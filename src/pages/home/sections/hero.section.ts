@@ -40,7 +40,7 @@ const checkout = () => `
         <div class="flex items-center justify-between gap-4"><span class="text-neutral-600 dark:text-neutral-400">Extra seats × 3</span><span class="font-medium text-neutral-950 tabular-nums dark:text-white">$90</span></div>
         <div class="hs-skel h-2 w-2/3"></div>
       </div>
-      <div class="hs-pay mt-5 rounded-full bg-linear-to-b from-brand-500 to-brand-600 py-2.5 text-center text-sm font-medium text-white shadow-[0_8px_18px_-8px_rgba(49,87,179,0.7)]">Pay $330</div>
+      <div class="hs-pay mt-5 rounded-full bg-linear-to-b from-brand-500 to-brand-600 py-2.5 text-center text-sm font-medium text-white">Pay $330</div>
     </div>
 
     <div class="border-t border-neutral-200 px-5 py-4 dark:border-neutral-800">
@@ -126,7 +126,7 @@ const stage = () => `
   </div>
   <div class="hs hero-stage mx-auto mt-5 max-w-5xl rounded-[2rem] bg-neutral-100 p-2 sm:p-3 dark:bg-neutral-900" data-state="calm" role="group" aria-label="Interactive example: an outage, fixed with one call">
     <p class="sr-only" role="status" aria-live="polite" data-sr></p>
-    <div class="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-[0_1px_2px_rgb(10_16_32/0.05),0_30px_60px_-28px_rgb(30_58_138/0.4)] dark:border-neutral-800 dark:bg-neutral-950">
+    <div class="overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-[0_1px_2px_rgb(40_32_20/0.05),0_30px_60px_-28px_rgb(48_38_24/0.35)] dark:border-neutral-800 dark:bg-neutral-950">
       <div class="flex items-center justify-between gap-4 border-b border-neutral-200 px-5 py-3 dark:border-neutral-800">
         <p class="flex items-center gap-2 text-sm font-semibold text-neutral-950 dark:text-white" aria-hidden="true">
           <span class="inline-flex h-6 w-6 items-center justify-center rounded-lg bg-linear-to-b from-brand-500 to-brand-700 text-white">${icon('cloud', 'h-3.5 w-3.5')}</span>
@@ -149,7 +149,7 @@ const hl = hero.headline
 const headlineText = `${hl.before} ${hl.broken} ${hl.between} ${hl.call}${hl.after} ${hl.highlight}`
 
 const html = () => `
-<section id="top" class="hero band-blue relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
+<section id="top" class="hero band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800">
   <div class="container-page pt-36 pb-16 sm:pt-44 sm:pb-20">
     <div class="text-center">
       <p class="hero-in text-sm font-medium text-neutral-500" style="--i:0">${hero.eyebrow}</p>

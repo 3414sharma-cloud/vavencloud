@@ -123,7 +123,7 @@ const confirmation = `
 export function contactSection(): Section {
   return {
     html: `
-<section id="book" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
+<section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
     <div class="lg:sticky lg:top-28">
       <h2 class="section-title">Stop running servers. Start running your business.</h2>

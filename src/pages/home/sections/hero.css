@@ -51,7 +51,7 @@
   align-items: center;
   gap: 0.14em;
   padding: 0 0.26em 0.03em 0.2em;
-  border: 0.045em solid rgb(10 16 32 / 0.14);
+  border: 0.045em solid color-mix(in srgb, var(--color-neutral-950) 14%, transparent);
   border-radius: 9999px;
   transition:
     background-color 0.45s ease,
@@ -63,15 +63,13 @@
 }
 .hl[data-phase="called"] .hl-call,
 .hl[data-phase="fixed"] .hl-call {
-  background: linear-gradient(180deg, #3d69cc, #3157b3);
-  border-color: #3157b3;
+  background: linear-gradient(180deg, var(--color-brand-500), var(--color-brand-600));
+  border-color: var(--color-brand-600);
   color: #fff;
 }
 .dark .hl[data-phase="called"] .hl-call,
 .dark .hl[data-phase="fixed"] .hl-call {
-  background: linear-gradient(180deg, #3d69cc, #3157b3);
-  border-color: #648cdb;
-  color: #fff;
+  border-color: var(--color-brand-400);
 }
 .hl-phone {
   display: inline-flex;
@@ -84,7 +82,10 @@
   75% { transform: rotate(18deg); }
 }
 
-/* Hand-drawn underline under "We fix the rest." is drawn once everything is fixed */
+/* Hand-drawn underline under "We fix the rest." is drawn once everything is fixed, in the warm clay accent */
+.hero-underline {
+  color: var(--color-clay-400);
+}
 .hero-underline path {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
@@ -194,6 +195,7 @@
   border-color: color-mix(in srgb, var(--hs-tone) 55%, transparent);
 }
 .hs-pay {
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--color-brand-600) 70%, transparent);
   transition: opacity 0.4s ease;
 }
 .hs[data-state="down"] .hs-pay,
@@ -203,10 +205,10 @@
 }
 .hs-skel {
   border-radius: 9999px;
-  background: #e0e6f1;
+  background: var(--color-neutral-200);
 }
 .dark .hs-skel {
-  background: #262626;
+  background: var(--color-neutral-800);
 }
 .hs-toast {
   position: absolute;
@@ -444,7 +446,7 @@
   height: 0.4rem;
   width: 0.4rem;
   border-radius: 9999px;
-  background: #8f9bb4;
+  background: var(--color-neutral-400);
   animation: hs-bounce 0.9s ease-in-out infinite;
 }
 .hs-typing i:nth-child(2) { animation-delay: 0.15s; }

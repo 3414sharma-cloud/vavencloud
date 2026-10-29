@@ -52,24 +52,24 @@ export const engineers: Engineer[] = [
     name: 'Arjun',
     speciality: 'Kubernetes and AWS',
     line: 'Has rescued more than 40 production outages.',
-    look: { bg: ['#bfd1f2', '#93b2e8'], skin: '#b9774f', hair: '#17120f', style: 'short', shirt: '#3157b3', glasses: true },
+    look: { bg: ['var(--color-brand-100)', 'var(--color-brand-300)'], skin: '#b9774f', hair: '#17120f', style: 'short', shirt: 'var(--color-brand-800)', glasses: true },
   },
   {
     name: 'Lena',
     speciality: 'Databases and performance',
     line: 'Once turned a nine second query into a 40 millisecond one.',
-    look: { bg: ['#fde68a', '#fdba74'], skin: '#f3d2b3', hair: '#b4532a', style: 'bun', shirt: '#0f766e' },
+    look: { bg: ['#f6ead2', '#e9cf9c'], skin: '#f3d2b3', hair: '#b4532a', style: 'bun', shirt: '#325b3b' },
   },
   {
     name: 'Marcus',
     speciality: 'Security and backups',
     line: 'Restore-tests every client backup, every month.',
-    look: { bg: ['#ddd6fe', '#c4b5fd'], skin: '#8d5a3b', hair: '#17120f', style: 'short', shirt: '#334155', beard: true },
+    look: { bg: ['#def2e1', '#a1cea9'], skin: '#8d5a3b', hair: '#17120f', style: 'short', shirt: '#2b2923', beard: true },
   },
   {
     name: 'Nadia',
     speciality: 'Deployments and monitoring',
     line: 'Knows your alerts by name, and answers them herself.',
-    look: { bg: ['#bbf7d0', '#6ee7b7'], skin: '#e0ac86', hair: '#1c1311', style: 'long', shirt: '#be123c' },
+    look: { bg: ['#ffe6db', '#f6b294'], skin: '#e0ac86', hair: '#1c1311', style: 'long', shirt: 'var(--color-brand-700)' },
   },
 ]

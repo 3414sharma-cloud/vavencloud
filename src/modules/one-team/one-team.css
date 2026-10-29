@@ -3,11 +3,11 @@
 .one-team-rail {
   position: absolute;
   overflow: hidden;
-  background: #c9d2e3;
+  background: var(--color-neutral-300);
 }
 .dark .one-team-drop,
 .dark .one-team-rail {
-  background: #262626;
+  background: var(--color-neutral-800);
 }
 .one-team-drop {
   top: 0;
@@ -29,8 +29,8 @@
 .one-team-rail::after {
   content: "";
   position: absolute;
-  background: #3d69cc;
-  box-shadow: 0 0 8px #3d69cc;
+  background: var(--color-brand-500);
+  box-shadow: 0 0 8px var(--color-brand-500);
 }
 .one-team-drop::after {
   left: 0;
@@ -63,9 +63,9 @@
 }
 
 /* Each connector carries its pillar's colour down into the promise */
-.one-team-drop:nth-of-type(1)::after { background: #0ea5e9; box-shadow: 0 0 8px #0ea5e9; }
-.one-team-drop:nth-of-type(2)::after { background: #10b981; box-shadow: 0 0 8px #10b981; }
-.one-team-drop:nth-of-type(3)::after { background: #8b5cf6; box-shadow: 0 0 8px #8b5cf6; }
+.one-team-drop:nth-of-type(1)::after { background: var(--color-brand-400); box-shadow: 0 0 8px var(--color-brand-400); }
+.one-team-drop:nth-of-type(2)::after { background: var(--color-sage-400); box-shadow: 0 0 8px var(--color-sage-400); }
+.one-team-drop:nth-of-type(3)::after { background: var(--color-clay-400); box-shadow: 0 0 8px var(--color-clay-400); }
 
 /* ---------- Pillar cards: a coloured scene of each layer at work ---------- */
 @media (min-width: 768px) {

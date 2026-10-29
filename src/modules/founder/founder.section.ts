@@ -9,7 +9,7 @@ import { founder } from './founder.data.ts'
 export function founderSection(): Section {
   return {
     html: `
-<section id="founder" class="band-blue border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="founder-title">
+<section id="founder" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="founder-title">
   <div class="container-page">
     <figure class="mx-auto grid max-w-5xl gap-10 lg:grid-cols-[16rem_1fr] lg:gap-16">
       <div>
