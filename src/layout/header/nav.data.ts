@@ -5,15 +5,12 @@ export interface NavLink {
   href: string
 }
 
-/** Landing page sections, in page order (docs/messaging.md). */
+/** Core decision paths. The booking button remains the primary action. */
 export const navLinks: NavLink[] = [
-  { label: 'One team', href: routes.oneTeam },
-  { label: 'Compare', href: routes.compare },
+  { label: 'How we help', href: routes.oneTeam },
   { label: 'How it works', href: routes.process },
   { label: 'Plans', href: routes.plans },
-  { label: 'Platform', href: routes.platform },
-  { label: 'Proof', href: routes.proof },
-  { label: 'FAQ', href: routes.faq },
+  { label: 'About', href: routes.about },
 ]
 
 /** Thin bar above the navigation. Change `id` when the message changes, so dismissed bars show again. */

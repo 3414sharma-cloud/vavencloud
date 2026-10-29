@@ -1,4 +1,4 @@
-/* "The problem" statement: words go from faint to their final colour as they are reached */
+/* The problem statement lights word by word as it enters the viewport. */
 .problem-word {
   color: var(--color-neutral-200);
   transition: color 0.35s ease;
@@ -16,57 +16,462 @@
   color: #fff;
 }
 
-/* ---------- Story cards: each opens with the moment it describes ---------- */
-/* Fixed height so the three scenes line up and the titles start at the same place */
-@media (min-width: 768px) {
-  .pc-scene {
-    min-height: 16rem;
+/* Scroll narrative */
+.outage-story {
+  display: grid;
+  gap: 2rem;
+}
+.outage-steps {
+  position: relative;
+}
+.outage-steps::before {
+  position: absolute;
+  top: 1.25rem;
+  bottom: 1.25rem;
+  left: 1.05rem;
+  width: 1px;
+  content: '';
+  background: linear-gradient(var(--color-rose-300), var(--color-neutral-200) 70%, transparent);
+}
+.dark .outage-steps::before {
+  background: linear-gradient(var(--color-rose-900), var(--color-neutral-800) 70%, transparent);
+}
+.outage-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.15rem minmax(0, 1fr);
+  gap: 1rem;
+  min-height: min(31rem, 68vh);
+  opacity: 0.5;
+  transition: opacity 0.35s ease;
+}
+.outage-step:last-child {
+  min-height: auto;
+}
+.outage-step.is-active,
+.outage-step.is-visible {
+  opacity: 1;
+}
+.outage-step-marker {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+.outage-step-marker span {
+  display: inline-flex;
+  width: 2.15rem;
+  height: 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 9999px;
+  background: var(--color-paper);
+  color: var(--color-neutral-400);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  transition:
+    border-color 0.35s ease,
+    background-color 0.35s ease,
+    color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+.dark .outage-step-marker span {
+  border-color: var(--color-neutral-700);
+  background: var(--color-neutral-950);
+}
+.outage-step.is-active .outage-step-marker span {
+  border-color: var(--color-rose-500);
+  background: var(--color-rose-500);
+  color: #fff;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-rose-500) 12%, transparent);
+}
+.outage-step-card {
+  padding: 0.25rem 0 5rem;
+  transform: translateY(12px);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.outage-step.is-active .outage-step-card,
+.outage-step.is-visible .outage-step-card {
+  transform: none;
+}
+.outage-deferred {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.outage-deferred li {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0.7rem;
+  padding: 0.65rem 0.75rem;
+  color: var(--color-neutral-600);
+  font-size: 0.76rem;
+}
+.dark .outage-deferred li {
+  border-color: var(--color-neutral-800);
+  color: var(--color-neutral-400);
+}
+.outage-deferred li > span {
+  width: 0.85rem;
+  height: 0.85rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0.2rem;
+}
+.dark .outage-deferred li > span {
+  border-color: var(--color-neutral-700);
+}
+.outage-deferred b {
+  margin-left: auto;
+  border-radius: 9999px;
+  background: var(--color-amber-100);
+  padding: 0.2rem 0.5rem;
+  color: var(--color-amber-800);
+  font-size: 0.58rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dark .outage-deferred b {
+  background: var(--color-amber-950);
+  color: var(--color-amber-300);
+}
+
+/* Sticky terminal */
+.outage-console-wrap {
+  order: -1;
+}
+.outage-console {
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1.25rem;
+  background: #090b0b;
+  color: #d4d4d4;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    0 32px 70px -30px rgb(0 0 0 / 0.72),
+    0 0 0 1px rgb(0 0 0 / 0.18);
+}
+.terminal-titlebar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  padding: 0 1rem;
+  background: #121515;
+  color: #737b78;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.62rem;
+}
+.terminal-lights {
+  display: flex;
+  gap: 0.35rem;
+}
+.terminal-lights i {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 9999px;
+  background: #343938;
+}
+.terminal-lights i:first-child {
+  background: #f05a5a;
+}
+.terminal-live {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 0.35rem;
+  color: #c77575;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.terminal-live i {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: #ef4444;
+  box-shadow: 0 0 0.7rem rgb(239 68 68 / 0.9);
+  animation: terminal-blink 1.4s ease-in-out infinite;
+}
+.terminal-screen {
+  min-height: 30rem;
+  padding: 1.25rem;
+  background-image:
+    linear-gradient(rgb(82 255 169 / 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(82 255 169 / 0.018) 1px, transparent 1px),
+    radial-gradient(circle at 80% 0%, rgb(36 121 92 / 0.12), transparent 45%);
+  background-size: 100% 24px, 24px 100%, 100% 100%;
+}
+.terminal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.08);
+  padding-bottom: 1rem;
+}
+.terminal-kicker,
+.terminal-time,
+.terminal-detail,
+.terminal-owner,
+.terminal-clock {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+.terminal-kicker {
+  color: #6b7571;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+}
+.terminal-code {
+  margin-top: 0.25rem;
+  color: #f5f5f5;
+  font-size: 1.1rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.terminal-clock {
+  text-align: right;
+}
+.terminal-clock span {
+  display: block;
+  color: #59615f;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+}
+.terminal-clock strong {
+  display: block;
+  margin-top: 0.2rem;
+  color: #e8ecea;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.terminal-log {
+  margin-top: 1rem;
+}
+.terminal-row {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  gap: 0.25rem 0.75rem;
+  border-bottom: 1px solid rgb(255 255 255 / 0.055);
+  padding: 0.8rem 0;
+  opacity: 0.14;
+  transform: translateY(4px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.45s ease,
+    background-color 0.35s ease;
+}
+.terminal-time {
+  grid-row: span 2;
+  color: #59615f;
+  font-size: 0.64rem;
+}
+.terminal-signal {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #d9dfdc;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.67rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  word-break: break-word;
+}
+.terminal-signal i {
+  width: 0.4rem;
+  height: 0.4rem;
+  flex: 0 0 auto;
+  border-radius: 9999px;
+  background: #787f7c;
+}
+.terminal-detail {
+  color: #66706c;
+  font-size: 0.56rem;
+  line-height: 1.5;
+}
+.terminal-row[data-tone='danger'] .terminal-signal {
+  color: #fb8c8c;
+}
+.terminal-row[data-tone='danger'] .terminal-signal i {
+  background: #ef4444;
+  box-shadow: 0 0 0.6rem rgb(239 68 68 / 0.5);
+}
+.terminal-row[data-tone='warning'] .terminal-signal {
+  color: #e7bd69;
+}
+.terminal-row[data-tone='warning'] .terminal-signal i {
+  background: #f59e0b;
+}
+.terminal-row[data-tone='success'] .terminal-signal {
+  color: #70d6ac;
+}
+.terminal-row[data-tone='success'] .terminal-signal i {
+  background: #34d399;
+}
+
+.outage-console[data-stage='0'] .terminal-row[data-row='0'],
+.outage-console[data-stage='1'] .terminal-row:nth-child(-n + 2),
+.outage-console[data-stage='2'] .terminal-row:nth-child(-n + 3),
+.outage-console[data-stage='3'] .terminal-row:nth-child(-n + 4),
+.outage-console[data-stage='4'] .terminal-row {
+  opacity: 1;
+  transform: none;
+}
+
+.terminal-owner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+  border: 1px solid rgb(239 68 68 / 0.22);
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+  background: rgb(239 68 68 / 0.055);
+  color: #6e7673;
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+}
+.terminal-owner strong {
+  color: #fb8c8c;
+  font-size: 0.67rem;
+  font-weight: 650;
+}
+.terminal-cursor {
+  width: 0.4rem;
+  height: 0.8rem;
+  margin-left: auto;
+  background: #fb8c8c;
+  animation: terminal-cursor 1s step-end infinite;
+}
+.outage-console[data-stage='4'] .terminal-owner {
+  border-color: rgb(239 68 68 / 0.55);
+  background: rgb(239 68 68 / 0.12);
+}
+.outage-console[data-stage='4'] .terminal-owner strong {
+  color: #fff;
+}
+.terminal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 0.07);
+  padding: 0.65rem 1rem;
+  background: #101313;
+  color: #59615f;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.56rem;
+}
+.terminal-footer span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #70d6ac;
+}
+.terminal-footer i {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: #34d399;
+}
+
+.outage-verdict {
+  display: grid;
+  gap: 0.75rem 2rem;
+  margin-top: 2rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  background: color-mix(in oklab, var(--color-clay-50) 60%, transparent);
+  color: var(--color-neutral-600);
+}
+.dark .outage-verdict {
+  border-color: var(--color-neutral-800);
+  background: color-mix(in oklab, var(--color-clay-950) 18%, transparent);
+  color: var(--color-neutral-400);
+}
+.outage-verdict-label {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .outage-verdict-label {
+  color: #fff;
+}
+
+@media (min-width: 640px) {
+  .terminal-screen {
+    padding: 1.75rem;
+  }
+  .terminal-row {
+    grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+    align-items: center;
+  }
+  .terminal-time {
+    grid-row: auto;
+  }
+  .terminal-detail {
+    text-align: right;
+  }
+  .outage-deferred {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .outage-verdict {
+    grid-template-columns: minmax(14rem, 0.4fr) 1fr;
+    align-items: center;
+    padding: 1.75rem 2rem;
   }
 }
 
-/* Rows appear one after another once the card is in view (`.is-in` is added by problem.section.ts) */
-.pc-row {
-  opacity: 0;
-  transform: translateY(8px);
-  transition:
-    opacity 0.45s ease,
-    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.problem-card.is-in .pc-row {
-  opacity: 1;
-  transform: none;
-  transition-delay: calc(var(--k, 0) * 220ms + 250ms);
+@media (min-width: 900px) {
+  .outage-story {
+    grid-template-columns: minmax(0, 0.82fr) minmax(25rem, 1.18fr);
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    align-items: start;
+  }
+  .outage-console-wrap {
+    position: sticky;
+    top: 7.5rem;
+    order: initial;
+  }
+  .outage-step {
+    min-height: 65vh;
+  }
+  .outage-step:last-child {
+    min-height: 32rem;
+  }
+  .outage-step-card {
+    padding-bottom: 8rem;
+  }
 }
 
-/* The "still down" dot keeps blinking */
-.pc-pulse {
-  animation: pc-blink 1.1s ease-in-out infinite;
+@keyframes terminal-blink {
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0.2rem rgb(239 68 68 / 0.3);
+  }
 }
-@keyframes pc-blink {
-  50% { opacity: 0.25; }
-}
-
-/* "No reply": typing dots that start and stop, like someone who never answers */
-.pc-typing {
-  display: inline-flex;
-  gap: 3px;
-}
-.pc-typing i {
-  height: 4px;
-  width: 4px;
-  border-radius: 9999px;
-  background: currentColor;
-  animation: pc-bounce 1s ease-in-out infinite;
-}
-.pc-typing i:nth-child(2) { animation-delay: 0.15s; }
-.pc-typing i:nth-child(3) { animation-delay: 0.3s; }
-@keyframes pc-bounce {
-  50% { transform: translateY(-3px); opacity: 0.4; }
+@keyframes terminal-cursor {
+  50% {
+    opacity: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .pc-pulse,
-  .pc-typing i {
+  .outage-step,
+  .outage-step-card,
+  .terminal-row {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .terminal-live i,
+  .terminal-cursor {
     animation: none;
   }
 }

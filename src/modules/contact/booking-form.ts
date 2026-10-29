@@ -9,15 +9,19 @@ const ERROR = 'text-rose-600 dark:text-rose-400'
 function validate(step: HTMLElement): boolean {
   const fields = qsa<Field>('input, select, textarea', step).filter((f) => f.required)
   let first: Field | undefined
+  let firstFocus: HTMLElement | undefined
   fields.forEach((f) => {
     const invalid = !f.checkValidity()
     f.setAttribute('aria-invalid', String(invalid))
-    // Radio groups show the error on their option cards
-    const target = f.type === 'radio' ? f.closest('fieldset') : f
+    // Radio groups and custom native-backed controls show errors on their visible wrapper.
+    const target = f.type === 'radio' ? f.closest('fieldset') : f.closest<HTMLElement>('[data-custom-select]') ?? f
     target?.classList.toggle(f.type === 'radio' ? 'is-invalid' : '!border-rose-400', invalid)
-    if (invalid && !first) first = f
+    if (invalid && !first) {
+      first = f
+      firstFocus = f.closest<HTMLElement>('[data-custom-select]')?.querySelector<HTMLElement>('[data-role-trigger]') ?? f
+    }
   })
-  first?.focus()
+  firstFocus?.focus()
   return !first
 }
 
@@ -50,12 +54,70 @@ function toPayload(data: FormData): ContactFormInput {
  * Two-step booking form: step 1 (contact) → step 2 (about the product) → confirmation.
  * Sends through the existing contact endpoint with reCAPTCHA v3.
  */
+function initRoleSelect(form: HTMLFormElement): void {
+  const select = qs<HTMLSelectElement>('#bk-role', form)
+  const root = qs<HTMLElement>('[data-custom-select]', form)
+  const trigger = qs<HTMLButtonElement>('[data-role-trigger]', root)
+  const menu = qs<HTMLElement>('[data-role-options]', root)
+  const label = qs<HTMLElement>('[data-role-label]', root)
+  const chevron = qs<HTMLElement>('[data-role-chevron]', root)
+  const options = qsa<HTMLButtonElement>('[data-role-option]', root)
+
+  const setOpen = (open: boolean, focusOption = false) => {
+    menu.hidden = !open
+    trigger.setAttribute('aria-expanded', String(open))
+    chevron.classList.toggle('rotate-180', open)
+    if (open && focusOption) (options.find((option) => option.dataset.roleOption === select.value) ?? options[0])?.focus()
+  }
+  const choose = (value: string) => {
+    select.value = value
+    label.textContent = value
+    label.classList.remove('text-neutral-400', 'dark:text-neutral-500')
+    options.forEach((option) => {
+      const selected = option.dataset.roleOption === value
+      option.setAttribute('aria-selected', String(selected))
+      qs('[data-role-check]', option).classList.toggle('hidden', !selected)
+    })
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+    setOpen(false)
+    trigger.focus()
+  }
+
+  trigger.addEventListener('click', () => setOpen(menu.hasAttribute('hidden'), true))
+  options.forEach((option) => option.addEventListener('click', () => choose(option.dataset.roleOption ?? '')))
+  trigger.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      setOpen(true, true)
+    }
+  })
+  menu.addEventListener('keydown', (event) => {
+    const index = options.indexOf(document.activeElement as HTMLButtonElement)
+    if (event.key === 'Escape') {
+      event.preventDefault()
+      setOpen(false)
+      trigger.focus()
+    } else if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      event.preventDefault()
+      options[(index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length]?.focus()
+    } else if (event.key === 'Home' || event.key === 'End') {
+      event.preventDefault()
+      options[event.key === 'Home' ? 0 : options.length - 1]?.focus()
+    }
+  })
+  document.addEventListener('pointerdown', (event) => {
+    if (!root.contains(event.target as Node)) setOpen(false)
+  })
+}
+
 export function initBookingForm(form: HTMLFormElement): void {
   const [one, two] = qsa('[data-step]', form)
   const done = qs('[data-done]', form)
   const status = qs('#form-status', form)
   const submit = qs<HTMLButtonElement>('button[type="submit"]', form)
   const submitLabel = qs('[data-label]', submit)
+
+  initRoleSelect(form)
 
   const show = (step: HTMLElement) => {
     ;[one, two, done].forEach((s) => (s.hidden = s !== step))
@@ -79,7 +141,8 @@ export function initBookingForm(form: HTMLFormElement): void {
     const f = e.target as Field
     if (f.getAttribute('aria-invalid') !== 'true' || !f.checkValidity()) return
     f.setAttribute('aria-invalid', 'false')
-    f.classList.remove('!border-rose-400')
+    const target = f.closest<HTMLElement>('[data-custom-select]') ?? f
+    target.classList.remove('!border-rose-400')
     f.closest('fieldset')?.classList.remove('is-invalid')
   })
 

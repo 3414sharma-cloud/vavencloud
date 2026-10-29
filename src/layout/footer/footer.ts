@@ -1,3 +1,4 @@
+import './footer.css'
 import type { Section } from '@/app/types.ts'
 import { site } from '@/app/site.config.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
@@ -77,7 +78,7 @@ const html = () => `
       </div>
     </div>
 
-    <div class="mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800">
+    <div class="relative mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800">
       <p>© <span id="year"></span> ${site.name}. All rights reserved.</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
         <ul class="flex gap-6">
@@ -86,6 +87,22 @@ const html = () => `
         ${themeSwitch()}
       </div>
     </div>
+
+  </div>
+
+  <div class="footer-wordmark mt-14 w-full select-none" aria-hidden="true">
+    <svg viewBox="0 0 1000 174" preserveAspectRatio="none" role="presentation" focusable="false">
+      <text class="footer-letter" x="0" y="148" textLength="102" lengthAdjust="spacingAndGlyphs">V</text>
+      <text class="footer-letter" x="102" y="148" textLength="102" lengthAdjust="spacingAndGlyphs">A</text>
+      <text class="footer-letter" x="204" y="148" textLength="102" lengthAdjust="spacingAndGlyphs">V</text>
+      <text class="footer-letter" x="306" y="148" textLength="90" lengthAdjust="spacingAndGlyphs">E</text>
+      <text class="footer-letter" x="396" y="148" textLength="106" lengthAdjust="spacingAndGlyphs">N</text>
+      <text class="footer-letter" x="502" y="148" textLength="104" lengthAdjust="spacingAndGlyphs">C</text>
+      <text class="footer-letter" x="606" y="148" textLength="84" lengthAdjust="spacingAndGlyphs">L</text>
+      <text class="footer-letter" x="690" y="148" textLength="109" lengthAdjust="spacingAndGlyphs">O</text>
+      <text class="footer-letter" x="799" y="148" textLength="104" lengthAdjust="spacingAndGlyphs">U</text>
+      <text class="footer-letter" x="903" y="148" textLength="97" lengthAdjust="spacingAndGlyphs">D</text>
+    </svg>
   </div>
 </footer>`
 
@@ -98,12 +115,30 @@ function initThemeSwitch(): void {
   })
 }
 
+function initWordmark(): void {
+  const wordmark = qs<HTMLElement>('.footer-wordmark')
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+    wordmark.classList.add('is-visible')
+    return
+  }
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (!entry?.isIntersecting) return
+      wordmark.classList.add('is-visible')
+      observer.disconnect()
+    },
+    { threshold: 0.2 },
+  )
+  observer.observe(wordmark)
+}
+
 export function footer(): Section {
   return {
     html: html(),
     init() {
       qs('#year').textContent = String(new Date().getFullYear())
       initThemeSwitch()
+      initWordmark()
     },
   }
 }

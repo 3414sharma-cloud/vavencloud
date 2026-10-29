@@ -23,7 +23,7 @@ const announcement = () => `
 const html = () => `
 ${announcement()}
 <!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
-<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/85 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.6)_inset,0_8px_30px_-20px_rgb(40_32_20/0.25)] data-solid:backdrop-blur-xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/10 dark:data-solid:bg-neutral-950/80 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.06)_inset,0_8px_30px_-20px_rgb(0_0_0/0.8)]">
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/60 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.55)_inset,0_8px_30px_-20px_rgb(40_32_20/0.18)] data-solid:backdrop-blur-2xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/8 dark:data-solid:bg-neutral-950/55 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.05)_inset,0_8px_30px_-20px_rgb(0_0_0/0.65)]">
   <nav class="container-page flex h-18 items-center justify-between gap-6" aria-label="Main">
     ${brandLink()}
 
@@ -44,7 +44,7 @@ ${announcement()}
     </div>
   </nav>
 
-  <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-paper/60 lg:hidden dark:border-white/10 dark:bg-neutral-950/60">
+  <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-paper/45 backdrop-blur-2xl lg:hidden dark:border-white/8 dark:bg-neutral-950/45">
     <ul class="container-page flex flex-col py-3">
       ${navLinks
         .map(

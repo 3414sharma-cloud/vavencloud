@@ -1,89 +1,72 @@
+import './compare.css'
 import type { Section } from '@/app/types.ts'
 import { icon } from '@/shared/ui/icons.ts'
-import { sectionHeading } from '@/shared/ui/section-heading.ts'
 
-/** "How we compare" (VavenCloud-Sample-Content.md). No competitor is named on purpose. */
-const columns = ['Cloud host', 'DevOps agency', 'Outsourced IT support', 'VavenCloud']
+/** Generic provider categories only. No competitors are named. */
+const partialOwnership = [
+  {
+    number: '01',
+    provider: 'Cloud host',
+    owns: 'The server.',
+    stops: 'Application code, deployments and recovery sit outside the plan.',
+  },
+  {
+    number: '02',
+    provider: 'DevOps agency',
+    owns: 'The pipeline.',
+    stops: 'They may not know the product, the latest code or what changed after handover.',
+  },
+  {
+    number: '03',
+    provider: 'Outsourced IT support',
+    owns: 'A support contract.',
+    stops: 'Product incidents are billed by the hour and code fixes need a separate team.',
+  },
+] as const
 
-const rows: { label: string; values: string[] }[] = [
-  { label: 'Runs your infrastructure', values: ['Yes', 'No', 'No', 'Yes'] },
-  { label: 'Sets up deployments and monitoring', values: ['No', 'Yes', 'Sometimes', 'Yes'] },
-  { label: 'Fixes problems in your code', values: ['No', 'Rarely', 'Separate contract', 'Yes, within your plan'] },
-  { label: 'On call 24/7 for your product', values: ['Server only', 'If you pay extra', 'Yes, by the hour', 'Yes'] },
-  { label: 'Knows your product and your business', values: ['No', 'Partly', 'No', 'Yes'] },
-  { label: 'How you pay', values: ['Per server', 'Per hour or retainer', 'Per hour', 'One fixed monthly fee'] },
-  { label: 'Who you call when it breaks', values: ['2 or more', '2 or more', '2 or more', '1'] },
-]
-
-/** Plain Yes/No get an icon; everything else stays as text. Icons are decorative, the word is kept for screen readers. */
-const cell = (v: string, ours: boolean) => {
-  if (v === 'Yes') return `<span class="inline-flex items-center gap-1.5">${icon('check', `h-4 w-4 ${ours ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`)}Yes</span>`
-  if (v === 'No') return `<span class="inline-flex items-center gap-1.5 text-neutral-400">${icon('minus', 'h-4 w-4')}No</span>`
-  return v
-}
+const ownership = ['Servers', 'Deployments', 'Monitoring', 'Code', 'Recovery']
 
 export function compareSection(): Section {
-  const last = rows.length - 1
   return {
-    init() {
-      // VavenCloud column fills in row by row the first time the table is in view
-      const table = document.querySelector('#compare table')
-      if (!table || window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-      table.classList.add('cmp-wait')
-      const io = new IntersectionObserver(([e]) => {
-        if (!e.isIntersecting) return
-        io.disconnect()
-        table.classList.replace('cmp-wait', 'cmp-play')
-      }, { threshold: 0.35 })
-      io.observe(table)
-    },
     html: `
-<section id="compare" class="py-24 sm:py-32">
+<section id="compare" class="compare-section py-24 sm:py-32" aria-labelledby="compare-title">
   <div class="container-page">
-    <div class="max-w-3xl">
-      ${sectionHeading({
-        title: 'Others own a piece of your product. We own the outcome.',
-        description: 'You have options. Here’s what each one actually takes responsibility for, in plain terms.',
-      })}
+    <div class="compare-intro">
+      <p class="compare-overline">Production ownership</p>
+      <h2 id="compare-title">Others own a piece<br>of your product.<br><em>We own the outcome.</em></h2>
+      <p>You do not need another provider to manage. You need one team that can follow a problem across every layer until the product is working again.</p>
     </div>
 
-    <div class="mt-12 overflow-x-auto overflow-y-hidden rounded-3xl border border-neutral-200 bg-white shadow-card dark:border-neutral-800 dark:bg-neutral-950" tabindex="0" role="region" aria-label="Comparison table, scrolls sideways on small screens">
-      <table class="w-full min-w-[760px] border-collapse text-left text-sm">
-        <caption class="sr-only">What each kind of provider takes responsibility for</caption>
-        <thead>
-          <tr>
-            <th scope="col" class="sticky left-0 z-10 bg-white px-5 py-5 font-medium text-neutral-500 dark:bg-neutral-950"><span class="sr-only">Responsibility</span></th>
-            ${columns
-              .map((c, i) => {
-                const ours = i === columns.length - 1
-                return `<th scope="col" class="px-5 py-5 text-base font-semibold ${ours ? 'rounded-t-2xl bg-brand-600 text-white' : 'text-neutral-950 dark:text-white'}">${c}</th>`
-              })
-              .join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${rows
-            .map(
-              (r, ri) => `
-          <tr class="border-t border-neutral-200 dark:border-neutral-800 ${ri === last ? 'text-base' : ''}">
-            <th scope="row" class="sticky left-0 z-10 bg-white px-5 py-4 font-medium text-neutral-950 dark:bg-neutral-950 dark:text-white">${r.label}</th>
-            ${r.values
-              .map((v, i) => {
-                const ours = i === columns.length - 1
-                return `<td ${ours ? `style="--r:${ri}"` : ''} class="px-5 py-4 ${ours ? `cmp-ours bg-brand-600 font-semibold text-white ${ri === last ? 'rounded-b-2xl text-2xl' : ''}` : ''}">${ours ? `<span class="cmp-v inline-block">${cell(v, ours)}</span>` : cell(v, ours)}</td>`
-              })
-              .join('')}
-          </tr>`,
-            )
-            .join('')}
-        </tbody>
-      </table>
+    <div class="compare-story">
+      <ol class="compare-partials" aria-label="Where partial ownership stops">
+        ${partialOwnership
+          .map(
+            (item) => `
+            <li class="compare-partial">
+              <span class="compare-number">${item.number}</span>
+              <div>
+                <p class="compare-provider">${item.provider}</p>
+                <h3>${item.owns}</h3>
+                <p class="compare-stops"><span>Stops at</span>${item.stops}</p>
+              </div>
+            </li>`,
+          )
+          .join('')}
+      </ol>
+
+      <aside class="compare-outcome" aria-labelledby="outcome-title">
+        <div class="compare-outcome-rule" aria-hidden="true"></div>
+        <p class="compare-overline">VavenCloud</p>
+        <h3 id="outcome-title">One team.<br><span>One call.</span><br>One outcome.</h3>
+        <p>We take responsibility for the whole production system, not just the part that happens to be convenient.</p>
+        <ul aria-label="What VavenCloud owns">
+          ${ownership.map((item) => `<li>${icon('check', 'h-4 w-4')} ${item}</li>`).join('')}
+        </ul>
+        <p class="compare-price-note">One fixed monthly fee, agreed after your review.</p>
+      </aside>
     </div>
 
-    <p class="mt-8 max-w-3xl text-lg leading-relaxed">
-      Hiring a senior DevOps engineer in the US costs around $140,000 a year, and they still can’t fix your code at 3am on their own.
-      <span class="font-semibold text-neutral-950 dark:text-white">VavenCloud gives you a whole team for a fixed monthly fee.</span>
-    </p>
+    <p class="compare-close">A senior DevOps engineer cannot fix your code alone at 3am. A host cannot own your deployment. <strong>Production ownership means the team responsible can solve the whole problem.</strong></p>
   </div>
 </section>`,
   }

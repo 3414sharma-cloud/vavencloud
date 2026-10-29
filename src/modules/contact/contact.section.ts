@@ -9,8 +9,6 @@ import { initBookingForm } from './booking-form.ts'
  * POST /api/contact endpoint as one structured message (see booking-form.ts).
  */
 
-const checklist = ['Free, with no commitment', 'A senior engineer, not a salesperson', 'Written growth roadmap within 48 hours', 'Fixed monthly price before any work starts']
-
 const req = '<span class="text-rose-600 dark:text-rose-400" aria-hidden="true">*</span>'
 const label = (id: string, text: string, required = true) =>
   `<label for="${id}" class="text-sm font-medium text-neutral-800 dark:text-neutral-200">${text} ${required ? req : '<span class="font-normal text-neutral-500">(optional)</span>'}</label>`
@@ -50,13 +48,26 @@ const step1 = `
       </div>
       <div>
         ${label('bk-role', 'Your role')}
-        <select id="bk-role" name="role" required class="field">
-          <option value="" selected disabled>Choose…</option>
-          <option>Founder or CEO</option>
-          <option>CTO</option>
-          <option>Head of engineering</option>
-          <option>Other</option>
-        </select>
+        <div class="relative mt-1.5" data-custom-select>
+          <select id="bk-role" name="role" required tabindex="-1" aria-hidden="true" class="pointer-events-none absolute h-px w-px opacity-0">
+            <option value="" selected disabled>Choose your role</option>
+            <option>Founder or CEO</option>
+            <option>CTO</option>
+            <option>Head of engineering</option>
+            <option>Other</option>
+          </select>
+          <button type="button" class="field mt-0 flex w-full items-center justify-between text-left font-medium" data-role-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="bk-role-options">
+            <span data-role-label class="text-neutral-400 dark:text-neutral-500">Choose your role</span>
+            <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600 transition-transform duration-200 dark:bg-neutral-800 dark:text-neutral-300" data-role-chevron>${icon('chevron-down', 'h-4 w-4')}</span>
+          </button>
+          <div id="bk-role-options" class="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white p-1.5 shadow-[0_18px_36px_-18px_rgb(0_0_0/0.28)] dark:border-neutral-700 dark:bg-neutral-900" data-role-options role="listbox" aria-label="Your role" hidden>
+            ${['Founder or CEO', 'CTO', 'Head of engineering', 'Other']
+              .map(
+                (role) => `<button type="button" role="option" aria-selected="false" data-role-option="${role}" class="flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-medium text-neutral-700 transition-colors hover:bg-brand-50 hover:text-brand-800 focus-visible:bg-brand-50 focus-visible:text-brand-800 focus-visible:outline-none dark:text-neutral-300 dark:hover:bg-brand-950/60 dark:hover:text-brand-200 dark:focus-visible:bg-brand-950/60 dark:focus-visible:text-brand-200">${role}<span class="hidden text-brand-600 dark:text-brand-300" data-role-check>${icon('check', 'h-4 w-4')}</span></button>`,
+              )
+              .join('')}
+          </div>
+        </div>
       </div>
     </div>
     <button type="button" class="btn-primary mt-7 w-full !py-3" data-next>Continue ${icon('arrow-right', 'h-4 w-4')}</button>
@@ -123,23 +134,54 @@ const confirmation = `
 export function contactSection(): Section {
   return {
     html: `
-<section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
-  <div class="container-page grid items-start gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
-    <div class="lg:sticky lg:top-28">
-      <h2 class="section-title">Stop running servers. Start running your business.</h2>
-      <p class="section-lead mt-5">Book a free 45-minute production review. A senior engineer will look at how your product runs today, tell you honestly what’s at risk, and send you a written growth roadmap within 48 hours. Whether or not you work with us, you’ll leave knowing exactly where you stand.</p>
-      <ul class="mt-8 space-y-3">
-        ${checklist.map((c) => `<li class="flex items-center gap-3 font-medium text-neutral-950 dark:text-white"><span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-brand-600 text-white">${icon('check', 'h-3.5 w-3.5')}</span>${c}</li>`).join('')}
-      </ul>
-      <p class="mt-8 text-sm">Prefer email? Write to <a href="mailto:${site.contact.email}" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">${site.contact.email}</a> and a senior engineer will reply within one business day.</p>
+<section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="book-title">
+  <div class="container-page">
+    <div class="max-w-6xl">
+      <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">A free production review</p>
+      <h2 id="book-title" class="mt-5 max-w-5xl text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Stop running servers.<br><span class="text-brand-600 dark:text-brand-400">Start running your business.</span></h2>
     </div>
 
-    <form id="booking-form" class="card p-6 sm:p-9" novalidate aria-label="Book a free production review">
-      ${step1}
-      ${step2}
-      ${confirmation}
-      <p id="form-status" class="mt-4 text-sm font-medium" role="status" aria-live="polite"></p>
-    </form>
+    <div class="mt-12 grid gap-10 border-t border-neutral-200 pt-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20 dark:border-neutral-800">
+      <p class="text-sm font-semibold tracking-wide text-neutral-500 uppercase">45 minutes<br>with a senior engineer</p>
+      <div>
+        <p class="max-w-3xl text-xl leading-relaxed text-neutral-700 sm:text-2xl dark:text-neutral-300">Bring the product you have today. Leave with a clear picture of what needs attention, what can wait and what could break next.</p>
+        <p class="mt-5 max-w-2xl leading-relaxed">You keep the written growth roadmap, whether or not you work with us.</p>
+      </div>
+    </div>
+
+    <ol class="mt-14 grid border-t border-l border-neutral-200 sm:grid-cols-3 dark:border-neutral-800" aria-label="What your review covers">
+      ${[
+        ['01', 'Your product today', 'Hosting, deployments, code and the current risks.'],
+        ['02', 'What could break next', 'Monitoring, recovery, security and capacity.'],
+        ['03', 'Your written roadmap', 'Clear priorities within 48 hours of the call.'],
+      ]
+        .map(
+          ([number, title, text]) => `
+        <li class="min-h-48 border-r border-b border-neutral-200 p-6 sm:p-8 dark:border-neutral-800">
+          <span class="font-mono text-xs font-semibold text-brand-600 dark:text-brand-400">${number}</span>
+          <h3 class="mt-8 text-2xl font-semibold tracking-tight text-neutral-950 dark:text-white">${title}</h3>
+          <p class="mt-3 max-w-xs leading-relaxed">${text}</p>
+        </li>`,
+        )
+        .join('')}
+    </ol>
+
+    <div class="mx-auto mt-16 max-w-4xl border-t border-neutral-200 pt-10 dark:border-neutral-800">
+      <div class="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
+        <div>
+          <p class="text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">Start here</p>
+          <h3 class="mt-2 text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Tell us about your product.</h3>
+        </div>
+        <p class="text-sm text-neutral-500">Free. No commitment.</p>
+      </div>
+      <form id="booking-form" class="mt-8 border-y border-neutral-200 py-8 sm:py-10 dark:border-neutral-800" novalidate aria-label="Book a free production review">
+        ${step1}
+        ${step2}
+        ${confirmation}
+        <p id="form-status" class="mt-4 text-sm font-medium" role="status" aria-live="polite"></p>
+      </form>
+      <p class="mt-7 text-sm">Prefer email? Write to <a href="mailto:${site.contact.email}" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">${site.contact.email}</a> and a senior engineer will reply within one business day.</p>
+    </div>
   </div>
 </section>`,
     init() {

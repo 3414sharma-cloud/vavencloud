@@ -186,13 +186,13 @@ const tools = [
   {
     name: 'Client portal',
     who: 'Every client',
-    what: 'Talk to your engineers, raise and track issues, share files and access securely, see monthly reports and your growth roadmap.',
+    items: ['Talk to your engineers', 'Raise and track issues', 'Share files and access securely', 'Read reports and your growth roadmap'],
     line: 'Your direct line to the team that owns your product.',
   },
   {
     name: 'VavenCloud dashboard',
     who: 'Clients who run on VavenCloud infrastructure',
-    what: 'See and manage your servers, databases, load balancers, networks and backups.',
+    items: ['See and manage your servers', 'Manage databases', 'View load balancers and networks', 'Check backups and snapshots'],
     line: 'Your infrastructure, visible and under control.',
   },
 ]
@@ -238,29 +238,35 @@ export function oneTeamSection(): Section {
       If your product is down, we treat it as our problem until it’s back, whatever the cause.
     </p>
 
-    <div class="mt-24">
-      <h3 class="text-center text-3xl font-semibold tracking-tight text-neutral-950 sm:text-4xl dark:text-white">Everything in one place, whichever cloud you’re on.</h3>
-      <div class="mt-10 grid gap-5 md:grid-cols-2">
+    <div class="access-overview mt-24" aria-labelledby="access-title">
+      <p class="access-overview-label">Your workspace</p>
+      <h3 id="access-title">Everything in one place,<br><span>whichever cloud you’re on.</span></h3>
+      <ol class="access-list" aria-label="VavenCloud client access">
         ${tools
           .map(
-            (t) => `
-        <article class="card flex flex-col p-7">
-          <p class="text-xs font-medium tracking-wide text-neutral-500 uppercase">For: ${t.who}</p>
-          <h4 class="mt-2 text-xl font-semibold text-neutral-950 dark:text-white">${t.name}</h4>
-          <p class="mt-3 leading-relaxed">${t.what}</p>
-          <p class="mt-auto pt-6 font-medium text-neutral-950 dark:text-white">“${t.line}”</p>
-        </article>`,
+            (tool, index) => `
+            <li class="access-row" style="--access-step:${index}">
+              <span class="access-number">${String(index + 1).padStart(2, '0')}</span>
+              <div class="access-main">
+                <p class="access-for">For: ${tool.who}</p>
+                <h4>${tool.name}</h4>
+              </div>
+              <ul class="access-items">${tool.items.map((item) => `<li>${item}</li>`).join('')}</ul>
+              <blockquote>“${tool.line}”</blockquote>
+            </li>`,
           )
           .join('')}
-      </div>
+      </ol>
     </div>
   </div>
 </section>`,
     init() {
       // Each pillar's scene builds up row by row the first time the card is in view
       const cards = [...document.querySelectorAll('#one-team .ot-card')]
+      const accessRows = [...document.querySelectorAll('#one-team .access-row')]
+      const animated = [...cards, ...accessRows]
       if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-        cards.forEach((c) => c.classList.add('is-in'))
+        animated.forEach((element) => element.classList.add('is-in'))
         return
       }
       const io = new IntersectionObserver(
@@ -270,9 +276,9 @@ export function oneTeamSection(): Section {
             e.target.classList.add('is-in')
             io.unobserve(e.target)
           }),
-        { threshold: 0.4 },
+        { threshold: 0.25 },
       )
-      cards.forEach((c) => io.observe(c))
+      animated.forEach((element) => io.observe(element))
     },
   }
 }

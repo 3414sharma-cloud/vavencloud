@@ -23,7 +23,7 @@ function settle(el: HTMLElement): void {
  * Never list anything that sits inside a scroll container (e.g. a <table> in an overflow-x-auto box):
  * moving it would overflow the box for a moment and flash a scrollbar. Reveal the box instead.
  */
-const AUTO = ':is(.eyebrow, h2, .section-lead, .card, article, figure, [role="region"], [data-reveal])'
+const AUTO = ':is(.eyebrow, h2, h2 + p, h3, h3 + p, .section-lead, .card, article, figure, [role="region"], [data-reveal])'
 
 /**
  * Tags headings, cards and tables below the hero with `.reveal` and a small stagger between

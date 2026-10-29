@@ -4,6 +4,7 @@
  */
 export const routes = {
   home: '/',
+  about: '/about/',
   top: '/#top',
   problem: '/#problem',
   oneTeam: '/#one-team',

@@ -19,6 +19,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: 'Company',
     links: [
+      { label: 'About VavenCloud', href: routes.about },
       { label: 'About Vavensoft', href: site.vavensoftUrl, external: true },
       { label: 'Careers', href: '#' },
       { label: 'Contact', href: routes.book },

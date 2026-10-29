@@ -75,24 +75,34 @@ const planCard = (p: Plan) => `
 
 const handover = ['Documentation', 'Access', 'Runbooks', 'A full backup', 'A handover call']
 
-/** Exit promise (VavenCloud-Sample-Content.md, "Safety"): right after the plans, where the commitment is weighed */
+/** Exit promise: an editorial handover record, not another card. */
 const exitPromise = () => `
-    <div data-reveal class="mx-auto mt-16 grid max-w-5xl gap-10 rounded-3xl border border-neutral-200 bg-white p-8 shadow-card sm:p-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center dark:border-neutral-800 dark:bg-neutral-950">
-      <div>
-        <h3 class="text-4xl font-semibold tracking-tight text-neutral-950 sm:text-5xl dark:text-white">You’re never locked in. Ever.</h3>
-        <p class="mt-5 text-lg leading-relaxed">
-          Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.
-          We’d rather keep you by being good than by making it hard to go.
-        </p>
+    <section class="mx-auto mt-24 max-w-6xl border-t border-neutral-200 pt-10 sm:mt-32 sm:pt-14 dark:border-neutral-800" aria-labelledby="exit-title">
+      <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+        <div>
+          <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">The exit promise</p>
+          <h3 id="exit-title" class="mt-5 text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-6xl dark:text-white">You’re never<br><span class="text-brand-600 dark:text-brand-400">locked in. Ever.</span></h3>
+          <p class="mt-8 max-w-xl text-lg leading-relaxed">Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.</p>
+          <p class="mt-5 max-w-xl leading-relaxed text-neutral-500">We’d rather keep you by being good than by making it hard to go.</p>
+        </div>
+        <div class="lg:pt-12">
+          <p class="text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">If you leave, you get</p>
+          <ol class="mt-5 border-t border-neutral-200 dark:border-neutral-800">
+            ${handover
+              .map(
+                (item, index) => `
+                <li class="flex items-center gap-4 border-b border-neutral-200 py-4 text-lg font-semibold tracking-tight text-neutral-950 dark:border-neutral-800 dark:text-white">
+                  <span class="w-6 font-mono text-xs font-medium text-brand-600 dark:text-brand-400">${String(index + 1).padStart(2, '0')}</span>
+                  <span>${item}</span>
+                  ${icon('arrow-right', 'ml-auto h-4 w-4 text-neutral-400')}
+                </li>`,
+              )
+              .join('')}
+          </ol>
+          <p class="mt-5 max-w-sm text-sm leading-relaxed text-neutral-500">With whoever takes over from us. No proprietary platform. No held-back credentials.</p>
+        </div>
       </div>
-      <div>
-        <p class="text-sm font-medium text-neutral-500">If you leave, you get</p>
-        <ul class="mt-4 flex flex-wrap gap-2.5">
-          ${handover.map((h) => `<li class="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-4 py-2 text-sm font-medium text-neutral-950 dark:border-neutral-800 dark:text-white">${icon('check', 'h-4 w-4 text-emerald-600 dark:text-emerald-400')}${h}</li>`).join('')}
-        </ul>
-        <p class="mt-4 text-sm text-neutral-500">With whoever takes over from us.</p>
-      </div>
-    </div>`
+    </section>`
 
 export function plansSection(): Section {
   return {
