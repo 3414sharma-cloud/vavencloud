@@ -182,21 +182,6 @@ const pillars: { tone: Tone; scene: (t: Tone) => string; title: string; text: st
   },
 ]
 
-const tools = [
-  {
-    name: 'Client portal',
-    who: 'Every client',
-    items: ['Talk to your engineers', 'Raise and track issues', 'Share files and access securely', 'Read reports and your growth roadmap'],
-    line: 'Your direct line to the team that owns your product.',
-  },
-  {
-    name: 'VavenCloud dashboard',
-    who: 'Clients who run on VavenCloud infrastructure',
-    items: ['See and manage your servers', 'Manage databases', 'View load balancers and networks', 'Check backups and snapshots'],
-    line: 'Your infrastructure, visible and under control.',
-  },
-]
-
 export function oneTeamSection(): Section {
   return {
     html: `
@@ -238,35 +223,17 @@ export function oneTeamSection(): Section {
       If your product is down, we treat it as our problem until it’s back, whatever the cause.
     </p>
 
-    <div class="access-overview mt-24" aria-labelledby="access-title">
-      <p class="access-overview-label">Your workspace</p>
-      <h3 id="access-title">Everything in one place,<br><span>whichever cloud you’re on.</span></h3>
-      <ol class="access-list" aria-label="VavenCloud client access">
-        ${tools
-          .map(
-            (tool, index) => `
-            <li class="access-row" style="--access-step:${index}">
-              <span class="access-number">${String(index + 1).padStart(2, '0')}</span>
-              <div class="access-main">
-                <p class="access-for">For: ${tool.who}</p>
-                <h4>${tool.name}</h4>
-              </div>
-              <ul class="access-items">${tool.items.map((item) => `<li>${item}</li>`).join('')}</ul>
-              <blockquote>“${tool.line}”</blockquote>
-            </li>`,
-          )
-          .join('')}
-      </ol>
+    <div data-reveal class="mx-auto mt-24 max-w-6xl">
+      <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">Your workspace</p>
+      <h3 class="mt-5 text-5xl leading-[0.9] font-semibold tracking-[-0.07em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Everything in one place,<br><span class="text-neutral-400 dark:text-neutral-500">whichever cloud you’re on.</span></h3>
     </div>
   </div>
 </section>`,
     init() {
       // Each pillar's scene builds up row by row the first time the card is in view
       const cards = [...document.querySelectorAll('#one-team .ot-card')]
-      const accessRows = [...document.querySelectorAll('#one-team .access-row')]
-      const animated = [...cards, ...accessRows]
       if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) {
-        animated.forEach((element) => element.classList.add('is-in'))
+        cards.forEach((element) => element.classList.add('is-in'))
         return
       }
       const io = new IntersectionObserver(
@@ -278,7 +245,7 @@ export function oneTeamSection(): Section {
           }),
         { threshold: 0.25 },
       )
-      animated.forEach((element) => io.observe(element))
+      cards.forEach((element) => io.observe(element))
     },
   }
 }

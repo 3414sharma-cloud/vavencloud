@@ -22,7 +22,7 @@ const stages = [
     time: 'Launch day',
     label: 'The decision',
     title: 'The product ships. The production work waits.',
-    text: 'Monitoring, tested recovery and security work move to “next sprint”. The deadline is met, but the system is not yet ready for a serious incident.',
+    text: 'Monitoring, tested recovery, security work and capacity planning move to “next sprint”. The deadline is met, but the product is not ready for a serious incident.',
     tone: 'warning',
     terminal: 'HARDENING_DEFERRED',
     detail: '4 ITEMS · NEXT SPRINT',
@@ -38,28 +38,10 @@ const stages = [
   },
   {
     time: '02:37',
-    label: 'The outage',
-    title: 'Customers find the problem first.',
-    text: 'Checkout is unavailable. Sales stop. Without monitoring that has been tested, a customer report becomes the first alert.',
+    label: 'The first outage',
+    title: 'Everything marked “next sprint” becomes tonight’s emergency.',
+    text: 'Checkout is unavailable. Recovery is slower because monitoring and backups were never tested. The outage did not start at 02:37. It started when production work was deferred.',
     tone: 'danger',
-    terminal: 'CHECKOUT_UNAVAILABLE',
-    detail: 'HTTP 503 · /checkout',
-  },
-  {
-    time: '03:12',
-    label: 'Recovery attempt',
-    title: 'A backup is not a plan until it is restored.',
-    text: 'Recovery is slower when no one has tested the backup, documented the process or practised the decision under pressure.',
-    tone: 'danger',
-    terminal: 'RECOVERY_UNTESTED',
-    detail: 'RESTORE DRILL · NEVER RUN',
-  },
-  {
-    time: 'Afterwards',
-    label: 'The real cause',
-    title: 'Everything marked “next sprint” became tonight’s emergency.',
-    text: 'The outage did not start when checkout failed. It started when the work that keeps a live product safe and recoverable was left unowned.',
-    tone: 'muted',
     terminal: 'PRODUCTION_NOT_HARDENED',
     detail: 'INCIDENT STATUS · UNRESOLVED',
   },
@@ -102,17 +84,17 @@ const storySteps = () =>
     )
     .join('')
 
-const terminalRows = () =>
-  stages
-    .map(
-      (stage, index) => `
-      <li class="terminal-row" data-row="${index}" data-tone="${stage.tone}">
-        <span class="terminal-time">${stage.time === 'Launch day' ? '—' : stage.time}</span>
-        <span class="terminal-signal"><i></i>${stage.terminal}</span>
-        <span class="terminal-detail">${stage.detail}</span>
-      </li>`,
-    )
-    .join('')
+const deferredPanel = () => `
+  <aside class="deferred-panel" data-deferred-panel data-stage="0" aria-label="How deferred production work becomes an outage">
+    <p class="deferred-panel-kicker">Before anything breaks</p>
+    <div class="deferred-task-list" aria-hidden="true">
+      ${deferredWork.map((item, index) => `<p class="deferred-task" style="--task:${index}"><span>${item}</span><small>next sprint</small></p>`).join('')}
+    </div>
+    <div class="deferred-outage" aria-hidden="true">
+      <p>OUTAGE</p>
+      <span>Deferred work does not disappear. It waits.</span>
+    </div>
+  </aside>`
 
 export function problemSection(): Section {
   return {
@@ -129,38 +111,8 @@ export function problemSection(): Section {
         ${storySteps()}
       </ol>
 
-      <div class="outage-console-wrap" aria-hidden="true">
-        <div class="outage-console" data-stage="0">
-          <div class="terminal-titlebar">
-            <div class="terminal-lights"><i></i><i></i><i></i></div>
-            <span>production / incident-20417</span>
-            <span class="terminal-live"><i></i>LIVE</span>
-          </div>
-          <div class="terminal-screen">
-            <div class="terminal-heading">
-              <div>
-                <p class="terminal-kicker">PRODUCTION READINESS RECORD</p>
-                <p class="terminal-code">READINESS-01</p>
-              </div>
-              <div class="terminal-clock">
-                <span>ELAPSED</span>
-                <strong data-elapsed>00:00</strong>
-              </div>
-            </div>
-
-            <ul class="terminal-log">${terminalRows()}</ul>
-
-            <div class="terminal-owner">
-              <span>READINESS STATUS</span>
-              <strong data-owner>NOT VERIFIED</strong>
-              <i class="terminal-cursor"></i>
-            </div>
-          </div>
-          <div class="terminal-footer">
-            <span><i></i> production</span>
-            <span>production · readiness</span>
-          </div>
-        </div>
+      <div class="outage-console-wrap">
+        ${deferredPanel()}
       </div>
     </div>
 
@@ -178,15 +130,11 @@ export function problemSection(): Section {
 </section>`,
     init() {
       const steps = qsa<HTMLElement>('#problem .outage-step')
-      const consoleElement = qs<HTMLElement>('#problem .outage-console')
-      const elapsed = qs<HTMLElement>('[data-elapsed]', consoleElement)
-      const owner = qs<HTMLElement>('[data-owner]', consoleElement)
+      const deferredPanelElement = qs<HTMLElement>('#problem [data-deferred-panel]')
 
       const activateStage = (index: number) => {
         steps.forEach((step, stepIndex) => step.classList.toggle('is-active', stepIndex === index))
-        consoleElement.dataset.stage = String(index)
-        elapsed.textContent = ['00:00', '00:02', '00:07', '00:35', '6 MONTHS'][index] ?? '00:00'
-        owner.textContent = index === stages.length - 1 ? 'NOT HARDENED' : 'NOT VERIFIED'
+        deferredPanelElement.dataset.stage = String(index)
       }
 
       if (prefersReducedMotion() || !('IntersectionObserver' in window)) {

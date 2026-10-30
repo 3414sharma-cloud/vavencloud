@@ -141,32 +141,7 @@ export function contactSection(): Section {
       <h2 id="book-title" class="mt-5 max-w-5xl text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Stop running servers.<br><span class="text-brand-600 dark:text-brand-400">Start running your business.</span></h2>
     </div>
 
-    <div class="mt-12 grid gap-10 border-t border-neutral-200 pt-8 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20 dark:border-neutral-800">
-      <p class="text-sm font-semibold tracking-wide text-neutral-500 uppercase">45 minutes<br>with a senior engineer</p>
-      <div>
-        <p class="max-w-3xl text-xl leading-relaxed text-neutral-700 sm:text-2xl dark:text-neutral-300">Bring the product you have today. Leave with a clear picture of what needs attention, what can wait and what could break next.</p>
-        <p class="mt-5 max-w-2xl leading-relaxed">You keep the written growth roadmap, whether or not you work with us.</p>
-      </div>
-    </div>
-
-    <ol class="mt-14 grid border-t border-l border-neutral-200 sm:grid-cols-3 dark:border-neutral-800" aria-label="What your review covers">
-      ${[
-        ['01', 'Your product today', 'Hosting, deployments, code and the current risks.'],
-        ['02', 'What could break next', 'Monitoring, recovery, security and capacity.'],
-        ['03', 'Your written roadmap', 'Clear priorities within 48 hours of the call.'],
-      ]
-        .map(
-          ([number, title, text]) => `
-        <li class="min-h-48 border-r border-b border-neutral-200 p-6 sm:p-8 dark:border-neutral-800">
-          <span class="font-mono text-xs font-semibold text-brand-600 dark:text-brand-400">${number}</span>
-          <h3 class="mt-8 text-2xl font-semibold tracking-tight text-neutral-950 dark:text-white">${title}</h3>
-          <p class="mt-3 max-w-xs leading-relaxed">${text}</p>
-        </li>`,
-        )
-        .join('')}
-    </ol>
-
-    <div class="mx-auto mt-16 max-w-4xl border-t border-neutral-200 pt-10 dark:border-neutral-800">
+    <div class="mx-auto mt-14 max-w-4xl border-t border-neutral-200 pt-10 dark:border-neutral-800">
       <div class="grid gap-6 sm:grid-cols-[1fr_auto] sm:items-end">
         <div>
           <p class="text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">Start here</p>
