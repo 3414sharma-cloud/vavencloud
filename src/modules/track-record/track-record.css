@@ -1,0 +1,124 @@
+/*
+ * The logo strip under the hero (track-record.section.ts), edge to edge: the label, then the logos spread
+ * across the rest of the width. One quiet colour; the logo under the pointer lights up.
+ */
+.tr-band {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem 3.5rem;
+  padding: 1.75rem clamp(1.5rem, 4vw, 4rem);
+}
+.tr-label {
+  flex: none;
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.tr-logos {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2.5rem;
+}
+/* Positioned, so the screen-reader name beside a wordmark stays inside the strip */
+.tr-logo {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-neutral-500);
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+.tr-logo:hover {
+  color: var(--color-neutral-950);
+}
+.dark .tr-logo {
+  color: var(--color-neutral-400);
+}
+.dark .tr-logo:hover {
+  color: #fff;
+}
+/* Our own logo is an image: greyed to sit with the others, in colour when hovered */
+.tr-own {
+  height: 2.1rem;
+  width: auto;
+  filter: grayscale(1);
+  opacity: 0.7;
+  transition:
+    filter 0.25s ease,
+    opacity 0.25s ease;
+}
+.tr-logo:hover .tr-own {
+  filter: none;
+  opacity: 1;
+}
+
+/*
+ * Narrower than about 1400px the label and all seven logos no longer fit on one line: the label goes on
+ * its own line and the logos are centred (one row on most laptops, wrapping on tablets and phones)
+ */
+@media (max-width: 1399px) {
+  .tr-band {
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+  .tr-logos {
+    justify-content: center;
+    gap: 1rem 2rem;
+  }
+}
+/* Small laptops: the whole row a little smaller, so all seven still fit on one line */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .tr-logos {
+    zoom: 0.88;
+  }
+}
+/* Tablets: two even rows, four then three, rather than six and one */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .tr-logos {
+    width: min(38rem, 100%);
+  }
+}
+/* Phones: seven logos can't wrap evenly, so they line up in columns instead (three, or two on small phones) */
+@media (max-width: 639px) {
+  .tr-logos {
+    display: grid;
+    grid-template-columns: repeat(3, max-content);
+    justify-content: center;
+    justify-items: start;
+    gap: 1rem 2rem;
+  }
+  .tr-logo {
+    font-size: 1rem;
+  }
+  .tr-logo svg {
+    height: 1.35rem;
+    width: auto;
+  }
+  .tr-own {
+    height: 1.75rem;
+  }
+}
+@media (max-width: 479px) {
+  .tr-logos {
+    grid-template-columns: repeat(2, max-content);
+    column-gap: 2.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-logo,
+  .tr-own {
+    transition: none;
+  }
+}

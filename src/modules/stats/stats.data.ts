@@ -1,4 +1,12 @@
-import type { Look } from '@/shared/ui/portrait.ts'
+import type { IconName } from '@/shared/ui/icons.ts'
+
+/** The people who look after your product, by team. Roles only, no invented names (docs/messaging.md). */
+export const accountTeam: { role: string; focus: string; icon: IconName }[] = [
+  { role: 'DevOps engineers', focus: 'Deployments, monitoring and the 24/7 on-call rota', icon: 'activity' },
+  { role: 'Cloud and database engineers', focus: 'Servers, PostgreSQL, MySQL and backups', icon: 'server' },
+  { role: 'Security engineers', focus: 'Firewalls, patching and hardening', icon: 'shield' },
+  { role: 'Vavensoft developers', focus: 'Fixes in your code, within your plan', icon: 'code' },
+]
 
 export type StatId = 'products' | 'years' | 'jobSuccess' | 'returning'
 
@@ -32,44 +40,4 @@ export const stories: Story[] = [
   { id: 'years', kicker: 'Running production for over a decade' },
   { id: 'jobSuccess', kicker: 'Top Rated on Upwork' },
   { id: 'returning', kicker: 'People come back' },
-]
-
-/**
- * "Meet your engineers". SAMPLE CONTENT: the names, specialities and lines are made up for layout.
- * Replace them with the real team before launch. `photo`: real portrait path (put the file in /public),
- * used instead of the illustrated `look` when set.
- */
-export interface Engineer {
-  name: string
-  speciality: string
-  line: string
-  look: Look
-  photo?: string
-}
-
-export const engineers: Engineer[] = [
-  {
-    name: 'Arjun',
-    speciality: 'Kubernetes and AWS',
-    line: 'Has rescued more than 40 production outages.',
-    look: { bg: ['var(--color-brand-100)', 'var(--color-brand-300)'], skin: '#b9774f', hair: '#17120f', style: 'short', shirt: 'var(--color-brand-800)', glasses: true },
-  },
-  {
-    name: 'Lena',
-    speciality: 'Databases and performance',
-    line: 'Once turned a nine second query into a 40 millisecond one.',
-    look: { bg: ['#f6ead2', '#e9cf9c'], skin: '#f3d2b3', hair: '#b4532a', style: 'bun', shirt: '#325b3b' },
-  },
-  {
-    name: 'Marcus',
-    speciality: 'Security and backups',
-    line: 'Restore-tests every client backup, every month.',
-    look: { bg: ['#def2e1', '#a1cea9'], skin: '#8d5a3b', hair: '#17120f', style: 'short', shirt: '#2b2923', beard: true },
-  },
-  {
-    name: 'Nadia',
-    speciality: 'Deployments and monitoring',
-    line: 'Knows your alerts by name, and answers them herself.',
-    look: { bg: ['#ffe6db', '#f6b294'], skin: '#e0ac86', hair: '#1c1311', style: 'long', shirt: 'var(--color-brand-700)' },
-  },
 ]

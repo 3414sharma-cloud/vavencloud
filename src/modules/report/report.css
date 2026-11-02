@@ -1,0 +1,225 @@
+/*
+ * The morning after (report.section.ts): a status pill, the monthly report as a numbered list, and an example
+ * incident report whose time bar fills and stamp lands once it's seen (.is-in). Status colours come from
+ * Tailwind classes in the markup (emerald, rose); the rest uses the site's tokens.
+ */
+.rp-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 999px;
+  background: var(--color-paper);
+  padding: 0.3rem 0.85rem 0.3rem 0.7rem;
+  color: var(--color-neutral-700);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.dark .rp-pill {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+  color: var(--color-neutral-300);
+}
+.rp-pill > span:first-child {
+  height: 0.45rem;
+  width: 0.45rem;
+  border-radius: 999px;
+}
+
+.rp-monthly-label {
+  margin-top: 2.5rem;
+  color: var(--color-neutral-500);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.rp-monthly {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 1.5rem;
+  margin-top: 0.9rem;
+}
+.rp-monthly li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding: 0.8rem 0;
+  color: var(--color-neutral-950);
+  font-weight: 600;
+}
+.dark .rp-monthly li {
+  border-color: var(--color-neutral-800);
+  color: #fff;
+}
+.rp-monthly li span {
+  color: var(--color-brand-600);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+.dark .rp-monthly li span {
+  color: var(--color-brand-400);
+}
+
+/* ---------- The example report ---------- */
+.rp-card {
+  position: relative;
+  padding: 1.75rem;
+}
+.rp-stamp {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  border-width: 2px;
+  border-style: solid;
+  border-radius: 0.5rem;
+  padding: 0.2rem 0.7rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+}
+.rp-label {
+  padding-right: 7rem;
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rp-title {
+  max-width: 15rem;
+  margin-top: 0.75rem;
+  color: var(--color-neutral-950);
+  font-size: 1.85rem;
+  font-weight: 620;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.dark .rp-title {
+  color: #fff;
+}
+.rp-time {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.rp-bar {
+  position: relative;
+  height: 0.35rem;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-neutral-200);
+}
+.dark .rp-bar {
+  background: var(--color-neutral-800);
+}
+.rp-bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 100%;
+  border-radius: inherit;
+}
+.rp-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1.5rem;
+  margin-top: 1.25rem;
+  border-block: 1px solid var(--color-neutral-200);
+  padding: 1rem 0;
+  font-size: 0.875rem;
+}
+.dark .rp-meta {
+  border-color: var(--color-neutral-800);
+}
+.rp-meta dt {
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rp-meta dd {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-950);
+  font-weight: 600;
+}
+.dark .rp-meta dd {
+  color: #fff;
+}
+.rp-rows {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  font-size: 0.875rem;
+}
+.rp-rows > div {
+  display: grid;
+  gap: 0.25rem;
+}
+.rp-rows dt {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .rp-rows dt {
+  color: #fff;
+}
+.rp-rows dd {
+  color: var(--color-neutral-600);
+  line-height: 1.6;
+}
+.dark .rp-rows dd {
+  color: var(--color-neutral-400);
+}
+.rp-caption {
+  margin-top: 1rem;
+  color: var(--color-neutral-500);
+  font-size: 0.8rem;
+}
+
+/* Once seen: the time bar runs from start to resolved, then the stamp lands */
+.rp-doc:not(.is-in) .rp-bar i {
+  width: 0;
+}
+.rp-doc:not(.is-in) .rp-stamp {
+  opacity: 0;
+  transform: rotate(-6deg) scale(1.6);
+}
+.rp-bar i {
+  transition: width 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+.rp-stamp {
+  transition:
+    opacity 0.25s ease 1.9s,
+    transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) 1.9s;
+}
+
+@media (min-width: 640px) {
+  .rp-card {
+    padding: 2.25rem;
+  }
+  .rp-meta {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .rp-rows > div {
+    grid-template-columns: 10rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rp-bar i,
+  .rp-stamp {
+    transition: none;
+  }
+}

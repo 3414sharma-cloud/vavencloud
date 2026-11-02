@@ -7,14 +7,14 @@ import { sectionHeading } from '@/shared/ui/section-heading.ts'
  * Plans (VavenCloud-Sample-Content.md). No prices on purpose: a fixed monthly fee is agreed after
  * the free review. TODO: confirm response times and monthly code hours before launch.
  */
-interface Plan {
+export interface Plan {
   name: string
   popular?: boolean
   bestFor: string
   rows: { label: string; value: string }[]
 }
 
-const plans: Plan[] = [
+export const plans: Plan[] = [
   {
     name: 'Managed',
     bestFor: 'Live products with a small development team',
@@ -73,7 +73,7 @@ const planCard = (p: Plan) => `
     </a>
   </article>`
 
-const handover = ['Documentation', 'Access', 'Runbooks', 'A full backup', 'A handover call']
+export const handover = ['Documentation', 'Access', 'Runbooks', 'A full backup', 'A handover call']
 
 /** Exit promise: an editorial handover record, not another card. */
 const exitPromise = () => `

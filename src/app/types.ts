@@ -10,6 +10,8 @@ export interface Section {
 export interface PageOptions {
   /** Rendered in order inside <main>. */
   sections: Section[]
+  /** The header's links, when a page has its own (the landing page's are the default) */
+  nav?: { label: string; href: string }[]
   /** Optional page-level behaviour that runs after all sections are initialised. */
   init?: () => void
 }

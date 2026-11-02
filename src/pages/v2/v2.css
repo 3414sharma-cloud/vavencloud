@@ -1,0 +1,687 @@
+/*
+ * v2 of the landing page (v2.page.ts). The Sky palette comes from data-palette="sky" on <html>, so every
+ * brand-* and ink-* token here is sky blue. Chapters share one rhythm: a small overline, a two-line title
+ * (the second line muted), a lead, the content, then one line to remember. Status colours (rose, emerald)
+ * are Tailwind classes in the markup.
+ */
+
+/* ---------- Chapters ---------- */
+.v2-section {
+  padding-block: 5rem;
+}
+.v2-overline {
+  color: var(--color-brand-700);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.dark .v2-overline {
+  color: var(--color-brand-300);
+}
+.v2-title {
+  margin-top: 1rem;
+  color: var(--color-neutral-950);
+  font-size: clamp(2.2rem, 4.8vw, 3.9rem);
+  font-weight: 620;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+.dark .v2-title {
+  color: #fff;
+}
+.v2-title span {
+  display: block;
+  color: var(--color-neutral-400);
+}
+.dark .v2-title span {
+  color: var(--color-neutral-500);
+}
+.v2-lead {
+  max-width: 40rem;
+  margin-top: 1.4rem;
+  color: var(--color-neutral-600);
+  font-size: 1.08rem;
+  line-height: 1.65;
+}
+.dark .v2-lead {
+  color: var(--color-neutral-400);
+}
+.v2-label {
+  margin-top: 2rem;
+  color: var(--color-neutral-500);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.v2-split {
+  display: grid;
+  align-items: start;
+  gap: 2.5rem;
+}
+.v2-split--fix {
+  margin-top: 3rem;
+}
+.v2-split--fix .v2-label {
+  margin-top: 0;
+}
+/* One line to remember, at the end of a chapter */
+.v2-takeaway {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.6rem;
+  margin-top: 3rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 1.5rem;
+  color: var(--color-neutral-600);
+  font-size: 1.2rem;
+}
+.dark .v2-takeaway {
+  border-color: var(--color-neutral-800);
+  color: var(--color-neutral-400);
+}
+.v2-takeaway strong {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .v2-takeaway strong {
+  color: #fff;
+}
+.v2-takeaway a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  color: var(--color-brand-700);
+  font-size: 1rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+  text-underline-offset: 0.3rem;
+}
+.dark .v2-takeaway a {
+  color: var(--color-brand-300);
+}
+
+/* What three vendors cost you */
+.v2-costs {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 0.9rem;
+}
+.v2-costs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  color: var(--color-neutral-800);
+  line-height: 1.5;
+}
+.dark .v2-costs li {
+  color: var(--color-neutral-200);
+}
+.v2-cost-icon {
+  display: inline-flex;
+  height: 1.9rem;
+  width: 1.9rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgb(244 63 94 / 0.1);
+  color: rgb(225 29 72);
+}
+.dark .v2-cost-icon {
+  color: rgb(251 113 133);
+}
+
+/* ---------- The night, as a card (problem: light, fix: dark) ---------- */
+.v2-night {
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+}
+.v2-night--vendors {
+  border: 1px solid var(--color-neutral-200);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(244 63 94 / 0.07), transparent 55%),
+    #fff;
+  box-shadow: var(--shadow-card);
+}
+.dark .v2-night--vendors {
+  border-color: var(--color-neutral-800);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(244 63 94 / 0.1), transparent 55%),
+    var(--color-neutral-900);
+}
+.v2-night-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding-bottom: 0.9rem;
+}
+.v2-night-title {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .v2-night-title,
+.v2-night--vaven .v2-night-title {
+  color: #fff;
+}
+.v2-night-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-neutral-700);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.dark .v2-night-status,
+.v2-night--vaven .v2-night-status {
+  color: #fff;
+}
+.v2-dot {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 999px;
+}
+.v2-dot--live {
+  animation: v2-pulse 1.4s ease-in-out infinite;
+}
+.v2-row {
+  display: grid;
+  grid-template-columns: 2.9rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.4rem 0.9rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding: 0.85rem 0;
+}
+.dark .v2-row {
+  border-color: var(--color-neutral-800);
+}
+.v2-night--vaven .v2-row {
+  border-color: rgb(255 255 255 / 0.1);
+}
+.v2-row-time {
+  padding-top: 0.1rem;
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+.v2-night--vaven .v2-row-time {
+  color: var(--color-brand-300);
+}
+.v2-row-text {
+  color: var(--color-neutral-950);
+  font-weight: 560;
+  line-height: 1.45;
+}
+.dark .v2-row-text,
+.v2-night--vaven .v2-row-text {
+  color: #fff;
+}
+.v2-row-reply {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+.v2-night--vaven .v2-row-reply {
+  color: var(--color-ink-text);
+}
+.v2-verdict {
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+/* ---------- The fix: the layer stack, how we take over, the promise ---------- */
+/* One team wraps the three layers: a sky frame with its badge sitting on the top edge */
+.st-team {
+  position: relative;
+  margin-top: 1.6rem;
+  border: 1.5px solid var(--color-brand-400);
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--color-brand-50) 70%, transparent);
+  padding: 1.6rem 1rem 1rem;
+}
+.dark .st-team {
+  border-color: var(--color-brand-700);
+  background: color-mix(in srgb, var(--color-brand-950) 50%, transparent);
+}
+.st-badge {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  background: var(--color-brand-600);
+  padding: 0.3rem 0.8rem;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+  transform: translateY(-50%);
+  box-shadow: 0 8px 18px -10px color-mix(in srgb, var(--color-brand-700) 80%, transparent);
+}
+.st-plates {
+  display: grid;
+  gap: 0.6rem;
+}
+/* A plate per layer; each a shade deeper, top to bottom, like a stack */
+.st-plate {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem 0.9rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.1rem;
+  background: #fff;
+  padding: 0.95rem 1rem;
+  box-shadow: var(--shadow-card);
+}
+.dark .st-plate {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+}
+.st-icon {
+  display: inline-flex;
+  height: 2.6rem;
+  width: 2.6rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.8rem;
+  color: #fff;
+}
+.st-plate:nth-child(1) .st-icon {
+  background: var(--color-brand-400);
+}
+.st-plate:nth-child(2) .st-icon {
+  background: var(--color-brand-500);
+}
+.st-plate:nth-child(3) .st-icon {
+  background: var(--color-brand-700);
+}
+.st-name {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+  line-height: 1.3;
+}
+.dark .st-name {
+  color: #fff;
+}
+.st-covers {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-600);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+.dark .st-covers {
+  color: var(--color-neutral-400);
+}
+/* Who owns it: the usual vendor struck out, ours under it */
+.st-owner {
+  display: flex;
+  grid-column: 2;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  font-size: 0.78rem;
+}
+.st-before {
+  position: relative;
+  color: var(--color-neutral-500);
+  text-decoration: none;
+}
+.st-before::after {
+  content: "";
+  position: absolute;
+  top: 52%;
+  right: -2px;
+  left: -2px;
+  height: 1.5px;
+  background: rgb(244 63 94 / 0.85);
+  transform-origin: left;
+}
+.st-now {
+  border-radius: 999px;
+  background: var(--color-brand-100);
+  padding: 0.15rem 0.6rem;
+  color: var(--color-brand-800);
+  font-weight: 650;
+}
+.dark .st-now {
+  background: var(--color-brand-950);
+  color: var(--color-brand-200);
+}
+/* Building up, the first time it's seen: plates slide in, the usual owners are struck out, ours appear */
+.st.is-armed .st-plate,
+.st.is-armed .st-before::after,
+.st.is-armed .st-now,
+.st.is-armed .st-badge {
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.st.is-armed .st-plate {
+  transition-delay: calc(var(--i) * 120ms);
+}
+.st.is-armed .st-before::after {
+  transition-delay: calc(0.5s + var(--i) * 150ms);
+}
+.st.is-armed .st-now {
+  transition-delay: calc(0.75s + var(--i) * 150ms);
+}
+.st.is-armed .st-badge {
+  transition-delay: 1.3s;
+}
+.st.is-armed:not(.is-in) .st-plate {
+  opacity: 0;
+  transform: translateX(1.5rem);
+}
+.st.is-armed:not(.is-in) .st-before::after {
+  transform: scaleX(0);
+}
+.st.is-armed:not(.is-in) .st-now {
+  opacity: 0;
+  transform: translateY(4px);
+}
+.st.is-armed:not(.is-in) .st-badge {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.9);
+}
+.v2-how {
+  margin-top: 3.5rem;
+  scroll-margin-top: 6rem;
+}
+.v2-steps {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 1rem;
+  margin-top: 1rem;
+}
+.v2-steps li {
+  border-top: 2px solid var(--color-brand-500);
+  padding-top: 0.8rem;
+}
+.v2-step-num {
+  color: var(--color-brand-700);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+}
+.dark .v2-step-num {
+  color: var(--color-brand-300);
+}
+.v2-step-name {
+  margin-top: 0.3rem;
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .v2-step-name {
+  color: #fff;
+}
+.v2-step-when {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.85rem;
+}
+.v2-promise {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  margin-top: 3.5rem;
+  border-radius: 1.5rem;
+  background: var(--color-brand-600);
+  background-image: linear-gradient(135deg, var(--color-brand-500), var(--color-brand-700));
+  padding: 1.75rem 2rem;
+  box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--color-brand-700) 80%, transparent);
+}
+.v2-promise p {
+  max-width: 36rem;
+  color: #fff;
+  font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+  font-weight: 620;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+/* On the petrol/sky band the button turns white, so it doesn't vanish into it */
+.v2-promise .btn-primary {
+  background: #fff;
+  color: var(--color-brand-800);
+  box-shadow: 0 10px 22px -12px rgb(0 0 0 / 0.4);
+}
+
+/* ---------- Plans, and why it's safe to start ---------- */
+.v2-plans {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 2.5rem;
+}
+.v2-plan {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.5rem;
+  padding: 1.75rem;
+}
+.v2-plan-name {
+  color: var(--color-neutral-950);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.03em;
+}
+.dark .v2-plan-name,
+.v2-plan--popular .v2-plan-name {
+  color: #fff;
+}
+.v2-plan-badge {
+  border-radius: 999px;
+  background: var(--color-brand-500);
+  padding: 0.2rem 0.7rem;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+.v2-plan-for {
+  margin-top: 0.4rem;
+  color: var(--color-neutral-600);
+  font-size: 0.92rem;
+}
+.dark .v2-plan-for {
+  color: var(--color-neutral-400);
+}
+.v2-plan--popular .v2-plan-for {
+  color: var(--color-ink-text);
+}
+.v2-plan-rows {
+  display: grid;
+  margin: 1.25rem 0 1.5rem;
+  font-size: 0.9rem;
+}
+.v2-plan-rows > div {
+  display: grid;
+  gap: 0.15rem 1rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding: 0.75rem 0;
+}
+.dark .v2-plan-rows > div {
+  border-color: var(--color-neutral-800);
+}
+.v2-plan--popular .v2-plan-rows > div {
+  border-color: rgb(255 255 255 / 0.1);
+}
+.v2-plan-rows dt {
+  color: var(--color-neutral-500);
+}
+.v2-plan--popular .v2-plan-rows dt {
+  color: var(--color-ink-text);
+}
+.v2-plan-rows dd {
+  color: var(--color-neutral-950);
+  font-weight: 600;
+}
+.dark .v2-plan-rows dd,
+.v2-plan--popular .v2-plan-rows dd {
+  color: #fff;
+}
+.v2-safety {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.v2-safety li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+.v2-safety-icon {
+  display: inline-flex;
+  height: 2.2rem;
+  width: 2.2rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+.dark .v2-safety-icon {
+  background: var(--color-brand-950);
+  color: var(--color-brand-300);
+}
+.v2-safety-title {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .v2-safety-title {
+  color: #fff;
+}
+.v2-safety-text {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.dark .v2-safety-text {
+  color: var(--color-neutral-400);
+}
+
+/* ---------- Phones: the booking button and the emergency line, always in reach ---------- */
+.v2-sticky {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 40;
+  display: flex;
+  gap: 0.6rem;
+  border-top: 1px solid var(--color-neutral-200);
+  background: color-mix(in srgb, var(--color-paper) 94%, transparent);
+  padding: 0.7rem 1rem calc(0.7rem + env(safe-area-inset-bottom));
+  backdrop-filter: blur(12px);
+  transform: translateY(110%);
+  visibility: hidden;
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.35s;
+}
+.dark .v2-sticky {
+  border-color: var(--color-neutral-800);
+  background: color-mix(in srgb, var(--color-neutral-950) 94%, transparent);
+}
+.v2-sticky.is-shown {
+  transform: none;
+  visibility: visible;
+  transition-delay: 0s;
+}
+.v2-sticky-call {
+  display: inline-flex;
+  width: 3rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 999px;
+  color: var(--color-brand-700);
+}
+.dark .v2-sticky-call {
+  border-color: var(--color-neutral-700);
+  color: var(--color-brand-300);
+}
+
+@keyframes v2-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (min-width: 640px) {
+  .v2-section {
+    padding-block: 6.5rem;
+  }
+  .v2-night,
+  .v2-plan {
+    padding: 2rem;
+  }
+  .v2-steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .v2-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v2-plan-rows > div {
+    grid-template-columns: 11rem minmax(0, 1fr);
+  }
+  .v2-safety {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  /* The bar is for phones only; wider screens keep the header's button in view */
+  .v2-sticky {
+    display: none;
+  }
+}
+@media (min-width: 1024px) {
+  .v2-split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4rem;
+  }
+}
+/* Stack plates: the owners sit beside the layer's name once there is room */
+@media (min-width: 640px) {
+  .st-plate {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .st-owner {
+    grid-column: 3;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+/* Phones: a verdict goes under its line, so the line keeps its width */
+@media (max-width: 479px) {
+  .v2-row {
+    grid-template-columns: 2.9rem minmax(0, 1fr);
+  }
+  .v2-verdict {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-dot--live {
+    animation: none;
+  }
+  .v2-sticky {
+    transition: none;
+  }
+}

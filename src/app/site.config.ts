@@ -31,12 +31,7 @@ export const site = {
    */
   videoUrl: '',
 
-  /**
-   * Shows the floating Petrol / Sky switch (bottom left) for comparing the two colour palettes on the
-   * live page (see styles/theme.css). Set to false once a palette is chosen: the saved choice is then
-   * ignored and everyone sees Petrol.
-   */
-  paletteSwitcher: true,
+  paletteSwitcher: false,
 
   /** Customer control panel where plans are ordered ("Choose plan" buttons on the pricing page). */
   panelUrl: 'https://panel.vavencloud.com/',
@@ -63,9 +58,9 @@ export const site = {
     recaptchaSiteKey: import.meta.env.VITE_RECAPTCHA_SITE_KEY ?? '',
   },
 
+  /** As linked from vavencloud.com */
   socials: [
-    { icon: 'linkedin', label: 'LinkedIn', href: '#' },
-    { icon: 'facebook', label: 'Facebook', href: '#' },
-    { icon: 'instagram', label: 'Instagram', href: '#' },
+    { icon: 'linkedin', label: 'LinkedIn', href: 'https://www.linkedin.com/company/vavencloud/' },
+    { icon: 'instagram', label: 'Instagram', href: 'https://www.instagram.com/vavencloud/' },
   ] satisfies SocialLink[],
 }

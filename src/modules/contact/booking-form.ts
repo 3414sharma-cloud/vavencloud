@@ -72,7 +72,7 @@ function initRoleSelect(form: HTMLFormElement): void {
   const choose = (value: string) => {
     select.value = value
     label.textContent = value
-    label.classList.remove('text-neutral-400', 'dark:text-neutral-500')
+    label.classList.remove('text-neutral-500', 'dark:text-neutral-400')
     options.forEach((option) => {
       const selected = option.dataset.roleOption === value
       option.setAttribute('aria-selected', String(selected))

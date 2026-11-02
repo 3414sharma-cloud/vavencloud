@@ -19,12 +19,12 @@ const skipLink = `
  * Renders a full page: shared layout (header, footer) around the page's sections, then initialises
  * everything. Every page entry (src/pages/**\/*.page.ts) calls this once.
  */
-export function createPage({ sections, init }: PageOptions): void {
+export function createPage({ sections, nav, init }: PageOptions): void {
   initTheme()
   // Palette preview (Petrol / Sky): applied only while the switch is shown, so a saved choice can't outlive it
   if (site.paletteSwitcher) initPalette()
 
-  const siteHeader = header()
+  const siteHeader = header(nav)
   const siteFooter = footer()
   const extras = site.paletteSwitcher ? [paletteSwitcher()] : []
 

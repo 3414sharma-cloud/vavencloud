@@ -14,6 +14,23 @@ const label = (id: string, text: string, required = true) =>
   `<label for="${id}" class="text-sm font-medium text-neutral-800 dark:text-neutral-200">${text} ${required ? req : '<span class="font-normal text-neutral-500">(optional)</span>'}</label>`
 const help = (id: string, text: string) => `<p id="${id}-help" class="mt-1.5 text-xs text-neutral-500">${text}</p>`
 
+/** What happens after the form, shown before it so booking feels small and certain */
+const nextSteps = [
+  { title: 'We reply', text: 'Within one business day, to pick a time.' },
+  { title: 'Free review', text: '45 minutes with a senior engineer.' },
+  { title: 'Written roadmap', text: 'Yours to keep, within 48 hours.' },
+]
+
+/** The design spaces the number out; the link itself comes from site.config.ts */
+const emergencyPhone = '+91 90609 79706'
+
+/** A way to reach us other than the form: an icon, a short line, the number or address */
+const reach = (ic: 'phone' | 'mail', text: string, value: string, href: string) => `
+        <a href="${href}" class="group flex items-center gap-4 rounded-2xl border border-neutral-200 bg-white px-5 py-4 transition-colors hover:border-brand-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-brand-400">
+          <span class="inline-flex h-10 w-10 flex-none items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300" aria-hidden="true">${icon(ic, 'h-4 w-4')}</span>
+          <span class="min-w-0"><span class="block text-xs text-neutral-500">${text}</span><span class="block font-semibold text-neutral-950 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-300">${value}</span></span>
+        </a>`
+
 const choice = (name: string, value: string, required: boolean, first: boolean) => `
   <label class="flex cursor-pointer items-center gap-2.5 rounded-2xl border border-neutral-200 px-4 py-3 text-sm text-neutral-800 transition-colors hover:border-neutral-400 has-checked:border-brand-600 has-checked:bg-brand-600 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:border-neutral-800 dark:text-neutral-200 dark:hover:border-neutral-600 dark:has-checked:border-brand-500 dark:has-checked:bg-brand-500 dark:has-checked:text-white">
     <input type="radio" name="${name}" value="${value}" class="sr-only" ${required && first ? 'required' : ''} />
@@ -57,7 +74,7 @@ const step1 = `
             <option>Other</option>
           </select>
           <button type="button" class="field mt-0 flex w-full items-center justify-between text-left font-medium" data-role-trigger aria-haspopup="listbox" aria-expanded="false" aria-controls="bk-role-options">
-            <span data-role-label class="text-neutral-400 dark:text-neutral-500">Choose your role</span>
+            <span data-role-label class="text-neutral-500 dark:text-neutral-400">Choose your role</span>
             <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600 transition-transform duration-200 dark:bg-neutral-800 dark:text-neutral-300" data-role-chevron>${icon('chevron-down', 'h-4 w-4')}</span>
           </button>
           <div id="bk-role-options" class="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white p-1.5 shadow-[0_18px_36px_-18px_rgb(0_0_0/0.28)] dark:border-neutral-700 dark:bg-neutral-900" data-role-options role="listbox" aria-label="Your role" hidden>
@@ -149,13 +166,28 @@ export function contactSection(): Section {
         </div>
         <p class="text-sm text-neutral-500">Free. No commitment.</p>
       </div>
+      <ol class="mt-8 grid gap-x-6 gap-y-4 sm:grid-cols-3" aria-label="What happens next">
+        ${nextSteps
+          .map(
+            (s, i) => `
+        <li class="border-t border-neutral-200 pt-4 dark:border-neutral-800">
+          <span class="font-mono text-xs text-brand-700 dark:text-brand-300" aria-hidden="true">0${i + 1}</span>
+          <p class="mt-1 font-semibold text-neutral-950 dark:text-white">${s.title}</p>
+          <p class="mt-1 text-sm text-neutral-500">${s.text}</p>
+        </li>`,
+          )
+          .join('')}
+      </ol>
       <form id="booking-form" class="mt-8 border-y border-neutral-200 py-8 sm:py-10 dark:border-neutral-800" novalidate aria-label="Book a free production review">
         ${step1}
         ${step2}
         ${confirmation}
         <p id="form-status" class="mt-4 text-sm font-medium" role="status" aria-live="polite"></p>
       </form>
-      <p class="mt-7 text-sm">Prefer email? Write to <a href="mailto:${site.contact.email}" class="font-medium text-neutral-950 underline underline-offset-4 dark:text-white">${site.contact.email}</a> and a senior engineer will reply within one business day.</p>
+      <div class="mt-8 grid gap-3 sm:grid-cols-2">
+        ${reach('phone', 'Site down right now? Call 24/7', emergencyPhone, site.contact.phones[0].href)}
+        ${reach('mail', 'Prefer email? A senior engineer replies within one business day', site.contact.email, `mailto:${site.contact.email}`)}
+      </div>
     </div>
   </div>
 </section>`,

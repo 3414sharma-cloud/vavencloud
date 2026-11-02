@@ -4,7 +4,7 @@ import { qs, qsa } from '@/shared/lib/dom.ts'
 import { getTheme, onThemeChange, setThemePreference } from '@/shared/lib/theme.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { brandLink } from '@/shared/ui/logo.ts'
-import { navLinks, topBar } from './nav.data.ts'
+import { navLinks, topBar, type NavLink } from './nav.data.ts'
 
 const desktopLink =
   'rounded-full px-2.5 py-2 text-sm font-medium whitespace-nowrap text-neutral-600 xl:px-3.5 transition-colors hover:text-neutral-950 aria-[current=true]:text-neutral-950 dark:text-neutral-400 dark:hover:text-white dark:aria-[current=true]:text-white'
@@ -20,7 +20,7 @@ const announcement = () => `
   </div>
 </div>`
 
-const html = () => `
+const html = (links: NavLink[]) => `
 ${announcement()}
 <!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
 <header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/60 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.55)_inset,0_8px_30px_-20px_rgb(40_32_20/0.18)] data-solid:backdrop-blur-2xl data-solid:backdrop-saturate-150 dark:data-solid:border-white/8 dark:data-solid:bg-neutral-950/55 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.05)_inset,0_8px_30px_-20px_rgb(0_0_0/0.65)]">
@@ -28,7 +28,7 @@ ${announcement()}
     ${brandLink()}
 
     <ul class="hidden items-center gap-0.5 lg:flex xl:gap-1">
-      ${navLinks.map((l) => `<li><a href="${l.href}" class="${desktopLink}" data-nav-link>${l.label}</a></li>`).join('')}
+      ${links.map((l) => `<li><a href="${l.href}" class="${desktopLink}" data-nav-link>${l.label}</a></li>`).join('')}
     </ul>
 
     <div class="flex items-center gap-2">
@@ -46,7 +46,7 @@ ${announcement()}
 
   <div id="mobile-menu" class="hidden border-t border-neutral-950/5 bg-paper/45 backdrop-blur-2xl lg:hidden dark:border-white/8 dark:bg-neutral-950/45">
     <ul class="container-page flex flex-col py-3">
-      ${navLinks
+      ${links
         .map(
           (l) =>
             `<li><a href="${l.href}" class="block rounded-xl px-3 py-3 text-base font-medium text-neutral-800 hover:text-neutral-950 dark:text-neutral-200 dark:hover:text-white">${l.label}</a></li>`,
@@ -138,9 +138,10 @@ function initSolidOnScroll(siteHeader: HTMLElement): void {
   update()
 }
 
-export function header(): Section {
+/** The site header. A page with its own sections passes its own `links` (the landing page's are the default). */
+export function header(links: NavLink[] = navLinks): Section {
   return {
-    html: html(),
+    html: html(links),
     init() {
       const siteHeader = qs('#site-header')
       initTopBar()

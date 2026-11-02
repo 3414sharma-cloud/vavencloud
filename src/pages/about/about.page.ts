@@ -1,8 +1,8 @@
 import { createPage } from '@/app/create-page.ts'
 import { routes } from '@/app/routes.ts'
 import type { Section } from '@/app/types.ts'
-import { clientStoriesSection } from '@/modules/client-stories/client-stories.section.ts'
 import { founderSection } from '@/modules/founder/founder.section.ts'
+import { reviewsSection } from '@/modules/reviews/reviews.section.ts'
 import { teamSection } from '@/modules/team/team.section.ts'
 import { icon } from '@/shared/ui/icons.ts'
 
@@ -24,5 +24,5 @@ const aboutIntro = (): Section => ({
 })
 
 createPage({
-  sections: [aboutIntro(), founderSection(), teamSection(), clientStoriesSection()],
+  sections: [aboutIntro(), founderSection(), teamSection(), reviewsSection()],
 })

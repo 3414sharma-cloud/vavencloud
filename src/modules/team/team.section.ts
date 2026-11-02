@@ -1,16 +1,12 @@
 import type { Section } from '@/app/types.ts'
-import { personImage } from '@/shared/ui/portrait.ts'
-import { engineers, type Engineer } from '@/modules/stats/stats.data.ts'
+import { site } from '@/app/site.config.ts'
+import { accountTeam } from '@/modules/stats/stats.data.ts'
+import { icon } from '@/shared/ui/icons.ts'
 
-const engineerCard = (engineer: Engineer) => `
-  <li class="card group p-6">
-    <div class="pt-avatar pt-avatar--hover h-16 w-16"><span class="pt-ring" aria-hidden="true"></span><span class="pt-photo">${personImage({ look: engineer.look, photo: engineer.photo, name: engineer.name })}</span></div>
-    <p class="mt-5 font-semibold text-neutral-950 dark:text-white">${engineer.name}</p>
-    <p class="mt-0.5 text-sm text-neutral-500">${engineer.speciality}</p>
-    <p class="mt-3 text-sm leading-relaxed">${engineer.line}</p>
-  </li>`
-
-/** Team profiles belong on About. The data stays visibly marked as sample content until approved. */
+/**
+ * The people on your account, by team (About page). Roles only, no invented names or faces
+ * (docs/messaging.md). Add real people here once they are approved for the page.
+ */
 export function teamSection(): Section {
   return {
     html: `
@@ -18,11 +14,22 @@ export function teamSection(): Section {
   <div class="container-page">
     <div class="max-w-3xl">
       <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">The people behind the work</p>
-      <h2 id="team-title" class="mt-4 text-4xl leading-[1.05] font-semibold tracking-tight text-neutral-950 sm:text-5xl dark:text-white">Meet your engineers.</h2>
-      <p class="mt-5 text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-400">The people who investigate, fix and explain what happened when your product needs attention.</p>
+      <h2 id="team-title" class="mt-4 text-4xl leading-[1.05] font-semibold tracking-tight text-neutral-950 sm:text-5xl dark:text-white">The people on your account.</h2>
+      <p class="mt-5 text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-400">Senior engineers who investigate, fix and explain what happened when your product needs attention. In your chat, not a ticket queue.</p>
     </div>
-    <p class="mt-7 max-w-2xl rounded-2xl border border-dashed border-neutral-300 px-4 py-3 text-sm text-neutral-600 dark:border-neutral-700 dark:text-neutral-400"><span class="font-medium text-neutral-950 dark:text-white">Sample team profiles.</span> Names, roles and outcomes are placeholders for layout. Replace them with approved team information before launch.</p>
-    <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" role="list">${engineers.map(engineerCard).join('')}</ul>
+    <ul class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4" role="list">
+      ${accountTeam
+        .map(
+          (m) => `
+      <li class="card p-6">
+        <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-700 dark:bg-brand-950 dark:text-brand-300" aria-hidden="true">${icon(m.icon, 'h-5 w-5')}</span>
+        <p class="mt-5 font-semibold text-neutral-950 dark:text-white">${m.role}</p>
+        <p class="mt-2 text-sm leading-relaxed text-neutral-500">${m.focus}</p>
+      </li>`,
+        )
+        .join('')}
+    </ul>
+    <a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-2 font-semibold text-neutral-950 underline underline-offset-4 hover:text-brand-700 dark:text-white dark:hover:text-brand-300">Meet the whole Vavensoft team<span class="sr-only"> (opens in a new tab)</span> ${icon('arrow-right', 'h-4 w-4')}</a>
   </div>
 </section>`,
   }

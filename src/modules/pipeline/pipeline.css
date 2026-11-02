@@ -1,116 +1,314 @@
-/* "How we work" pipeline: flowing rail, travelling packet, pulsing active node, streamed console lines */
+/*
+ * "How it works" (pipeline.section.ts): a numbered index of the five steps whose lines fill as the
+ * walkthrough moves on, then one wide card for the open step. Flat, like the hero's index.
+ */
 
-.pipeline-bg {
-  background-image: radial-gradient(color-mix(in srgb, var(--color-neutral-950) 7%, transparent) 1px, transparent 1px);
-  background-size: 22px 22px;
-  mask-image: radial-gradient(ellipse 70% 60% at 50% 55%, #000 20%, transparent 75%);
+/* ---------- The index: one column per step ---------- */
+.pipe-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: start;
+  gap: 1rem;
 }
-.dark .pipeline-bg {
-  background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+.pipe-step {
+  display: block;
+  min-width: 0;
+  padding-bottom: 0.25rem;
+  color: var(--color-neutral-500);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
 }
-
-/* Unfilled part of the rail: dashes flowing towards the next stage */
-.pipeline-rail {
-  background-image: repeating-linear-gradient(90deg, var(--color-neutral-300) 0 8px, transparent 8px 14px);
-  background-size: 14px 100%;
-  animation: pipeline-flow 0.8s linear infinite;
+.pipe-step:hover {
+  color: var(--color-neutral-800);
 }
-.dark .pipeline-rail {
-  background-image: repeating-linear-gradient(90deg, var(--color-neutral-700) 0 8px, transparent 8px 14px);
+.dark .pipe-step:hover {
+  color: var(--color-neutral-300);
 }
-@keyframes pipeline-flow {
-  to { background-position: 14px 0; }
+.pipe-step[aria-selected="true"] {
+  color: var(--color-neutral-950);
 }
-
-.pipeline-fill {
-  transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--color-brand-500) 50%, transparent);
+.dark .pipe-step[aria-selected="true"] {
+  color: #fff;
 }
-
-/* Glowing dot running along the completed part of the rail */
-.pipeline-packet {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  height: 8px;
-  width: 8px;
-  margin: -4px 0 0 -4px;
-  border-radius: 9999px;
-  background: #fff;
-  box-shadow:
-    0 0 0 3px color-mix(in srgb, var(--color-brand-500) 50%, transparent),
-    0 0 14px 4px color-mix(in srgb, var(--color-brand-500) 60%, transparent);
-  animation: pipeline-packet 2.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+.pipe-step:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 4px;
 }
-@keyframes pipeline-packet {
-  0% { left: 0; opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { left: 100%; opacity: 0; }
+/* The line over each step: full once done, filling while it's the open one */
+.pipe-step-bar {
+  display: block;
+  height: 2px;
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+  background: var(--color-neutral-200);
 }
-
-/* Active node: expanding ring */
-[data-state="active"] .pipeline-ring {
-  animation: pipeline-ring 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+.dark .pipe-step-bar {
+  background: var(--color-neutral-800);
 }
-@keyframes pipeline-ring {
-  0% { transform: scale(0.9); opacity: 1; }
-  100% { transform: scale(1.45); opacity: 0; }
+.pipe-step-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-brand-600);
 }
-[data-state="active"] .pipeline-node {
-  box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-brand-500) 12%, transparent);
+.dark .pipe-step-bar i {
+  background: var(--color-brand-400);
 }
-[data-state="done"] .pipeline-node {
-  animation: pipeline-pop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+.pipe-step[data-state="done"] .pipe-step-bar i {
+  width: 100%;
 }
-@keyframes pipeline-pop {
-  50% { transform: scale(1.15); }
+.pipe-step[data-state="active"] .pipe-step-bar i {
+  animation: pipe-progress var(--dur, 6s) linear forwards;
 }
-
-/* Stage details fade in on change; deliverables stagger in */
-.pipeline-panel:not([hidden]) {
-  animation: pipeline-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+.is-paused .pipe-step[data-state="active"] .pipe-step-bar i {
+  animation-play-state: paused;
 }
-.pipeline-panel:not([hidden]) .pipeline-item {
-  animation: pipeline-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: calc(var(--k, 0) * 90ms + 200ms);
+.pipe-step-num {
+  display: block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
 }
-@keyframes pipeline-in {
-  from { opacity: 0; transform: translateY(12px); }
+.pipe-step:is([data-state="active"], [data-state="done"]) .pipe-step-num {
+  color: var(--color-brand-600);
 }
-
-/* Console */
-.pipeline-line {
-  animation: pipeline-line 0.4s ease-out both;
+.dark .pipe-step:is([data-state="active"], [data-state="done"]) .pipe-step-num {
+  color: var(--color-brand-400);
 }
-@keyframes pipeline-line {
-  from { opacity: 0; transform: translateX(-8px); }
+.pipe-step-name {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
 }
-[data-pipeline-log]::after {
-  content: "";
-  display: inline-block;
-  height: 1em;
-  width: 0.55em;
-  margin-top: 0.25rem;
-  background: var(--color-neutral-400);
-  vertical-align: middle;
-  animation: pipeline-caret 1s steps(1) infinite;
-}
-@keyframes pipeline-caret {
-  50% { opacity: 0; }
+.pipe-step-when {
+  display: block;
+  margin-top: 0.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
 }
 
-.pipeline-total {
-  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+/* ---------- The open step: what happens, and what you get ---------- */
+.pipe-card {
+  margin-top: 2.25rem;
+  padding: 1.6rem;
+}
+/* All steps share one cell, so the card keeps the height of the longest one */
+.pipe-panels {
+  display: grid;
+}
+.pipe-panel {
+  display: grid;
+  grid-area: 1 / 1;
+  gap: 2rem;
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    visibility 0s linear 0.35s;
+}
+.pipe-panel.is-active {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+.pipe-kicker {
+  color: var(--color-brand-700);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.dark .pipe-kicker {
+  color: var(--color-brand-300);
+}
+.pipe-title {
+  margin-top: 0.75rem;
+  color: var(--color-neutral-950);
+  font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+  font-weight: 620;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+}
+.dark .pipe-title {
+  color: #fff;
+}
+.pipe-text {
+  max-width: 34rem;
+  margin-top: 0.9rem;
+  color: var(--color-neutral-600);
+  line-height: 1.65;
+}
+.dark .pipe-text {
+  color: var(--color-neutral-400);
+}
+.pipe-get {
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 1.5rem;
+}
+.dark .pipe-get {
+  border-color: var(--color-neutral-800);
+}
+.pipe-get-label {
+  color: var(--color-neutral-500);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.pipe-get ul {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+.pipe-get li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--color-neutral-950);
+  font-weight: 600;
+  line-height: 1.4;
+}
+.dark .pipe-get li {
+  color: #fff;
+}
+.pipe-get li > span {
+  display: inline-flex;
+  height: 1.3rem;
+  width: 1.3rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.05rem;
+  border-radius: 999px;
+  background: var(--color-brand-600);
+  color: #fff;
+}
+.dark .pipe-get li > span {
+  background: var(--color-brand-500);
+}
+.pipe-panel.is-active > * {
+  animation: pipe-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.pipe-panel.is-active > :nth-child(2) {
+  animation-delay: 80ms;
 }
 
-.pipeline-status-dot {
-  animation: pipeline-blink 1.4s ease-in-out infinite;
+.pipe-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 2rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 1.1rem;
 }
-.is-paused .pipeline-status-dot {
-  animation: none;
-  background: #fbbf24;
+.dark .pipe-foot {
+  border-color: var(--color-neutral-800);
 }
-@keyframes pipeline-blink {
-  50% { opacity: 0.3; }
+.pipe-count {
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+}
+.pipe-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  color: var(--color-neutral-700);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.pipe-toggle:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-700);
+}
+.dark .pipe-toggle {
+  border-color: var(--color-neutral-700);
+  color: var(--color-neutral-300);
+}
+.dark .pipe-toggle:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-300);
+}
+.pipe-toggle:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+@keyframes pipe-progress {
+  to {
+    width: 100%;
+  }
+}
+@keyframes pipe-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (min-width: 640px) {
+  .pipe-card {
+    padding: 2.25rem;
+  }
+}
+@media (min-width: 1024px) {
+  .pipe-card {
+    padding: 2.75rem;
+  }
+  .pipe-panel {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 3.5rem;
+  }
+  .pipe-get {
+    border-top: 0;
+    border-left: 1px solid var(--color-neutral-200);
+    padding-top: 0;
+    padding-left: 2.5rem;
+  }
+  .dark .pipe-get {
+    border-color: var(--color-neutral-800);
+  }
+}
+/* Phones: the index keeps its numbers and lines; the open step's name is in the card */
+@media (max-width: 767px) {
+  .pipe-step-when {
+    display: none;
+  }
+}
+@media (max-width: 639px) {
+  .pipe-steps {
+    gap: 0.5rem;
+  }
+  .pipe-step-name {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pipe-step,
+  .pipe-panel {
+    transition: none;
+  }
+  .pipe-panel.is-active > * {
+    animation: none;
+  }
+  /* Nothing moves by itself: the open step's line simply shows full */
+  .pipe-step[data-state="active"] .pipe-step-bar i {
+    animation: none;
+    width: 100%;
+  }
 }

@@ -37,7 +37,7 @@ const html = () => `
 <footer class="border-t border-neutral-200 bg-neutral-50 pt-16 pb-10 text-sm dark:border-neutral-800 dark:bg-neutral-900/40">
   <div class="container-page">
     <div class="grid gap-12 lg:grid-cols-12">
-      <div class="lg:col-span-4">
+      <div class="lg:col-span-3">
         ${brandLink()}
         <p class="mt-5 max-w-sm leading-relaxed">VavenCloud, by Vavensoft. One team for your servers, your deployments and your code.</p>
         <ul class="mt-6 flex gap-2">
@@ -68,20 +68,20 @@ const html = () => `
         )
         .join('')}
 
-      <div class="lg:col-span-4">
+      <div class="lg:col-span-3">
         <p class="font-semibold text-neutral-950 dark:text-white">Contact</p>
         <ul class="mt-4 space-y-3">
           <li class="flex gap-3">${icon('mail', 'mt-0.5 h-4 w-4 shrink-0')}<a href="mailto:${site.contact.email}" class="${linkClass}">${site.contact.email}</a></li>
-          <li class="flex gap-3">${icon('phone', 'mt-0.5 h-4 w-4 shrink-0')}<span>${site.contact.phones.map((p) => `<a href="${p.href}" class="${linkClass}">${p.label}</a>`).join(', ')}</span></li>
+          <li class="flex gap-3">${icon('phone', 'mt-0.5 h-4 w-4 shrink-0')}<span>${site.contact.phones.map((p) => `<a href="${p.href}" class="${linkClass} whitespace-nowrap">${p.label}</a>`).join(', ')}</span></li>
           <li class="flex gap-3">${icon('map-pin', 'mt-0.5 h-4 w-4 shrink-0')}<span class="leading-relaxed">${site.contact.address}</span></li>
         </ul>
       </div>
     </div>
 
-    <div class="relative mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:items-center sm:justify-between dark:border-neutral-800">
+    <div class="relative mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between dark:border-neutral-800">
       <p>© <span id="year"></span> ${site.name}. All rights reserved.</p>
-      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
-        <ul class="flex gap-6">
+      <div class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
+        <ul class="flex flex-wrap gap-x-6 gap-y-2">
           ${legalLinks.map((l) => `<li><a href="${l.href}" class="${linkClass}">${l.label}</a></li>`).join('')}
         </ul>
         ${themeSwitch()}

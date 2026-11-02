@@ -1,0 +1,597 @@
+/*
+ * The hero's visuals (hero-visuals.ts): small app windows, one per thing we sell. hv-* is shared by all
+ * three; pm-* is the incident, cv-* the managed cloud account, sv-* the new server. Everything animates only
+ * under .hv.is-playing, so a visual plays when its slide comes on (playVisual) and otherwise shows its end
+ * state. The brand colour follows the page's palette (petrol or sky). Status colours (rose, emerald) are
+ * Tailwind classes in the markup.
+ */
+
+/* ---------- Shared: the window ---------- */
+.hv {
+  margin: 0;
+}
+.hv-window {
+  overflow: hidden;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.4rem;
+  background: #fff;
+  box-shadow: var(--shadow-lift);
+}
+.dark .hv-window {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+}
+.hv-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid var(--color-neutral-200);
+  background: var(--color-neutral-50);
+  padding: 0.6rem 1.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.72rem;
+}
+.dark .hv-bar {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-950);
+}
+.hv-app {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-neutral-700);
+  font-weight: 650;
+}
+.dark .hv-app {
+  color: var(--color-neutral-300);
+}
+.hv-url {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.hv-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+}
+.hv-live i,
+.hv-pill i {
+  height: 0.45rem;
+  width: 0.45rem;
+  flex: none;
+  border-radius: 999px;
+}
+.hv-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem 1rem;
+  padding: 1rem 1.15rem 0.2rem;
+}
+.hv-kicker {
+  color: var(--color-neutral-500);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hv-title {
+  margin-top: 0.2rem;
+  color: var(--color-neutral-950);
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.dark .hv-title {
+  color: #fff;
+}
+.hv-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.72rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.hv-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.hv-chips li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  color: var(--color-neutral-700);
+  font-size: 0.74rem;
+  font-weight: 600;
+}
+.hv-chips svg {
+  color: var(--color-brand-600);
+}
+.dark .hv-chips li {
+  border-color: var(--color-neutral-800);
+  color: var(--color-neutral-300);
+}
+.dark .hv-chips svg {
+  color: var(--color-brand-400);
+}
+.hv-caption {
+  margin-top: 0.75rem;
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+}
+
+/* ---------- 24/7 DevOps support: the incident ---------- */
+/* Investigating and Resolved share one spot; the markup shows Resolved, the end state */
+.pm-status {
+  display: grid;
+  flex: none;
+}
+.pm-status > span {
+  grid-area: 1 / 1;
+  justify-self: end;
+}
+.pm-status-live {
+  opacity: 0;
+}
+.pm-chart {
+  margin: 0.75rem 1.15rem 0;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.8rem 0.5rem;
+}
+.dark .pm-chart {
+  border-color: var(--color-neutral-800);
+}
+.pm-chart-labels,
+.pm-chart-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-neutral-500);
+  font-size: 0.7rem;
+}
+.pm-chart-labels {
+  font-weight: 600;
+}
+.pm-chart-axis {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.62rem;
+}
+.pm-chart-svg {
+  display: block;
+  height: 3.2rem;
+  width: 100%;
+  margin: 0.35rem 0;
+}
+.pm-thread {
+  display: grid;
+  padding: 0.6rem 1.15rem 1rem;
+}
+.pm-msg {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.7rem;
+  padding: 0.6rem 0;
+}
+.pm-msg + .pm-msg {
+  border-top: 1px solid var(--color-neutral-100);
+}
+.dark .pm-msg + .pm-msg {
+  border-color: var(--color-neutral-800);
+}
+.pm-avatar {
+  display: inline-flex;
+  height: 1.9rem;
+  width: 1.9rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+}
+.pm-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+}
+.pm-meta b {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .pm-meta b {
+  color: #fff;
+}
+.pm-meta time {
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+}
+.pm-text {
+  margin-top: 0.1rem;
+  color: var(--color-neutral-700);
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+.dark .pm-text {
+  color: var(--color-neutral-300);
+}
+/* The morning report: the thread's last word, as a card of its own */
+.pm-msg--report {
+  margin-top: 0.35rem;
+  border-radius: 0.9rem;
+  background: var(--color-brand-50);
+  padding: 0.65rem 0.7rem;
+}
+.pm-msg.pm-msg--report {
+  border-top: 0;
+}
+.dark .pm-msg--report {
+  background: color-mix(in srgb, var(--color-brand-950) 70%, transparent);
+}
+/* Playing: the chart sweeps in, the messages arrive in turn, then the status turns Resolved */
+.hv.is-playing .pm-chart-svg {
+  animation: hv-wipe 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.6s both;
+}
+.hv.is-playing .pm-msg {
+  animation: hv-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.9s + var(--k) * 0.55s);
+}
+.hv.is-playing .pm-status-live {
+  animation: hv-out 2.6s linear both;
+}
+.hv.is-playing .pm-status-done {
+  animation: hv-in 2.6s linear both;
+}
+
+/* ---------- Managed cloud: the client's own account ---------- */
+/* The provider in the title: AWS, Azure and Google Cloud take turns while it plays (AWS when still) */
+.cv-providers {
+  display: grid;
+}
+.cv-provider {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  gap: 0.45rem;
+  opacity: 0;
+}
+.cv-provider:first-of-type {
+  opacity: 1;
+}
+.cv-account {
+  color: var(--color-neutral-500);
+  font-weight: 500;
+}
+.hv.is-playing .cv-provider {
+  animation: cv-turn 7.5s ease infinite;
+  animation-delay: calc(var(--n) * 2.5s);
+}
+.cv-resources {
+  display: grid;
+  margin-top: 0.6rem;
+  padding: 0 1.15rem;
+}
+.cv-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0;
+}
+.cv-row + .cv-row {
+  border-top: 1px solid var(--color-neutral-100);
+}
+.dark .cv-row + .cv-row {
+  border-color: var(--color-neutral-800);
+}
+.cv-icon {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+.dark .cv-icon {
+  background: var(--color-brand-950);
+  color: var(--color-brand-300);
+}
+.cv-name {
+  color: var(--color-neutral-950);
+  font-size: 0.88rem;
+  font-weight: 650;
+}
+.dark .cv-name {
+  color: #fff;
+}
+.cv-detail {
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+}
+.hv--cloud .hv-chips {
+  border-top: 1px solid var(--color-neutral-200);
+  padding: 0.85rem 1.15rem 1.1rem;
+}
+.dark .hv--cloud .hv-chips {
+  border-color: var(--color-neutral-800);
+}
+.hv.is-playing .cv-row {
+  animation: hv-rise 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.5s + var(--k) * 0.35s);
+}
+.hv.is-playing .cv-row .hv-pill {
+  animation: hv-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(0.8s + var(--k) * 0.35s);
+}
+.hv.is-playing.hv--cloud .hv-chips li {
+  animation: hv-rise 0.4s ease both 2.1s;
+}
+
+/* ---------- Cloud servers: a new server going live ---------- */
+.sv-body {
+  padding: 1rem 1.15rem 1.15rem;
+}
+.sv-label {
+  color: var(--color-neutral-500);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.sv-label + * {
+  margin-top: 0.45rem;
+}
+* + .sv-label {
+  margin-top: 0.9rem;
+}
+.sv-regions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+.sv-regions li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0.75rem;
+  padding: 0.55rem 0.4rem;
+  color: var(--color-neutral-600);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.dark .sv-regions li {
+  border-color: var(--color-neutral-800);
+  color: var(--color-neutral-400);
+}
+.sv-regions li.is-on {
+  border-color: var(--color-brand-500);
+  background: var(--color-brand-50);
+  color: var(--color-brand-800);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand-400) 22%, transparent);
+}
+.dark .sv-regions li.is-on {
+  border-color: var(--color-brand-400);
+  background: var(--color-brand-950);
+  color: var(--color-brand-200);
+}
+.sv-plan {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.8rem;
+  color: var(--color-neutral-600);
+  font-size: 0.82rem;
+}
+.dark .sv-plan {
+  border-color: var(--color-neutral-800);
+  color: var(--color-neutral-400);
+}
+.sv-plan b {
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .sv-plan b {
+  color: #fff;
+}
+/* Creating, then live: the bar fills and the label turns */
+.sv-progress {
+  margin-top: 1rem;
+}
+.sv-progress-labels {
+  display: grid;
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.sv-progress-labels > span {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  gap: 0.35rem;
+}
+.sv-creating {
+  color: var(--color-neutral-600);
+  opacity: 0;
+}
+.dark .sv-creating {
+  color: var(--color-neutral-400);
+}
+.sv-bar {
+  display: block;
+  height: 0.4rem;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+}
+.dark .sv-bar {
+  background: var(--color-neutral-800);
+}
+.sv-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+}
+.sv-server {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  border-radius: 0.9rem;
+  background: var(--color-brand-50);
+  padding: 0.7rem 0.8rem;
+}
+.dark .sv-server {
+  background: color-mix(in srgb, var(--color-brand-950) 70%, transparent);
+}
+.sv-server-icon {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  background: var(--color-brand-600);
+  color: #fff;
+}
+.sv-server-name {
+  color: var(--color-neutral-950);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+.dark .sv-server-name {
+  color: #fff;
+}
+.sv-server-meta {
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+}
+.hv--servers .hv-chips {
+  margin-top: 1rem;
+}
+.hv.is-playing .sv-bar i {
+  animation: sv-fill 1.8s cubic-bezier(0.65, 0, 0.35, 1) 0.5s both;
+}
+.hv.is-playing .sv-creating {
+  animation: hv-out 2.4s linear both;
+}
+.hv.is-playing .sv-live {
+  animation: hv-in 2.4s linear both;
+}
+.hv.is-playing .sv-server {
+  animation: hv-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) 2.4s both;
+}
+.hv.is-playing.hv--servers .hv-chips li {
+  animation: hv-rise 0.4s ease both;
+  animation-delay: calc(2.75s + var(--c, 0) * 0.1s);
+}
+
+/* ---------- Motion ---------- */
+@keyframes hv-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes hv-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+@keyframes hv-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+/* Shown, then gone at the very end (and the other way round): one label handing over to the next */
+@keyframes hv-out {
+  0%,
+  97% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes hv-in {
+  0%,
+  97% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes cv-turn {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  4%,
+  30% {
+    opacity: 1;
+    transform: none;
+  }
+  34%,
+  100% {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+@keyframes sv-fill {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+/* A paused slider holds the turning provider too */
+.is-paused .hv.is-playing .cv-provider {
+  animation-play-state: paused;
+}
+
+/* Phones: the incident's thread tells the story on its own, so its chart is left out to keep the hero short */
+@media (max-width: 639px) {
+  .pm-chart {
+    display: none;
+  }
+}
+/* Small phones: a status pill goes under the window's title */
+@media (max-width: 479px) {
+  .pm-status > span {
+    justify-self: start;
+  }
+  .sv-regions li {
+    font-size: 0.72rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hv.is-playing :is(.pm-chart-svg, .pm-msg, .pm-status > span, .cv-provider, .cv-row, .cv-row .hv-pill, .hv-chips li, .sv-bar i, .sv-progress-labels > span, .sv-server) {
+    animation: none;
+  }
+}

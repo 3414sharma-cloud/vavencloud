@@ -1,10 +1,63 @@
+import './proof.css'
 import type { Section } from '@/app/types.ts'
-import { stats, stories, type Stat } from './stats.data.ts'
+import { site } from '@/app/site.config.ts'
+import { founderCartoon } from '@/modules/founder/founder-cartoon.ts'
+import { founder } from '@/modules/founder/founder.data.ts'
+import { icon } from '@/shared/ui/icons.ts'
+import { accountTeam, stats, stories, type Stat } from './stats.data.ts'
 
 const format = (stat: Stat) =>
   `${stat.prefix ?? ''}${stat.value.toLocaleString('en-US', { minimumFractionDigits: stat.decimals ?? 0, maximumFractionDigits: stat.decimals ?? 0 })}${stat.suffix ?? ''}`
 
-/** A compact proof section. The detailed people and stories now live on /about/. */
+const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
+
+/** The founder: his portrait, a line from his note, and the whole note on request */
+const founderCard = () => `
+      <div class="pf-founder surface-ink rounded-3xl">
+        <div class="flex items-center gap-5">
+          <span class="pf-avatar">${founder.photo ? `<img src="${founder.photo}" alt="${founder.name}" width="160" height="160" loading="lazy" />` : founderCartoon()}</span>
+          <div>
+            <p class="pf-overline">A note from the founder</p>
+            <p class="pf-name">${founder.name}</p>
+            <p class="pf-role">${founder.role}</p>
+          </div>
+        </div>
+        <blockquote class="pf-quote">“${founder.excerpt}”</blockquote>
+        <ul class="pf-facts">
+          ${founder.facts.map((f) => `<li>${icon('check', 'h-3.5 w-3.5 flex-none')}${f}</li>`).join('')}
+        </ul>
+        <a href="#founder-video" class="pf-watch"><span>${icon('play', 'h-3 w-3 translate-x-px', true)}</span>Watch ${founder.name.split(' ')[0]}’s video</a>
+        <details class="pf-note group">
+          <summary><span class="group-open:hidden">Read the full note</span><span class="hidden group-open:inline">Hide the note</span>${icon('chevron-down', 'h-4 w-4 transition-transform duration-300 group-open:rotate-180')}</summary>
+          <div>${founder.note.map((p) => `<p>${p}</p>`).join('')}</div>
+        </details>
+      </div>`
+
+/** The people on your account, by team (roles only), and a way through to the whole company */
+const teamCard = () => `
+      <div class="pf-team card">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <h3 class="pf-team-title">The people on your account</h3>
+          <p class="pf-team-sub">Senior engineers, in your chat</p>
+        </div>
+        <ul class="pf-roles">
+          ${accountTeam
+            .map(
+              (m) => `
+          <li>
+            <span class="pf-role-icon" aria-hidden="true">${icon(m.icon, 'h-5 w-5')}</span>
+            <span><span class="pf-role-name">${m.role}</span><span class="pf-role-focus">${m.focus}</span></span>
+          </li>`,
+            )
+            .join('')}
+        </ul>
+        <a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="pf-meet">
+          <span><span class="pf-meet-title">Meet the whole team</span><span class="pf-meet-text">Who they are, what they’ve built, and how we work</span></span>
+          <span class="pf-meet-go" aria-hidden="true">${icon('arrow-right', 'h-4 w-4')}</span>${newTab}
+        </a>
+      </div>`
+
+/** The proof: the track record in four numbers, then the founder and the people on your account. */
 export function statsSection(): Section {
   return {
     html: `
@@ -32,6 +85,11 @@ export function statsSection(): Section {
         })
         .join('')}
     </ol>
+
+    <div class="mt-16 grid gap-5 lg:grid-cols-[5fr_7fr]">
+      ${founderCard()}
+      ${teamCard()}
+    </div>
   </div>
 </section>`,
   }

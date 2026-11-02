@@ -43,4 +43,12 @@
   summary::-webkit-details-marker {
     display: none;
   }
+  /*
+   * Google's reCAPTCHA badge (bottom right, drawn in Google's own frame, so it can't be restyled). Hidden as
+   * Google allows, because the booking form shows the reCAPTCHA notice with its two links before sending.
+   * `visibility`, not `display: none`, which would stop reCAPTCHA from working.
+   */
+  .grecaptcha-badge {
+    visibility: hidden;
+  }
 }

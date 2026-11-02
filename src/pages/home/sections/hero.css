@@ -1,2 +1,379 @@
-/* Text-first hero. The ownership narrative lives in its own scroll-triggered section. */
-.hero { isolation: isolate; background-image: radial-gradient(90% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-200) 24%, transparent), transparent 68%), linear-gradient(155deg, var(--color-linen), var(--color-paper) 60%); }.dark .hero { background-image: radial-gradient(80% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 70%), linear-gradient(155deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950))); }.hero-noise { position: absolute; inset: 0; z-index: -1; opacity: 0.34; pointer-events: none; background-image: radial-gradient(color-mix(in srgb, var(--color-neutral-950) 10%, transparent) 0.55px, transparent 0.55px); background-size: 7px 7px; mask-image: linear-gradient(to bottom, black, transparent 85%); }.dark .hero-noise { opacity: 0.13; }.hero-intro { max-width: 59rem; }.hero-eyebrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem; color: var(--color-neutral-500); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }.hero-eyebrow i { width: 1.8rem; height: 1px; background: var(--color-brand-500); }.hero-title { margin-top: 1.5rem; color: var(--color-neutral-950); font-size: clamp(3.7rem, 10vw, 9.7rem); font-weight: 620; line-height: 0.87; letter-spacing: -0.08em; }.dark .hero-title { color: #fff; }.hero-title-line { display: block; overflow: hidden; padding: 0.04em 0.08em 0.1em 0; }.hero-title-line > span, .hero-title-line > em { display: block; animation: hero-title-line-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 0.3s; }.hero-title-line + .hero-title-line > em { animation-delay: 0.43s; }.hero-title em { color: var(--color-neutral-400); font-style: normal; }.dark .hero-title em { color: var(--color-neutral-500); }.hero-description { max-width: 36rem; margin-top: 1.9rem; color: var(--color-neutral-600); font-size: 1.08rem; line-height: 1.65; }.dark .hero-description { color: var(--color-neutral-400); }.hero-enter { animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i, 0) * 110ms); } @keyframes hero-rise { from { opacity: 0; transform: translateY(13px); } } @keyframes hero-title-line-in { from { opacity: 0; transform: translateY(112%) skewY(4deg); } } @media (min-width: 1024px) { .hero-intro { margin-left: clamp(0rem, 7vw, 6.5rem); } } @media (prefers-reduced-motion: reduce) { .hero-enter, .hero-title-line > span, .hero-title-line > em { animation: none; } }
+/*
+ * Text-first hero (hero.section.ts): a slider of three slides with a numbered index underneath.
+ * The ownership narrative lives in its own scroll-triggered section.
+ */
+.hero {
+  isolation: isolate;
+  background-image:
+    radial-gradient(90% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-200) 24%, transparent), transparent 68%),
+    linear-gradient(155deg, var(--color-linen), var(--color-paper) 60%);
+}
+.dark .hero {
+  background-image:
+    radial-gradient(80% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 70%),
+    linear-gradient(155deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950)));
+}
+.hero-noise {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.34;
+  pointer-events: none;
+  background-image: radial-gradient(color-mix(in srgb, var(--color-neutral-950) 10%, transparent) 0.55px, transparent 0.55px);
+  background-size: 7px 7px;
+  mask-image: linear-gradient(to bottom, black, transparent 85%);
+}
+.dark .hero-noise {
+  opacity: 0.13;
+}
+
+/* ---------- Slides: stacked in one cell (the tallest sets the height), only the active one shown ---------- */
+.hero-slides {
+  display: grid;
+  touch-action: pan-y;
+}
+.hero-slide {
+  grid-area: 1 / 1;
+  align-self: center;
+  max-width: 59rem;
+  opacity: 0;
+  visibility: hidden;
+  /* --out is set as the slider moves: the old slide leaves the opposite way to the new one's arrival */
+  transform: translateX(var(--out, -48px));
+  transition:
+    opacity 0.5s ease,
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.8s;
+}
+.hero-slide.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition-delay: 0s;
+}
+/* The picture sits under the copy until there is room for two equal columns */
+.hero-slide .hv {
+  margin-top: 2.5rem;
+}
+
+.hero-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--color-neutral-500);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.hero-eyebrow i {
+  width: 1.8rem;
+  height: 1px;
+  background: var(--color-brand-500);
+}
+/* One size on every slide, so each title (two short sentences) fills about the same height */
+.hero-title {
+  margin-top: 1.5rem;
+  color: var(--color-neutral-950);
+  font-size: clamp(2.6rem, 7.4vw, 7rem);
+  font-weight: 620;
+  line-height: 0.92;
+  letter-spacing: -0.065em;
+}
+.dark .hero-title {
+  color: #fff;
+}
+.hero-title-line {
+  display: block;
+  overflow: hidden;
+  padding: 0.04em 0.08em 0.1em 0;
+}
+.hero-title-line > span,
+.hero-title-line > em {
+  display: block;
+}
+/* Each time a slide comes in, its title rises in line by line */
+.hero-slide.is-active .hero-title-line > * {
+  animation: hero-title-line-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: 0.3s;
+}
+.hero-slide.is-active .hero-title-line + .hero-title-line > em {
+  animation-delay: 0.43s;
+}
+.hero-title em {
+  color: var(--color-neutral-400);
+  font-style: normal;
+}
+.dark .hero-title em {
+  color: var(--color-neutral-500);
+}
+.hero-description {
+  max-width: 36rem;
+  margin-top: 1.9rem;
+  color: var(--color-neutral-600);
+  font-size: 1.08rem;
+  line-height: 1.65;
+}
+.dark .hero-description {
+  color: var(--color-neutral-400);
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 2rem;
+}
+.hero-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-neutral-950);
+  font-size: 0.94rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 28%, transparent);
+  text-underline-offset: 0.3rem;
+}
+.dark .hero-link {
+  color: #fff;
+}
+/* Arrows nudge forward on hover */
+.hero-actions svg {
+  transition: transform 0.2s ease;
+}
+.hero-actions a:hover svg {
+  transform: translateX(3px);
+}
+.hero-reassurance {
+  max-width: 33rem;
+  margin-top: 1.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* ---------- Under the slides: a numbered index of the three, then a small pause button ---------- */
+.hero-nav {
+  display: flex;
+  max-width: 59rem;
+  align-items: flex-start;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.hero-tabs {
+  display: grid;
+  min-width: 0;
+  flex: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Top-aligned: a button centres its content, so a name on one line would sit lower than one on two */
+  align-items: start;
+  gap: 1.25rem;
+}
+.hero-tab {
+  display: block;
+  min-width: 0;
+  padding-bottom: 0.25rem;
+  color: var(--color-neutral-500);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.hero-tab:hover {
+  color: var(--color-neutral-800);
+}
+.dark .hero-tab:hover {
+  color: var(--color-neutral-300);
+}
+.hero-tab[aria-selected="true"] {
+  color: var(--color-neutral-950);
+}
+.dark .hero-tab[aria-selected="true"] {
+  color: #fff;
+}
+.hero-tab:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 4px;
+}
+/* The line over each name: the active one fills over its slide's turn */
+.hero-tab-bar {
+  display: block;
+  height: 2px;
+  margin-bottom: 0.9rem;
+  overflow: hidden;
+  background: var(--color-neutral-200);
+}
+.dark .hero-tab-bar {
+  background: var(--color-neutral-800);
+}
+.hero-tab-bar i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--color-brand-600);
+}
+.dark .hero-tab-bar i {
+  background: var(--color-brand-400);
+}
+.hero-tab[aria-selected="true"] .hero-tab-bar i {
+  animation: hero-slide-progress var(--dur, 8s) linear forwards;
+}
+.is-paused .hero-tab[aria-selected="true"] .hero-tab-bar i {
+  animation-play-state: paused;
+}
+.hero-tab-name {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+.hero-tab-num {
+  flex: none;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.hero-tab[aria-selected="true"] .hero-tab-num {
+  color: var(--color-brand-600);
+}
+.dark .hero-tab[aria-selected="true"] .hero-tab-num {
+  color: var(--color-brand-400);
+}
+/* Pause: a small outlined circle, level with the names */
+.hero-pause {
+  display: inline-flex;
+  height: 2rem;
+  width: 2rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.6rem;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 999px;
+  color: var(--color-neutral-700);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.hero-pause:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-700);
+}
+.dark .hero-pause {
+  border-color: var(--color-neutral-700);
+  color: var(--color-neutral-300);
+}
+.dark .hero-pause:hover {
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-300);
+}
+.hero-pause:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+}
+
+/* ---------- Load-in and motion ---------- */
+.hero-enter {
+  animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 110ms);
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(13px);
+  }
+}
+@keyframes hero-title-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(112%) skewY(4deg);
+  }
+}
+@keyframes hero-slide-progress {
+  to {
+    width: 100%;
+  }
+}
+
+/* Wide screens: copy in the left half, the picture in the right half */
+@media (min-width: 1024px) {
+  .hero-slide,
+  .hero-nav {
+    max-width: none;
+  }
+  .hero-slide {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    column-gap: 3rem;
+  }
+  .hero-slide-copy,
+  .hero-slide .hv {
+    min-width: 0;
+  }
+  .hero-slide .hv {
+    margin-top: 0;
+  }
+  .hero-title {
+    font-size: clamp(2.4rem, 3.1vw, 3.5rem);
+  }
+}
+
+/*
+ * Phones: the eyebrow flows as one sentence with a dot for the rule (so the rule never starts a line), and
+ * in the index each number sits over its name, so the name has the full width
+ */
+@media (max-width: 639px) {
+  .hero-eyebrow {
+    display: block;
+    line-height: 1.6;
+  }
+  .hero-eyebrow i {
+    margin: 0 0.45em;
+    background: none;
+  }
+  .hero-eyebrow i::before {
+    content: "·";
+  }
+  .hero-nav {
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .hero-tabs {
+    gap: 0.75rem;
+  }
+  .hero-tab {
+    font-size: 0.78rem;
+  }
+  .hero-tab-bar {
+    margin-bottom: 0.7rem;
+  }
+  .hero-tab-name {
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .hero-pause {
+    margin-top: 0.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-enter,
+  .hero-slide.is-active .hero-title-line > * {
+    animation: none;
+  }
+  .hero-slide {
+    transition: none;
+  }
+  /* Nothing moves by itself: the active tab's bar simply shows full */
+  .hero-tab[aria-selected="true"] .hero-tab-bar i {
+    animation: none;
+    width: 100%;
+  }
+}
