@@ -10,12 +10,6 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
 }
-.rv-overline--brand {
-  color: var(--color-brand-700);
-}
-.dark .rv-overline--brand {
-  color: var(--color-brand-300);
-}
 
 .rv-facts {
   display: grid;

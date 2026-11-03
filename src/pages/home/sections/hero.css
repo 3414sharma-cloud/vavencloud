@@ -90,37 +90,12 @@
   transition-delay: 0s;
 }
 
-/* The eyebrow, as a pill with a live dot: someone is on call right now */
-.hero-eyebrow {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 0.35rem 0.55rem;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 999px;
-  background: rgb(255 255 255 / 0.65);
-  padding: 0.4rem 0.95rem 0.4rem 0.8rem;
-  color: var(--color-neutral-600);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  box-shadow: var(--shadow-card);
-  backdrop-filter: blur(8px);
-}
-.dark .hero-eyebrow {
-  border-color: var(--color-neutral-800);
-  background: rgb(255 255 255 / 0.04);
-  color: var(--color-neutral-400);
-}
+/*
+ * The eyebrow, title and description take their type from .eyebrow, .section-title and .section-lead
+ * (styles/components.css), shared with every section heading. Here: only what the hero adds.
+ */
+/* The eyebrow's dot is live: someone is on call right now */
 .hero-eyebrow::before {
-  content: "";
-  height: 0.45rem;
-  width: 0.45rem;
-  flex: none;
-  border-radius: 999px;
-  background: var(--color-brand-500);
   animation: hero-live 2s ease-out infinite;
 }
 .hero-eyebrow i {
@@ -132,14 +107,6 @@
 /* One size on every slide, so each title fills about the same height; lines balanced, as it's centred */
 .hero-title {
   margin-top: 1.6rem;
-  color: var(--color-neutral-950);
-  font-size: clamp(2.5rem, 5.4vw, 5.1rem);
-  font-weight: 620;
-  line-height: 0.98;
-  letter-spacing: -0.06em;
-}
-.dark .hero-title {
-  color: #fff;
 }
 .hero-title-line {
   display: block;
@@ -150,26 +117,11 @@
 .hero-title-line > em {
   display: block;
 }
-.hero-title em {
-  color: var(--color-brand-600);
-  font-style: normal;
-}
-.dark .hero-title em {
-  color: var(--color-brand-400);
-}
 .hero-word {
   display: inline-block;
 }
 .hero-description {
-  max-width: 38rem;
   margin: 1.75rem auto 0;
-  color: var(--color-neutral-600);
-  font-size: 1.12rem;
-  line-height: 1.65;
-  text-wrap: pretty;
-}
-.dark .hero-description {
-  color: var(--color-neutral-400);
 }
 .hero-actions {
   display: flex;
@@ -425,9 +377,6 @@
   }
   .hero-eyebrow i::before {
     content: "·";
-  }
-  .hero-description {
-    font-size: 1.04rem;
   }
   .hero-nav {
     gap: 1rem;

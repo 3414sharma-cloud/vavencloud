@@ -20,7 +20,7 @@ createPage({
     trackRecordSection(),
     ownershipSection(), // the problem, one night step by step
     oneTeamSection(), // relief, with how we compare
-    reportSection(),
+    reportSection({ tools: false }), // the portal and dashboard are in the one-team chapter just before
     pipelineSection(), // belief
     plansSection(), // ends with the exit promise (safety)
     reviewsSection(), // proof: clients

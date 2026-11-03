@@ -2,18 +2,19 @@
  * Every internal link in one place. The site is a single landing page for now, so these are
  * section anchors. Prefixed with the landing page's path so they keep working from other pages.
  *
- * The landing page has a v2 at /v2/ with its own copy of these sections, so on /v2/ the anchors point at
- * /v2/ (a visitor stays on the version they're reading). Everywhere else they point at /, as before.
+ * The landing page has versions at /v2/ and /v3/ with their own copy of these sections, so on a version the
+ * anchors point at that version (a visitor stays on the one they're reading). Everywhere else they point at /.
  */
-const landing = typeof location !== 'undefined' && location.pathname.startsWith('/v2') ? '/v2/' : '/'
+const version = typeof location !== 'undefined' ? /^\/(v\d+)(\/|$)/.exec(location.pathname)?.[1] : undefined
+const landing = version ? `/${version}/` : '/'
 
 export const routes = {
   home: landing,
   about: '/about/',
   top: `${landing}#top`,
   oneTeam: `${landing}#one-team`,
-  /** v2 has no "how it works" chapter: there, it goes to what you get after an incident (the report) */
-  process: landing === '/v2/' ? `${landing}#report` : `${landing}#how-it-works`,
+  /** The versions have no "how it works" chapter: there, it goes to what you get after an incident (the report) */
+  process: version ? `${landing}#report` : `${landing}#how-it-works`,
   plans: `${landing}#plans`,
   proof: `${landing}#proof`,
   faq: `${landing}#faq`,

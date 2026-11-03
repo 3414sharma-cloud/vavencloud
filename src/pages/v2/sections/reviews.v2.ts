@@ -3,24 +3,26 @@ import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { testimonials, type Testimonial } from '../v2.data.ts'
 
 /*
- * Chapter 3, client stories: only the clients' own words, on a night-blue panel, in one row of cards that
+ * Chapter 3, client stories: only the clients' own words, on a light mist band, in one row of cards that
  * scrolls sideways, so it takes as many reviews as there are (v2.data.ts). Swipe, scroll sideways or drag it
  * with the mouse, or use the arrows; the bar under it shows where you are, and the edges fade where there's
  * more. Nothing moves by itself.
  *  - A written review underlines one phrase in the client's own words; the underline sweeps in when its card
  *    comes into view ([data-state] waiting → in, set by the script).
  *  - A video review shows YouTube's thumbnail and only loads the player (youtube-nocookie) when it is played.
+ *    A sample (no video yet) shows a poster marked "Sample" instead, and nothing to play.
  *  - On a mouse, a soft light follows the pointer across the cards (--x, --y).
  */
 
 const quoteMark = `<svg class="tm-mark" viewBox="0 0 48 36" aria-hidden="true"><path d="M0 36V22C0 9 7 1.5 19 0l2 5.5C14 7.5 11 12 11 17h8v19H0zm27 0V22C27 9 34 1.5 46 0l2 5.5C41 7.5 38 12 38 17h8v19H27z" /></svg>`
 
-/** "Mohammed Imtiaz Ali" → "MA" */
+/** "Mohammed Imtiaz Ali" → "MA" (letters only, so "[Client name]" → "CN") */
 const initials = (name: string) => {
-  const words = name.split(' ')
+  const words = name.replace(/[^\p{L} ]/gu, '').split(' ')
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase()
 }
 
@@ -46,13 +48,25 @@ const writtenCard = (t: Testimonial) => `
           ${who(t)}
         </li>`
 
+const playButton = `<span class="tm-play" aria-hidden="true">${icon('play', 'h-5 w-5 translate-x-0.5', true)}</span>`
+
+/** YouTube's thumbnail, which loads the player when pressed; or, for a sample, a poster that says so */
+const poster = (t: Testimonial, i: number) =>
+  t.video
+    ? `<button type="button" class="tm-poster" data-tm-play="${i}" aria-label="Play ${t.name}’s video review">
+              <img src="https://i.ytimg.com/vi/${t.video.id}/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" draggable="false" />
+              ${playButton}
+            </button>`
+    : `<div class="tm-poster tm-poster--sample">
+              <span class="tm-sample-tag">Sample</span>
+              ${playButton}
+              <span class="tm-sample-note">The client’s video goes here</span>
+            </div>`
+
 const videoCard = (t: Testimonial, i: number) => `
         <li class="tm-card tm-card--video" data-tm-card>
           <div class="tm-video">
-            <button type="button" class="tm-poster" data-tm-play="${i}" aria-label="Play ${t.name}’s video review">
-              <img src="https://i.ytimg.com/vi/${t.video!.id}/hqdefault.jpg" alt="" width="480" height="360" loading="lazy" draggable="false" />
-              <span class="tm-play" aria-hidden="true">${icon('play', 'h-5 w-5 translate-x-0.5', true)}</span>
-            </button>
+            ${poster(t, i)}
           </div>
           <div class="mt-5 flex flex-wrap items-center justify-between gap-2">
             <span class="tm-badge">${icon('play', 'h-2.5 w-2.5', true)}Video review</span>
@@ -63,22 +77,19 @@ const videoCard = (t: Testimonial, i: number) => `
         </li>`
 
 const html = () => `
-<section id="clients" class="v2-section" aria-labelledby="clients-title">
+<section id="clients" class="v2-section band-mist border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="clients-title">
   <div class="container-page">
-    <div class="tm surface-ink">
-      <div class="mx-auto max-w-3xl text-center">
-        <p class="v2-overline">Client stories</p>
-        <h2 id="clients-title" class="v2-title">Don’t take our word for it.<span>Take theirs.</span></h2>
-      </div>
-      <ul class="tm-track is-start" data-tm-track tabindex="0" aria-label="Client reviews. Scroll sideways for more.">
-        ${testimonials.map((t, i) => (t.video ? videoCard(t, i) : writtenCard(t))).join('')}
-      </ul>
-      <div class="tm-controls" data-tm-controls>
-        <div class="tm-progress" aria-hidden="true"><span data-tm-thumb></span></div>
-        <div class="flex gap-2">
-          <button type="button" class="tm-arrow" data-tm-step="-1" aria-label="Previous reviews">${icon('chevron-left', 'h-5 w-5')}</button>
-          <button type="button" class="tm-arrow" data-tm-step="1" aria-label="Next reviews">${icon('chevron-right', 'h-5 w-5')}</button>
-        </div>
+    <div class="mx-auto max-w-5xl text-center">
+      ${sectionHeading({ id: 'clients-title', eyebrow: 'Client stories', title: 'Don’t take our word for it. <em>Take theirs.</em>' })}
+    </div>
+    <ul class="tm-track is-start" data-tm-track tabindex="0" aria-label="Client reviews. Scroll sideways for more.">
+      ${testimonials.map((t, i) => (t.video || t.sample ? videoCard(t, i) : writtenCard(t))).join('')}
+    </ul>
+    <div class="tm-controls" data-tm-controls>
+      <div class="tm-progress" aria-hidden="true"><span data-tm-thumb></span></div>
+      <div class="flex gap-2">
+        <button type="button" class="tm-arrow" data-tm-step="-1" aria-label="Previous reviews">${icon('chevron-left', 'h-5 w-5')}</button>
+        <button type="button" class="tm-arrow" data-tm-step="1" aria-label="Next reviews">${icon('chevron-right', 'h-5 w-5')}</button>
       </div>
     </div>
   </div>

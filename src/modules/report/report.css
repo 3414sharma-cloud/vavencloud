@@ -1,31 +1,62 @@
 /*
- * The morning after (report.section.ts): a status pill, the monthly report as a numbered list, and an example
- * incident report whose time bar fills and stamp lands once it's seen (.is-in). Status colours come from
+ * The morning after (report.section.ts): the promise with the client portal and dashboard as two cards (or the
+ * monthly report as a numbered list), and an example incident report on a second sheet, at a slight angle,
+ * whose time bar fills red to green and stamp lands once it's seen (.is-in). Status colours come from
  * Tailwind classes in the markup (emerald, rose); the rest uses the site's tokens.
  */
-.rp-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  border: 1px solid var(--color-neutral-200);
-  border-radius: 999px;
-  background: var(--color-paper);
-  padding: 0.3rem 0.85rem 0.3rem 0.7rem;
-  color: var(--color-neutral-700);
-  font-size: 0.8rem;
-  font-weight: 600;
+
+/* The title shares its half of the row with the report, so it runs a size down to keep to three lines */
+.rp-head .section-title {
+  font-size: clamp(2.5rem, 4vw, 3.6rem);
 }
-.dark .rp-pill {
-  border-color: var(--color-neutral-800);
-  background: var(--color-neutral-900);
-  color: var(--color-neutral-300);
-}
-.rp-pill > span:first-child {
-  height: 0.45rem;
-  width: 0.45rem;
-  border-radius: 999px;
+.rp-head .section-title em {
+  display: inline;
 }
 
+/* ---------- Where you follow the work ---------- */
+.rp-tools {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.rp-tool {
+  padding: 1.4rem 1.4rem 1.5rem;
+}
+.rp-tool-head {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+.rp-tool-name {
+  color: var(--color-neutral-950);
+  font-size: 1.1rem;
+  font-weight: 650;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.dark .rp-tool-name {
+  color: #fff;
+}
+.rp-tool-who {
+  margin-top: 1rem;
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rp-tool-what {
+  margin-top: 0.5rem;
+  color: var(--color-neutral-600);
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+.dark .rp-tool-what {
+  color: var(--color-neutral-400);
+}
+
+/* ---------- Or what the monthly report covers ---------- */
 .rp-monthly-label {
   margin-top: 2.5rem;
   color: var(--color-neutral-500);
@@ -63,7 +94,32 @@
   color: var(--color-brand-400);
 }
 
-/* ---------- The example report ---------- */
+/* ---------- The example report: tilted a little, on a second sheet; it straightens under the pointer ---------- */
+.rp-stack {
+  position: relative;
+  isolation: isolate;
+  transform: rotate(-1deg);
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.rp-stack::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.5rem;
+  background: #fff;
+  box-shadow: var(--shadow-card);
+  transform: translate(0.8rem, 0.9rem) rotate(3deg);
+}
+.dark .rp-stack::before {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+  box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.6);
+}
+.rp-doc:hover .rp-stack {
+  transform: none;
+}
 .rp-card {
   position: relative;
   padding: 1.75rem;
@@ -124,11 +180,15 @@
 .dark .rp-bar {
   background: var(--color-neutral-800);
 }
+/* Red at the start, green once resolved */
 .rp-bar i {
   position: absolute;
-  inset: 0 auto 0 0;
-  width: 100%;
+  inset: 0;
   border-radius: inherit;
+  background: linear-gradient(90deg, rgb(225 29 72), rgb(245 158 11) 55%, rgb(5 150 105));
+}
+.dark .rp-bar i {
+  background: linear-gradient(90deg, rgb(251 113 133), rgb(251 191 36) 55%, rgb(52 211 153));
 }
 .rp-meta {
   display: grid;
@@ -182,21 +242,22 @@
   color: var(--color-neutral-400);
 }
 .rp-caption {
-  margin-top: 1rem;
+  margin-top: 1.75rem;
   color: var(--color-neutral-500);
   font-size: 0.8rem;
 }
 
-/* Once seen: the time bar runs from start to resolved, then the stamp lands */
+/* Once seen: the time bar runs from start to resolved (uncovered, so its colours stay in place), then the stamp lands */
 .rp-doc:not(.is-in) .rp-bar i {
-  width: 0;
+  clip-path: inset(0 100% 0 0);
 }
 .rp-doc:not(.is-in) .rp-stamp {
   opacity: 0;
   transform: rotate(-6deg) scale(1.6);
 }
 .rp-bar i {
-  transition: width 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
 }
 .rp-stamp {
   transition:
@@ -205,6 +266,9 @@
 }
 
 @media (min-width: 640px) {
+  .rp-tools {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
   .rp-card {
     padding: 2.25rem;
   }
@@ -216,10 +280,10 @@
     gap: 1rem;
   }
 }
-
 @media (prefers-reduced-motion: reduce) {
   .rp-bar i,
-  .rp-stamp {
+  .rp-stamp,
+  .rp-stack {
     transition: none;
   }
 }

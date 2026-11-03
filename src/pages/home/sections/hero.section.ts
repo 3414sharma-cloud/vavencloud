@@ -38,9 +38,9 @@ const slide = (s: HeroSlide, i: number) => {
   const after = lead + s.title[1].split(' ').length
   return `
       <div id="hero-slide-${i}" role="tabpanel" aria-roledescription="slide" aria-label="${i + 1} of ${count}: ${s.tab}" class="hero-slide${first ? ' is-active' : ''}" data-slide ${first ? '' : 'inert'} style="--after:${after}">
-        <p class="hero-eyebrow">${s.eyebrow.map((part) => `<span>${part}</span>`).join('<i></i>')}</p>
-        <${tag} ${first ? 'id="hero-title"' : ''} class="hero-title"><span class="hero-title-line"><span>${words(s.title[0], 0)}</span></span><span class="hero-title-line"><em>${words(s.title[1], lead)}</em></span></${tag}>
-        <p class="hero-description">${s.description}</p>
+        <p class="eyebrow hero-eyebrow">${s.eyebrow.map((part) => `<span>${part}</span>`).join('<i></i>')}</p>
+        <${tag} ${first ? 'id="hero-title"' : ''} class="section-title hero-title"><span class="hero-title-line"><span>${words(s.title[0], 0)}</span></span><span class="hero-title-line"><em>${words(s.title[1], lead)}</em></span></${tag}>
+        <p class="section-lead hero-description">${s.description}</p>
         <div class="hero-actions">
           <a href="${s.primary.href}" class="btn-primary !px-7 !py-3.5 !text-base">${s.primary.label} ${icon('arrow-right', 'h-4 w-4')}</a>
           <a href="${s.secondary.href}" ${s.secondary.external ? 'target="_blank" rel="noopener"' : ''} class="hero-link">${s.secondary.label}${s.secondary.external ? newTab : ''} ${icon('arrow-right', 'h-4 w-4')}</a>

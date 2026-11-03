@@ -2,6 +2,7 @@ import './reviews.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { clientFacts, founderVideo, reviews } from './reviews.data.ts'
 
 /*
@@ -53,8 +54,7 @@ const html = (overline: string) => `
   <div class="container-page">
     <div class="flex flex-wrap items-end justify-between gap-x-12 gap-y-10">
       <div class="min-w-0 flex-[1_1_28rem]">
-        <p class="rv-overline rv-overline--brand">${overline}</p>
-        <h2 id="clients-title" class="section-title mt-4">Hear it from us. <span class="text-brand-600 dark:text-brand-400">Then from our clients.</span></h2>
+        ${sectionHeading({ id: 'clients-title', eyebrow: overline, title: 'Hear it from us. <em>Then from our clients.</em>' })}
       </div>
       <dl class="rv-facts">
         ${clientFacts.map((f) => `<div><dt class="sr-only">${f.label}</dt><dd class="rv-fact-value">${f.value}</dd><dd class="rv-fact-label" aria-hidden="true">${f.label}</dd></div>`).join('')}

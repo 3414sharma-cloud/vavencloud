@@ -28,9 +28,9 @@ export function blogSection({ covers = false }: { covers?: boolean } = {}): Sect
 <section id="blog" class="border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div class="max-w-2xl">
+      <div class="max-w-4xl">
         ${sectionHeading({
-          title: 'Plain-English guides from our engineers.',
+          title: 'Plain-English guides <em>from our engineers.</em>',
           description: 'Short answers to the questions business owners ask us most.',
         })}
       </div>

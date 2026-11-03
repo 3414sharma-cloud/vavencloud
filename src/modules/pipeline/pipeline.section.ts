@@ -46,13 +46,13 @@ const html = () => `
 <section id="how-it-works" class="band-mist border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
   <div class="container-page">
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-      <div class="max-w-2xl">
+      <div class="max-w-4xl">
         ${sectionHeading({
-          title: 'From first call to fully covered, without a single surprise.',
+          title: 'From first call to fully covered, <em>without a single surprise.</em>',
           description: 'Five clear steps. You always know what happens next, and who is on it.',
         })}
       </div>
-      <a href="${routes.book}" class="btn-secondary self-start lg:self-auto">Book a free review ${icon('arrow-right', 'h-4 w-4')}</a>
+      <a href="${routes.book}" class="btn-secondary shrink-0 self-start lg:self-auto">Book a free review ${icon('arrow-right', 'h-4 w-4')}</a>
     </div>
 
     <div id="pipeline" class="mt-14" style="--dur:${STEP_MS}ms">

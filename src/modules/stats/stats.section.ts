@@ -4,6 +4,7 @@ import { site } from '@/app/site.config.ts'
 import { founderCartoon } from '@/modules/founder/founder-cartoon.ts'
 import { founder } from '@/modules/founder/founder.data.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { accountTeam, stats, stories, type Stat } from './stats.data.ts'
 
 const format = (stat: Stat) =>
@@ -64,9 +65,12 @@ export function statsSection(): Section {
 <section id="proof" class="border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="proof-title">
   <div class="container-page">
     <div class="max-w-5xl">
-      <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">Built by Vavensoft</p>
-      <h2 id="proof-title" class="mt-5 text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Built by the team behind<br><span class="text-brand-600 dark:text-brand-400">210+ products.</span></h2>
-      <p class="mt-8 max-w-2xl text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-400">VavenCloud is run by the software company that has been building and operating live products for more than a decade.</p>
+      ${sectionHeading({
+        id: 'proof-title',
+        eyebrow: 'Built by Vavensoft',
+        title: 'Built by the team behind <em>210+ products.</em>',
+        description: 'VavenCloud is run by the software company that has been building and operating live products for more than a decade.',
+      })}
     </div>
 
     <ol class="mt-16 border-t border-neutral-200 dark:border-neutral-800" aria-label="Vavensoft track record">

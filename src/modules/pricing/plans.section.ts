@@ -75,33 +75,32 @@ const planCard = (p: Plan) => `
 
 export const handover = ['Documentation', 'Access', 'Runbooks', 'A full backup', 'A handover call']
 
-/** Exit promise: an editorial handover record, not another card. */
+/** Exit promise: an editorial handover record, not another card. One column: the promise, then the handover in a row. */
 const exitPromise = () => `
     <section class="mx-auto mt-24 max-w-6xl border-t border-neutral-200 pt-10 sm:mt-32 sm:pt-14 dark:border-neutral-800" aria-labelledby="exit-title">
-      <div class="grid gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
-        <div>
-          <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">The exit promise</p>
-          <h3 id="exit-title" class="mt-5 text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-6xl dark:text-white">You’re never<br><span class="text-brand-600 dark:text-brand-400">locked in. Ever.</span></h3>
-          <p class="mt-8 max-w-xl text-lg leading-relaxed">Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.</p>
-          <p class="mt-5 max-w-xl leading-relaxed text-neutral-500">We’d rather keep you by being good than by making it hard to go.</p>
-        </div>
-        <div class="lg:pt-12">
-          <p class="text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">If you leave, you get</p>
-          <ol class="mt-5 border-t border-neutral-200 dark:border-neutral-800">
-            ${handover
-              .map(
-                (item, index) => `
-                <li class="flex items-center gap-4 border-b border-neutral-200 py-4 text-lg font-semibold tracking-tight text-neutral-950 dark:border-neutral-800 dark:text-white">
-                  <span class="w-6 font-mono text-xs font-medium text-brand-600 dark:text-brand-400">${String(index + 1).padStart(2, '0')}</span>
-                  <span>${item}</span>
-                  ${icon('arrow-right', 'ml-auto h-4 w-4 text-neutral-400')}
-                </li>`,
-              )
-              .join('')}
-          </ol>
-          <p class="mt-5 max-w-sm text-sm leading-relaxed text-neutral-500">With whoever takes over from us. No proprietary platform. No held-back credentials.</p>
-        </div>
+      <div class="max-w-5xl">
+        ${sectionHeading({
+          tag: 'h3',
+          id: 'exit-title',
+          eyebrow: 'The exit promise',
+          title: 'You’re never <em>locked in. Ever.</em>',
+          description: 'Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.',
+        })}
+        <p class="mt-5 max-w-xl leading-relaxed text-neutral-500">We’d rather keep you by being good than by making it hard to go.</p>
       </div>
+      <p class="mt-12 text-xs font-semibold tracking-[0.14em] text-neutral-500 uppercase">If you leave, you get</p>
+      <ol class="mt-5 grid border-t border-neutral-200 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-5 dark:border-neutral-800">
+        ${handover
+          .map(
+            (item, index) => `
+            <li class="flex items-center gap-4 border-b border-neutral-200 py-4 text-lg font-semibold tracking-tight text-neutral-950 dark:border-neutral-800 dark:text-white">
+              <span class="w-6 font-mono text-xs font-medium text-brand-600 dark:text-brand-400">${String(index + 1).padStart(2, '0')}</span>
+              <span>${item}</span>
+            </li>`,
+          )
+          .join('')}
+      </ol>
+      <p class="mt-5 max-w-xl text-sm leading-relaxed text-neutral-500">With whoever takes over from us. No proprietary platform. No held-back credentials.</p>
     </section>`
 
 export function plansSection(): Section {
@@ -109,9 +108,9 @@ export function plansSection(): Section {
     html: `
 <section id="plans" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
-    <div class="mx-auto max-w-3xl text-center">
+    <div class="mx-auto max-w-5xl text-center">
       ${sectionHeading({
-        title: 'Two ways to hand over production. Both with one team, 24/7.',
+        title: 'Two ways to hand over production. <em>Both with one team, 24/7.</em>',
         description: 'Every plan includes your engineers, your client portal and round-the-clock cover. What changes is how much of your product we take on.',
       })}
     </div>

@@ -2,6 +2,7 @@ import type { Section } from '@/app/types.ts'
 import { routes } from '@/app/routes.ts'
 import { plans, type Plan } from '@/modules/pricing/plans.section.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { safety } from '../v2.data.ts'
 
 /*
@@ -33,10 +34,13 @@ export function plansV2(): Section {
     html: `
 <section id="plans" class="v2-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="plans-title">
   <div class="container-page">
-    <div class="max-w-3xl">
-      <p class="v2-overline">Plans</p>
-      <h2 id="plans-title" class="v2-title">Two ways to hand over production.<span>Both on call 24/7.</span></h2>
-      <p class="v2-lead">Every plan includes your engineers, your client portal and round-the-clock cover, for one fixed monthly fee agreed after your free review. What changes is how much of your product we take on.</p>
+    <div class="max-w-5xl">
+      ${sectionHeading({
+        id: 'plans-title',
+        eyebrow: 'Plans',
+        title: 'Two ways to hand over production. <em>Both on call 24/7.</em>',
+        description: 'Every plan includes your engineers, your client portal and round-the-clock cover, for one fixed monthly fee agreed after your free review. What changes is how much of your product we take on.',
+      })}
     </div>
     <div class="v2-plans">
       ${plans.map(card).join('')}

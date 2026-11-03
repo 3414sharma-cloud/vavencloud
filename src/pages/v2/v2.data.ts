@@ -64,6 +64,7 @@ export const fixSteps = [
  * their own words only (docs/messaging.md). `highlight` is a phrase from the quote, underlined on the card.
  * A video review adds `video` (the YouTube id and its title); its card shows the thumbnail and loads the player
  * only when played. Its `quote` is optional: a line the client says in the video, word for word.
+ * `sample` marks a placeholder video card (no video yet): its poster says "Sample" so it can't pass for real.
  */
 export interface Testimonial {
   name: string
@@ -71,6 +72,7 @@ export interface Testimonial {
   quote?: string
   highlight?: string
   video?: { id: string; title: string }
+  sample?: boolean
 }
 
 const highlights: Record<string, string> = {
@@ -79,11 +81,21 @@ const highlights: Record<string, string> = {
   'Jon God Gilly': 'A true partner in our app journey.',
 }
 
-export const testimonials: Testimonial[] = [
-  // The reviews published on vavencloud.com
-  ...reviews.map((r) => ({ ...r, highlight: highlights[r.name] })),
-  // Video reviews go here, e.g. { name: '…', topic: '…', video: { id: '<YouTube id>', title: '…' } }
-]
+/**
+ * TODO before launch: a sample, to show how a video review looks in the row. Replace it with a real client's
+ * video, name, topic and words, e.g. { name: '…', topic: '…', quote: '…', video: { id: '<YouTube id>', title: '…' } },
+ * or delete it.
+ */
+const sampleVideo: Testimonial = {
+  name: '[Client name]',
+  topic: '[Topic]',
+  quote: '[A line the client says in the video, word for word.]',
+  sample: true,
+}
+
+// The reviews published on vavencloud.com, with the sample video second so it shows without scrolling
+const written = reviews.map((r) => ({ ...r, highlight: highlights[r.name] }))
+export const testimonials: Testimonial[] = [written[0], sampleVideo, ...written.slice(1)]
 
 /** Beside the plans: why saying yes is safe */
 export const safety: { icon: IconName; title: string; text: string }[] = [

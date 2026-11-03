@@ -72,27 +72,6 @@
   background: var(--pc-surface);
   box-shadow: var(--shadow-lift);
 }
-.pc-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  border-bottom: 1px solid var(--pc-line);
-  padding: 0.75rem 1.25rem;
-}
-.pc-head-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--pc-ink);
-  font-size: 0.875rem;
-  font-weight: 650;
-}
-.pc-head-title span {
-  color: var(--pc-muted);
-  font-weight: 400;
-}
 .pc-mark {
   flex: none;
   object-fit: contain;
@@ -129,11 +108,27 @@
   gap: 0.75rem;
   padding-left: 3.5rem;
 }
-.pc-summary {
-  display: grid;
+/* Under the example: what's happening, beside the clock and the play button */
+.pc-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
   border-top: 1px solid var(--pc-line);
   background: color-mix(in srgb, var(--pc-mist) 45%, var(--pc-surface));
   padding: 1rem 1.25rem;
+}
+.pc-controls {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 1rem;
+}
+.pc-summary {
+  display: grid;
+  min-width: 0;
+  flex: 1 1 22rem;
   color: var(--pc-muted);
   font-size: 0.94rem;
   font-weight: 600;
@@ -672,7 +667,7 @@
   .pc-body {
     padding: 2rem;
   }
-  .pc-summary {
+  .pc-foot {
     padding-inline: 2rem;
   }
 }

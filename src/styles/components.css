@@ -22,19 +22,78 @@
     @apply inline-flex items-center justify-center gap-2 rounded-full border border-neutral-300 bg-white px-5 py-2.5 text-sm font-semibold text-neutral-950 shadow-sm transition-[border-color,color,box-shadow] duration-200 hover:border-brand-400 hover:text-brand-700 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:border-neutral-700 dark:bg-neutral-900 dark:text-white dark:hover:border-brand-400 dark:hover:text-brand-300 dark:focus-visible:outline-brand-400;
   }
 
-  /* Small label above a heading, shown as a highlighted pill with a dot */
+  /*
+   * Section headings, in the hero's type (the hero uses these same classes), so every section reads alike:
+   * a small pill with a dot above, the title (an <em> in it goes on its own line in the brand colour, like
+   * the hero's second line), then the lead.
+   */
   .eyebrow {
-    @apply inline-flex items-center gap-2 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-[0.8rem] font-semibold tracking-wider text-brand-700 uppercase dark:border-brand-900 dark:bg-brand-950/60 dark:text-brand-300;
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem 0.55rem;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.65);
+    padding: 0.4rem 0.95rem 0.4rem 0.8rem;
+    color: var(--color-neutral-600);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-card);
+    backdrop-filter: blur(8px);
+  }
+  .dark .eyebrow {
+    border-color: var(--color-neutral-800);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--color-neutral-400);
   }
   .eyebrow::before {
     content: "";
-    @apply h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500 dark:bg-brand-400;
+    height: 0.45rem;
+    width: 0.45rem;
+    flex: none;
+    border-radius: 999px;
+    background: var(--color-brand-500);
   }
   .section-title {
-    @apply text-4xl leading-[1.05] font-semibold tracking-tight text-balance text-neutral-950 sm:text-5xl lg:text-[3.5rem] dark:text-white;
+    color: var(--color-neutral-950);
+    font-size: clamp(2.5rem, 5.4vw, 5.1rem);
+    font-weight: 620;
+    line-height: 0.98;
+    letter-spacing: -0.06em;
+    text-wrap: balance;
+  }
+  .dark .section-title {
+    color: #fff;
+  }
+  .section-title em {
+    display: block;
+    color: var(--color-brand-600);
+    font-style: normal;
+  }
+  .dark .section-title em {
+    color: var(--color-brand-400);
   }
   .section-lead {
-    @apply text-lg leading-relaxed text-neutral-600 sm:text-xl dark:text-neutral-400;
+    max-width: 38rem;
+    color: var(--color-neutral-600);
+    font-size: 1.12rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+  .dark .section-lead {
+    color: var(--color-neutral-400);
+  }
+  .text-center .section-lead {
+    margin-inline: auto;
+  }
+  @media (max-width: 639px) {
+    .section-lead {
+      font-size: 1.04rem;
+    }
   }
 
   /* White cards sit on the paper background with a soft, warm shadow instead of a flat outline */

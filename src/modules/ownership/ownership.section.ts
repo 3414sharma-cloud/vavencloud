@@ -4,6 +4,7 @@ import { routes } from '@/app/routes.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { intro, night, steps, type Moment, type Step } from './ownership.data.ts'
 
 /*
@@ -69,10 +70,13 @@ const slide = (st: Step, i: number) => `
 const html = () => `
 <section id="ownership" class="pt-24 pb-20 sm:pt-32 sm:pb-24" aria-labelledby="ownership-title">
   <div class="container-page">
-    <div class="max-w-4xl">
-      <p class="ow-overline">A typical production handoff</p>
-      <h2 id="ownership-title" class="ow-title">Your app has three vendors.<span>When it breaks, it has none.</span></h2>
-      <p class="ow-intro">${intro}</p>
+    <div class="max-w-5xl">
+      ${sectionHeading({
+        id: 'ownership-title',
+        eyebrow: 'A typical production handoff',
+        title: 'Your app has three vendors. <em>When it breaks, it has none.</em>',
+        description: intro,
+      })}
     </div>
   </div>
 

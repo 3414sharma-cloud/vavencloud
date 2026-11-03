@@ -1,53 +1,20 @@
 /*
- * v2's client stories (reviews.v2.ts): a night-blue panel (.surface-ink) holding one row of glass cards that
- * scrolls sideways, with a bar and arrows under it. The row runs out to the panel's edges (--tm-pad is the
- * panel's side padding) and fades there while there's more to see (.is-start / .is-end, set by the script).
- * Written reviews underline one phrase in sky; video reviews show the thumbnail with a play button.
+ * v2's client stories (reviews.v2.ts): on a mist band, one row of cards (white, charcoal in dark mode)
+ * that scrolls sideways, with a bar and arrows under it. The row runs a little past the content edge (--tm-pad),
+ * so the cards' shadows and hover lift aren't cut off, and fades there while there's more to see (.is-start /
+ * .is-end, set by the script). Written reviews underline one phrase; video reviews show the thumbnail with a
+ * play button, and a sample shows a poster marked "Sample".
  */
-.tm {
-  --tm-pad: 0.75rem;
-  position: relative;
-  overflow: hidden;
-  border-radius: 2rem;
-  padding: 3.5rem var(--tm-pad) 1.5rem;
-}
-/* A second glow, bottom right, so the panel isn't lit from one corner only */
-.tm::before {
-  content: '';
-  position: absolute;
-  right: -10rem;
-  bottom: -12rem;
-  height: 30rem;
-  width: 30rem;
-  border-radius: 999px;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-400) 22%, transparent), transparent);
-  pointer-events: none;
-}
-.dark .tm::before {
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-500) 14%, transparent), transparent);
-}
-.tm > * {
-  position: relative;
-}
-.tm .v2-overline {
-  color: var(--color-brand-300);
-}
-.tm .v2-title {
-  color: #fff;
-  text-wrap: balance;
-}
-.tm .v2-title span {
-  color: color-mix(in srgb, #fff 45%, transparent);
-}
 
 /* ---------- The row ---------- */
 .tm-track {
+  --tm-pad: 1rem;
   --fade: 3rem;
   display: flex;
   gap: 1rem;
   margin: 2.5rem calc(-1 * var(--tm-pad)) 0;
-  /* Room above for a card lifting on hover */
-  padding: 0.5rem var(--tm-pad) 0.25rem;
+  /* Room around for the shadows and a card lifting on hover */
+  padding: 0.75rem var(--tm-pad) 1.75rem;
   overflow-x: auto;
   overscroll-behavior-x: contain;
   scroll-snap-type: x mandatory;
@@ -69,7 +36,7 @@
   mask-image: none;
 }
 .tm-track:focus-visible {
-  outline: 2px solid var(--color-brand-300);
+  outline: 2px solid var(--color-brand-600);
   outline-offset: -2px;
   border-radius: 1.5rem;
 }
@@ -85,23 +52,30 @@
   flex: 0 0 min(23rem, 86%);
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgb(255 255 255 / 0.1);
+  border: 1px solid color-mix(in srgb, var(--color-neutral-200) 80%, transparent);
   border-radius: 1.5rem;
-  background: rgb(255 255 255 / 0.045);
+  background: #fff;
   padding: 1.4rem;
+  box-shadow: var(--shadow-card);
   scroll-snap-align: start;
-  backdrop-filter: blur(6px);
   transition:
     transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
     border-color 0.3s ease,
-    background-color 0.3s ease;
+    box-shadow 0.3s ease;
+}
+.dark .tm-card {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.3),
+    0 18px 40px -24px rgb(0 0 0 / 0.6);
 }
 /* The light under the pointer */
 .tm-card::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(22rem circle at var(--x, 50%) var(--y, 0%), color-mix(in srgb, var(--color-brand-400) 16%, transparent), transparent 70%);
+  background: radial-gradient(22rem circle at var(--x, 50%) var(--y, 0%), color-mix(in srgb, var(--color-brand-400) 10%, transparent), transparent 70%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.4s ease;
@@ -111,9 +85,12 @@
 }
 @media (hover: hover) and (pointer: fine) {
   .tm-track:not(.is-dragging) .tm-card:hover {
-    border-color: color-mix(in srgb, var(--color-brand-300) 35%, transparent);
-    background: rgb(255 255 255 / 0.07);
+    border-color: var(--color-brand-300);
+    box-shadow: var(--shadow-lift);
     transform: translateY(-4px);
+  }
+  .dark .tm-track:not(.is-dragging) .tm-card:hover {
+    border-color: color-mix(in srgb, var(--color-brand-400) 45%, transparent);
   }
   .tm-card:hover::before {
     opacity: 1;
@@ -124,35 +101,46 @@
   height: 1.9rem;
   width: auto;
   flex: none;
+  fill: var(--color-brand-500);
+}
+.dark .tm-mark {
   fill: var(--color-brand-400);
 }
 .tm-topic {
-  border: 1px solid rgb(255 255 255 / 0.12);
+  border: 1px solid var(--color-neutral-200);
   border-radius: 999px;
   padding: 0.2rem 0.7rem;
-  color: var(--color-brand-200);
+  color: var(--color-brand-700);
   font-size: 0.72rem;
   font-weight: 650;
   white-space: nowrap;
 }
 .dark .tm-topic {
+  border-color: var(--color-neutral-700);
   color: var(--color-brand-300);
 }
 
 .tm-quote {
   margin-top: 1.4rem;
-  color: rgb(255 255 255 / 0.82);
+  color: var(--color-neutral-700);
   font-size: 1.06rem;
   line-height: 1.7;
 }
-/* The phrase that matters, in the client's own words: brighter, with a sky marker stroke that sweeps in behind it */
+.dark .tm-quote {
+  color: var(--color-neutral-300);
+}
+/* The phrase that matters, in the client's own words: darker, with a sky marker stroke that sweeps in behind it */
 .tm-quote mark {
   border-radius: 0.2em;
-  background: linear-gradient(color-mix(in srgb, var(--color-brand-400) 30%, transparent), color-mix(in srgb, var(--color-brand-400) 30%, transparent)) no-repeat 0 88% / 100% 0.5em;
-  color: #fff;
+  background: linear-gradient(color-mix(in srgb, var(--color-brand-300) 45%, transparent), color-mix(in srgb, var(--color-brand-300) 45%, transparent)) no-repeat 0 88% / 100% 0.5em;
+  color: var(--color-neutral-950);
   font-weight: 600;
   transition: background-size 0.9s cubic-bezier(0.22, 1, 0.36, 1);
   transition-delay: calc(0.35s + var(--d, 0) * 0.22s);
+}
+.dark .tm-quote mark {
+  background-image: linear-gradient(color-mix(in srgb, var(--color-brand-400) 30%, transparent), color-mix(in srgb, var(--color-brand-400) 30%, transparent));
+  color: #fff;
 }
 .tm-card[data-state='waiting'] .tm-quote mark {
   background-size: 0% 0.5em;
@@ -164,8 +152,11 @@
   align-items: center;
   gap: 0.85rem;
   margin-top: auto;
-  border-top: 1px solid rgb(255 255 255 / 0.1);
+  border-top: 1px solid var(--color-neutral-200);
   padding-top: 1.25rem;
+}
+.dark .tm-who {
+  border-color: var(--color-neutral-800);
 }
 /* At least this much space above the names, however short the card */
 .tm-card > :nth-last-child(2) {
@@ -179,10 +170,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-600));
-  box-shadow:
-    0 0 0 3px rgb(255 255 255 / 0.08),
-    0 10px 24px -10px var(--color-brand-400);
+  background: linear-gradient(135deg, var(--color-brand-400), var(--color-brand-600));
+  box-shadow: 0 10px 22px -12px var(--color-brand-600);
   color: #fff;
   font-size: 0.85rem;
   font-weight: 700;
@@ -190,12 +179,15 @@
 }
 .tm-name {
   display: block;
-  color: #fff;
+  color: var(--color-neutral-950);
   font-weight: 650;
+}
+.dark .tm-name {
+  color: #fff;
 }
 .tm-client {
   display: block;
-  color: rgb(255 255 255 / 0.6);
+  color: var(--color-neutral-500);
   font-size: 0.85rem;
 }
 
@@ -205,8 +197,8 @@
   aspect-ratio: 16 / 9;
   overflow: hidden;
   border-radius: 1rem;
-  background: rgb(0 0 0 / 0.4);
-  box-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.8);
+  background: var(--color-neutral-900);
+  box-shadow: 0 16px 34px -22px rgb(0 0 0 / 0.55);
 }
 .tm-poster {
   display: block;
@@ -232,6 +224,37 @@
 .tm-poster:focus-visible {
   outline: 3px solid var(--color-brand-300);
   outline-offset: -3px;
+}
+/* A sample, until there's a real video: a night-sky poster that says what it is */
+.tm-poster--sample {
+  position: relative;
+  background:
+    radial-gradient(70% 90% at 30% 20%, color-mix(in srgb, var(--color-brand-400) 45%, transparent), transparent 70%),
+    linear-gradient(135deg, var(--color-ink-800), var(--color-ink-950));
+  cursor: default;
+}
+.tm-sample-tag {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 1;
+  border: 1px dashed rgb(255 255 255 / 0.55);
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.tm-sample-note {
+  position: absolute;
+  inset: auto 0 0.85rem;
+  z-index: 1;
+  color: rgb(255 255 255 / 0.75);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
 }
 .tm-play {
   position: absolute;
@@ -281,11 +304,15 @@
   align-items: center;
   gap: 0.4rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-brand-400) 18%, transparent);
+  background: var(--color-brand-50);
   padding: 0.25rem 0.7rem;
-  color: #fff;
+  color: var(--color-brand-700);
   font-size: 0.72rem;
   font-weight: 650;
+}
+.dark .tm-badge {
+  background: color-mix(in srgb, var(--color-brand-500) 18%, transparent);
+  color: var(--color-brand-300);
 }
 
 /* ---------- Under the row: where you are, and the arrows ---------- */
@@ -293,8 +320,7 @@
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  margin-top: 1.5rem;
-  padding-inline: 0.5rem;
+  margin-top: 0.75rem;
 }
 .tm-controls[hidden] {
   display: none;
@@ -305,14 +331,17 @@
   flex: 1;
   overflow: hidden;
   border-radius: 999px;
-  background: rgb(255 255 255 / 0.12);
+  background: var(--color-neutral-200);
+}
+.dark .tm-progress {
+  background: var(--color-neutral-800);
 }
 .tm-progress span {
   position: absolute;
   inset-block: 0;
   left: 0;
   border-radius: inherit;
-  background: var(--color-brand-300);
+  background: var(--color-brand-500);
 }
 .tm-arrow {
   display: inline-flex;
@@ -320,21 +349,30 @@
   width: 2.75rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid rgb(255 255 255 / 0.18);
+  border: 1px solid var(--color-neutral-300);
   border-radius: 999px;
-  color: #fff;
+  background: #fff;
+  color: var(--color-neutral-800);
   cursor: pointer;
   transition:
-    background-color 0.2s ease,
     border-color 0.2s ease,
+    color 0.2s ease,
     opacity 0.2s ease;
 }
+.dark .tm-arrow {
+  border-color: var(--color-neutral-700);
+  background: var(--color-neutral-900);
+  color: #fff;
+}
 .tm-arrow:hover:not(:disabled) {
-  border-color: rgb(255 255 255 / 0.4);
-  background: rgb(255 255 255 / 0.08);
+  border-color: var(--color-brand-400);
+  color: var(--color-brand-700);
+}
+.dark .tm-arrow:hover:not(:disabled) {
+  color: var(--color-brand-300);
 }
 .tm-arrow:focus-visible {
-  outline: 2px solid var(--color-brand-300);
+  outline: 2px solid var(--color-brand-600);
   outline-offset: 2px;
 }
 .tm-arrow:disabled {
@@ -343,25 +381,14 @@
 }
 
 @media (min-width: 640px) {
-  .tm {
-    --tm-pad: 2.5rem;
-    padding-block: 4.5rem 2.25rem;
-  }
   .tm-card {
     padding: 2rem;
   }
-  .tm-controls {
-    padding-inline: 0;
-  }
 }
 @media (min-width: 1024px) {
-  .tm {
-    --tm-pad: 3.5rem;
-    padding-block: 5rem 3rem;
-  }
   .tm-track {
     gap: 1.25rem;
-    margin-top: 3.5rem;
+    margin-top: 3rem;
   }
 }
 

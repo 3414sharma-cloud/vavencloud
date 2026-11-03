@@ -9,28 +9,28 @@ export function faqSection({ items = defaultFaqs }: { items?: Faq[] } = {}): Sec
   return {
     html: `
 <section id="faq" class="border-t border-neutral-200 py-20 sm:py-28 dark:border-neutral-800">
-  <div class="container-page grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-16">
-    <div class="lg:sticky lg:top-28 lg:self-start">
+  <div class="container-page">
+    <div class="max-w-5xl">
       ${sectionHeading({
-        title: 'Questions founders ask before they hand over production.',
+        title: 'Questions founders ask <em>before they hand over production.</em>',
         description: 'Something else on your mind? Ask it in your free review. You’ll get a straight answer from an engineer.',
       })}
       <a href="${routes.book}" class="btn-secondary mt-8">Book a free review</a>
     </div>
 
-    <div class="border-t border-neutral-200 dark:border-neutral-800">
+    <div class="mt-14 border-t border-neutral-200 dark:border-neutral-800">
       ${items
         .map(
           (f) => `
       <details class="group border-b border-neutral-200 dark:border-neutral-800">
-        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left font-medium text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:text-white">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-left text-lg font-medium text-neutral-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:text-white">
           ${f.q}
           <span class="shrink-0 text-neutral-500">
             <span class="group-open:hidden">${icon('plus', 'h-4 w-4')}</span>
             <span class="hidden group-open:block">${icon('minus', 'h-4 w-4')}</span>
           </span>
         </summary>
-        <p class="pb-5 pr-10 leading-relaxed">${f.a}</p>
+        <p class="max-w-3xl pb-6 leading-relaxed">${f.a}</p>
       </details>`,
         )
         .join('')}

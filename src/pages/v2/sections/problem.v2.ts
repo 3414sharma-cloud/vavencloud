@@ -1,10 +1,10 @@
 import './problem.v2.css'
 import type { Section } from '@/app/types.ts'
-import { intro } from '@/modules/ownership/ownership.data.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { downAt, fixSteps, vavenCall, vendorCalls, type Call } from '../v2.data.ts'
+import { initTagline, problemHeading } from './problem-heading.ts'
 
 /*
  * Chapter 1, the problem, played as a live example (the live landing page's "Who do you call?", in v2's
@@ -12,7 +12,7 @@ import { downAt, fixSteps, vavenCall, vendorCalls, type Call } from '../v2.data.
  * turn, while the ones you haven't tried yet wait, faded. Each call goes nowhere, so its string turns red and
  * is cut with a ✗. Then you call VavenCloud: the string holds, with a ✓, the engineer's messages appear on its
  * card, and checkout comes back. A clock, a "down for" counter and a bar of where the time went (calling
- * suppliers, then fixing) run the whole time. The title is the answer up front: "One cloud. One team. One call."
+ * suppliers, then fixing) run the whole time. The heading (problem-heading.ts) gives the answer up front.
  *
  * It plays once when it comes into view, and "Replay" plays it again. The strings are drawn in an SVG laid
  * over the cards and measured again whenever the layout changes: across from the phone on wide screens, down
@@ -107,14 +107,6 @@ const contact = (c: Call) => {
 const stage = () => `
   <div class="pc" data-calls data-phase="ready">
     <div class="pc-window">
-      <div class="pc-head">
-        <p class="pc-head-title" aria-hidden="true">${mark(20)}VavenCloud <span>/ live example</span></p>
-        <div class="flex items-center gap-4">
-          <span class="pc-clock" aria-hidden="true">Tonight <b data-clock>${clockTime(downAt)}</b></span>
-          <button type="button" class="btn-primary pc-play" data-calls-btn>${icon('play', 'h-3.5 w-3.5', true)}<span data-calls-label>Play</span><span class="sr-only"> the example</span></button>
-        </div>
-      </div>
-
       <div class="pc-body" data-calls-body aria-hidden="true">
         <svg class="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
           ${calls.map((c) => `<g data-wire="${c.id}" data-state="idle"><path class="pc-wire-guide"></path><path class="pc-wire"></path><path class="pc-wire-flow"></path></g>`).join('')}
@@ -127,11 +119,17 @@ const stage = () => `
         ${calls.map((c) => `<span class="pc-wire-badge" data-badge="${c.id}" data-state="idle">${icon(c === vavenCall ? 'check' : 'x', 'h-3.5 w-3.5')}</span>`).join('')}
       </div>
 
-      <p class="pc-summary" aria-hidden="true">${byPhase([
-        ['ready calling', `${clockTime(downAt)} · Checkout is down. Who do you call?`],
-        ['fixing', 'One call, answered. An engineer is fixing it now.'],
-        ['done', `${lost} minutes on three calls that went nowhere. One call to VavenCloud: fixed ${fixMinutes} minutes later, with a written report in your portal.`],
-      ])}</p>
+      <div class="pc-foot">
+        <p class="pc-summary" aria-hidden="true">${byPhase([
+          ['ready calling', `${clockTime(downAt)} · Checkout is down. Who do you call?`],
+          ['fixing', 'One call, answered. An engineer is fixing it now.'],
+          ['done', `${lost} minutes on three calls that went nowhere. One call to VavenCloud: fixed ${fixMinutes} minutes later, with a written report in your portal.`],
+        ])}</p>
+        <div class="pc-controls">
+          <span class="pc-clock" aria-hidden="true">Tonight <b data-clock>${clockTime(downAt)}</b></span>
+          <button type="button" class="btn-primary pc-play" data-calls-btn>${icon('play', 'h-3.5 w-3.5', true)}<span data-calls-label>Play</span><span class="sr-only"> the example</span></button>
+        </div>
+      </div>
     </div>
   </div>
   <ol class="sr-only">
@@ -144,30 +142,10 @@ const stage = () => `
 const html = () => `
 <section id="problem" class="v2-section" aria-labelledby="problem-title">
   <div class="container-page">
-    <div class="mx-auto max-w-4xl text-center">
-      <p class="v2-overline">Who do you call?</p>
-      <h2 id="problem-title" class="v2-title v2-tagline" data-tagline><span style="--i:0">One cloud.</span> <span style="--i:1">One team.</span> <br /><strong style="--i:2">One call.</strong></h2>
-      <p class="v2-lead mx-auto">${intro}</p>
-    </div>
+    ${problemHeading()}
     ${stage()}
   </div>
 </section>`
-
-/** The title: its three beats wait out of sight, then rise in one by one as it comes into view */
-function initTagline(): void {
-  const tagline = qs('[data-tagline]')
-  if (prefersReducedMotion() || !('IntersectionObserver' in window)) return
-  tagline.dataset.state = 'waiting'
-  const io = new IntersectionObserver(
-    ([e]) => {
-      if (!e.isIntersecting) return
-      io.disconnect()
-      tagline.dataset.state = 'in'
-    },
-    { threshold: 0.6 },
-  )
-  io.observe(tagline)
-}
 
 function initCalls(): void {
   const root = qs('[data-calls]')

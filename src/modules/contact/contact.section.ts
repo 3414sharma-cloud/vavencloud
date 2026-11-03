@@ -1,6 +1,7 @@
 import type { Section } from '@/app/types.ts'
 import { site } from '@/app/site.config.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { initBookingForm } from './booking-form.ts'
 
 /**
@@ -153,9 +154,8 @@ export function contactSection(): Section {
     html: `
 <section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="book-title">
   <div class="container-page">
-    <div class="max-w-6xl">
-      <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">A free production review</p>
-      <h2 id="book-title" class="mt-5 max-w-5xl text-5xl leading-[0.94] font-semibold tracking-[-0.06em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Stop running servers.<br><span class="text-brand-600 dark:text-brand-400">Start running your business.</span></h2>
+    <div class="max-w-5xl">
+      ${sectionHeading({ id: 'book-title', eyebrow: 'A free production review', title: 'Stop running servers. <em>Start running your business.</em>' })}
     </div>
 
     <div class="mx-auto mt-14 max-w-4xl border-t border-neutral-200 pt-10 dark:border-neutral-800">

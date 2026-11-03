@@ -105,8 +105,7 @@ const feeBlock = () => `
 
 const tools = () => `
     <div data-reveal class="mx-auto mt-24 max-w-6xl">
-      <p class="text-xs font-semibold tracking-[0.14em] text-brand-700 uppercase dark:text-brand-300">Your workspace</p>
-      <h3 class="mt-5 text-5xl leading-[0.9] font-semibold tracking-[-0.07em] text-neutral-950 sm:text-7xl lg:text-[5.5rem] dark:text-white">Everything in one place,<br><span class="text-neutral-400 dark:text-neutral-500">whichever cloud you’re on.</span></h3>
+      ${sectionHeading({ tag: 'h3', eyebrow: 'Your workspace', title: 'Everything in one place, <em>whichever cloud you’re on.</em>' })}
       <ol class="ot-tools">
         ${workspace
           .map(
@@ -230,9 +229,9 @@ export function oneTeamSection(): Section {
     html: `
 <section id="one-team" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
   <div class="container-page">
-    <div class="mx-auto max-w-3xl text-center">
+    <div class="mx-auto max-w-5xl text-center">
       ${sectionHeading({
-        title: 'One team owns your production. Not just the server. All of it.',
+        title: 'One team owns your production. <em>Not just the server. All of it.</em>',
         description:
           'VavenCloud brings together three things that usually come from three different companies: the infrastructure your product runs on, the DevOps engineers who keep it healthy, and the developers who can fix the code itself. Same team, same chat, same responsibility.',
       })}
