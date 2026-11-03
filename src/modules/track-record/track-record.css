@@ -1,6 +1,7 @@
 /*
  * The logo strip under the hero (track-record.section.ts), edge to edge: the label, then the logos spread
- * across the rest of the width. One quiet colour; the logo under the pointer lights up.
+ * across the rest of the width, each in its brand's colours (--c, and --c-dark on the dark theme, set on the
+ * logo by the script). The names beside them darken under the pointer.
  */
 .tr-band {
   display: flex;
@@ -32,7 +33,7 @@
   flex: none;
   align-items: center;
   gap: 0.6rem;
-  color: var(--color-neutral-500);
+  color: var(--color-neutral-700);
   font-size: 1.2rem;
   font-weight: 600;
   letter-spacing: -0.02em;
@@ -43,24 +44,21 @@
   color: var(--color-neutral-950);
 }
 .dark .tr-logo {
-  color: var(--color-neutral-400);
+  color: var(--color-neutral-300);
 }
 .dark .tr-logo:hover {
   color: #fff;
 }
-/* Our own logo is an image: greyed to sit with the others, in colour when hovered */
+.tr-logo svg {
+  color: var(--c, currentColor);
+}
+.dark .tr-logo svg {
+  color: var(--c-dark, var(--c, currentColor));
+}
+/* Our own logo is an image, as in the header */
 .tr-own {
   height: 2.1rem;
   width: auto;
-  filter: grayscale(1);
-  opacity: 0.7;
-  transition:
-    filter 0.25s ease,
-    opacity 0.25s ease;
-}
-.tr-logo:hover .tr-own {
-  filter: none;
-  opacity: 1;
 }
 
 /*
@@ -117,8 +115,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tr-logo,
-  .tr-own {
+  .tr-logo {
     transition: none;
   }
 }

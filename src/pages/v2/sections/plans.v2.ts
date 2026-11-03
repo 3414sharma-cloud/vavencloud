@@ -34,7 +34,7 @@ export function plansV2(): Section {
     html: `
 <section id="plans" class="v2-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="plans-title">
   <div class="container-page">
-    <div class="max-w-5xl">
+    <div class="mx-auto max-w-5xl text-center">
       ${sectionHeading({
         id: 'plans-title',
         eyebrow: 'Plans',

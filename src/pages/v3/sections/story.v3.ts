@@ -4,6 +4,7 @@ import { initTagline, problemHeading } from '@/pages/v2/sections/problem-heading
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
+import { logoMark } from '@/shared/ui/logo.ts'
 import { callers, loopNote, scenes, site, type CallerId, type Line, type Scene, type SiteState } from '../v3.data.ts'
 
 /*
@@ -98,7 +99,7 @@ const when = (from: number, to?: number) => `data-from="${Math.round(from)}"${to
 const pad = (n: number) => String(n).padStart(2, '0')
 const fill = (text: string, t: number) => text.replace('{time}', timeAt(t))
 
-const mark = (size: number) => `<img src="/favicon.png" alt="" width="${size}" height="${size}" class="st-mark" />`
+const mark = (size: number) => logoMark(size, 'st-mark')
 const avatar = (id: CallerId, size: string) => (id === 'vaven' ? mark(24) : icon(callers[id].icon!, size))
 
 /** Texts that share one spot, one per state of the site */

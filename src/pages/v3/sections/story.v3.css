@@ -946,24 +946,24 @@
   opacity: 1;
   transform: none;
 }
-/* How the call ended, stamped where the hang-up button was */
+/* How the call ended, stamped across the middle of the phone; what was said dims behind it */
 .st-stamp {
   position: absolute;
-  bottom: 1.05rem;
+  top: 55%;
   left: 50%;
   z-index: 2;
-  border: 2px solid;
-  border-radius: 0.5rem;
-  background: rgb(7 12 20 / 0.75);
-  padding: 0.3rem 0.8rem;
+  border: 2.5px solid;
+  border-radius: 0.6rem;
+  background: rgb(7 12 20 / 0.82);
+  padding: 0.45rem 1rem;
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.78rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   white-space: nowrap;
   opacity: 0;
-  transform: translateX(-50%) rotate(-8deg) scale(1.8);
+  transform: translate(-50%, -50%) rotate(-8deg) scale(1.8);
   backdrop-filter: blur(6px);
   transition:
     opacity 0.25s ease,
@@ -971,7 +971,13 @@
 }
 .st-stamp[data-on] {
   opacity: 1;
-  transform: translateX(-50%) rotate(-8deg);
+  transform: translate(-50%, -50%) rotate(-8deg);
+}
+.st-thread {
+  transition: opacity 0.4s ease;
+}
+.st-call:has(.st-stamp[data-on]) .st-thread {
+  opacity: 0.35;
 }
 .st-stamp[data-tone="bad"] {
   border-color: rgb(251 113 133);
