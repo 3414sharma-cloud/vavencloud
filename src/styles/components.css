@@ -90,6 +90,16 @@
   .text-center .section-lead {
     margin-inline: auto;
   }
+  /*
+   * A heading across the page (Plans, FAQ): the title a little under the shared size, so each of its two lines
+   * fits on one line on wide screens, and the lead wider, in at most two lines
+   */
+  .heading-wide .section-title {
+    font-size: clamp(2.25rem, 4.6vw, 4.4rem);
+  }
+  .heading-wide .section-lead {
+    max-width: 60rem;
+  }
   @media (max-width: 639px) {
     .section-lead {
       font-size: 1.04rem;
