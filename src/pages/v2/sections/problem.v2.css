@@ -1,0 +1,697 @@
+/*
+ * The problem's live example (problem.v2.ts), in v2's design: the live landing page's "Who do you call?"
+ * redrawn with v2's tokens (Sky brand, warm neutrals, the same cards and shadows), in light and dark.
+ * State lives in data attributes: [data-phase] on the example (ready → calling → fixing → done) and
+ * [data-state] on each contact, string and badge (idle → calling → failed, or → connected for VavenCloud).
+ * --len and --cut, set by the script, are each string's length and the point where its ✗ or ✓ sits.
+ */
+
+/* The example's own palette, so light and dark only differ here */
+.pc {
+  --pc-surface: #fff;
+  --pc-mist: var(--color-neutral-100);
+  --pc-line: var(--color-neutral-200);
+  --pc-field: var(--color-neutral-300);
+  --pc-faint: var(--color-neutral-400);
+  --pc-muted: var(--color-neutral-500);
+  --pc-slate: var(--color-neutral-700);
+  --pc-ink: var(--color-neutral-950);
+  --pc-accent: var(--color-brand-600);
+  --pc-accent-tint: var(--color-brand-50);
+  --pc-alert: rgb(190 18 60);
+  --pc-alert-soft: rgb(244 63 94 / 0.55);
+  --pc-alert-tint: rgb(255 228 230);
+  --pc-ok: rgb(5 150 105);
+  --pc-ok-ink: rgb(4 120 87);
+  --pc-ok-tint: rgb(209 250 229);
+  margin-top: 3rem;
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--color-brand-100) 45%, var(--color-neutral-100));
+  padding: 0.5rem;
+}
+.dark .pc {
+  --pc-surface: var(--color-neutral-900);
+  --pc-mist: var(--color-neutral-800);
+  --pc-line: var(--color-neutral-800);
+  --pc-field: var(--color-neutral-700);
+  --pc-faint: var(--color-neutral-600);
+  --pc-muted: var(--color-neutral-400);
+  --pc-slate: var(--color-neutral-300);
+  --pc-ink: #fff;
+  --pc-accent: var(--color-brand-400);
+  --pc-accent-tint: color-mix(in srgb, var(--color-brand-500) 14%, var(--color-neutral-900));
+  --pc-alert: rgb(251 113 133);
+  --pc-alert-soft: rgb(251 113 133 / 0.5);
+  --pc-alert-tint: rgb(244 63 94 / 0.14);
+  --pc-ok: rgb(52 211 153);
+  --pc-ok-ink: rgb(110 231 183);
+  --pc-ok-tint: rgb(16 185 129 / 0.16);
+  background: rgb(255 255 255 / 0.03);
+}
+/* While the example jumps back to the start, nothing animates */
+.pc.is-resetting * {
+  transition: none !important;
+}
+
+/* Texts sharing one spot: each is shown in the phases its data-when names */
+.pc [data-when] {
+  visibility: hidden;
+}
+.pc[data-phase="ready"] [data-when~="ready"],
+.pc[data-phase="calling"] [data-when~="calling"],
+.pc[data-phase="fixing"] [data-when~="fixing"],
+.pc[data-phase="done"] [data-when~="done"] {
+  visibility: visible;
+}
+
+/* ---------- The window ---------- */
+.pc-window {
+  overflow: hidden;
+  border: 1px solid var(--pc-line);
+  border-radius: 1.4rem;
+  background: var(--pc-surface);
+  box-shadow: var(--shadow-lift);
+}
+.pc-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--pc-line);
+  padding: 0.75rem 1.25rem;
+}
+.pc-head-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--pc-ink);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.pc-head-title span {
+  color: var(--pc-muted);
+  font-weight: 400;
+}
+.pc-mark {
+  flex: none;
+  object-fit: contain;
+}
+.pc-clock {
+  color: var(--pc-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+}
+.pc-clock b {
+  color: var(--pc-ink);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.pc-play {
+  gap: 0.4rem;
+  min-height: 2.35rem;
+  padding-inline: 1rem;
+}
+.pc-play:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+.pc-body {
+  position: relative;
+  display: grid;
+  row-gap: 2rem;
+  padding: 1.25rem;
+}
+.pc-list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-left: 3.5rem;
+}
+.pc-summary {
+  display: grid;
+  border-top: 1px solid var(--pc-line);
+  background: color-mix(in srgb, var(--pc-mist) 45%, var(--pc-surface));
+  padding: 1rem 1.25rem;
+  color: var(--pc-muted);
+  font-size: 0.94rem;
+  font-weight: 600;
+  transition: color 0.4s ease;
+}
+.pc[data-phase="fixing"] .pc-summary {
+  color: var(--pc-accent);
+}
+.pc[data-phase="done"] .pc-summary {
+  color: var(--pc-ok-ink);
+}
+
+/* ---------- The app: down while you call around, being fixed once VavenCloud picks up, then fixed ---------- */
+.pc-app {
+  position: relative;
+  min-width: 0;
+  border: 1px solid var(--pc-line);
+  border-radius: 1.1rem;
+  background: var(--pc-surface);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+.pc-url {
+  overflow: hidden;
+  color: var(--pc-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.pc-app-chip {
+  display: inline-grid;
+  flex: none;
+  border-radius: 999px;
+  background: var(--pc-alert-tint);
+  padding: 0.1rem 0.6rem;
+  color: var(--pc-alert);
+  font-size: 0.75rem;
+  font-weight: 650;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+.pc[data-phase="calling"] .pc-app-chip [data-when~="calling"] {
+  animation: pc-blink 1.2s infinite;
+}
+.pc[data-phase="fixing"] .pc-app-chip {
+  background: var(--pc-accent-tint);
+  color: var(--pc-accent);
+}
+.pc[data-phase="done"] .pc-app-chip {
+  background: var(--pc-ok-tint);
+  color: var(--pc-ok-ink);
+}
+.pc-app-name {
+  margin-top: 1rem;
+  color: var(--pc-ink);
+  font-size: 1.25rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.pc-app-status {
+  display: grid;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.pc-app-status,
+.pc-app-down {
+  color: var(--pc-alert);
+  transition: color 0.4s ease;
+}
+.pc[data-phase="fixing"] .pc-app-status {
+  color: var(--pc-accent);
+}
+.pc[data-phase="done"] .pc-app-status {
+  color: var(--pc-ok-ink);
+}
+.pc[data-phase="done"] .pc-app-down {
+  color: var(--pc-ink);
+}
+.pc-app-time {
+  margin-top: 1.25rem;
+  border-top: 1px solid var(--pc-line);
+  padding-top: 1rem;
+}
+.pc-small {
+  color: var(--pc-muted);
+  font-size: 0.8rem;
+}
+.pc-app-down {
+  margin-top: 0.1rem;
+  font-size: 2.1rem;
+  font-weight: 650;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+/* Where the time went: red while you call around, sky once someone is fixing it */
+.pc-bar {
+  display: flex;
+  height: 0.5rem;
+  margin-top: 0.75rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--pc-mist);
+}
+.pc-bar-lost,
+.pc-dot-lost {
+  background: var(--pc-alert);
+}
+.pc-bar-fix,
+.pc-dot-fix {
+  background: var(--pc-accent);
+}
+.pc-bar span {
+  height: 100%;
+}
+.pc-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin-top: 0.5rem;
+  color: var(--pc-muted);
+  font-size: 0.75rem;
+}
+.pc-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.pc-legend i {
+  height: 0.5rem;
+  width: 0.5rem;
+  border-radius: 999px;
+}
+/* "min to fix" waits, its dot faded, until someone is actually fixing it (the text stays readable) */
+.pc-legend-fix i {
+  opacity: 0.3;
+  transition: opacity 0.4s ease;
+}
+.pc:is([data-phase="fixing"], [data-phase="done"]) .pc-legend-fix i {
+  opacity: 1;
+}
+
+/* Your phone: where every string starts. It shakes while a call rings, and turns green once connected. */
+.pc-dialer {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  border-radius: 0.75rem;
+  background: var(--pc-mist);
+  padding: 0.6rem 0.75rem;
+  color: var(--pc-ink);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.pc-dialer-icon {
+  display: inline-flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  background: var(--color-neutral-950);
+  color: #fff;
+  transition: background-color 0.4s ease;
+}
+.dark .pc-dialer-icon {
+  background: var(--color-neutral-700);
+}
+.pc[data-phase="calling"] .pc-dialer-icon svg {
+  animation: pc-wobble 0.5s ease-in-out infinite;
+}
+.pc:is([data-phase="fixing"], [data-phase="done"]) .pc-dialer-icon {
+  background: var(--pc-ok);
+}
+
+/* ---------- The people you call ---------- */
+.pc-contact {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.875rem;
+  border: 1px solid var(--pc-line);
+  border-radius: 1rem;
+  background: var(--pc-surface);
+  padding: 0.9rem 1rem;
+  /* Not called yet: waiting, faded */
+  opacity: 0.4;
+  transition:
+    opacity 0.4s ease,
+    border-color 0.4s ease,
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+.pc-contact--vaven {
+  margin-top: 0.75rem;
+}
+.pc-contact[data-state="calling"] {
+  opacity: 1;
+  border-color: var(--pc-field);
+  box-shadow: var(--shadow-lift);
+}
+.pc-contact[data-state="failed"] {
+  opacity: 0.8;
+  border-color: var(--pc-alert-soft);
+}
+.pc:is([data-phase="fixing"], [data-phase="done"]) .pc-contact[data-state="failed"] {
+  opacity: 0.65;
+}
+.pc-contact[data-state="connected"] {
+  opacity: 1;
+  border-color: var(--pc-accent);
+  background: var(--pc-accent-tint);
+  box-shadow: 0 18px 40px -22px color-mix(in srgb, var(--color-brand-600) 70%, transparent);
+}
+.pc-contact-name {
+  color: var(--pc-ink);
+  font-size: 0.94rem;
+  font-weight: 650;
+  text-decoration: line-through transparent 2px;
+  transition: text-decoration-color 0.4s ease;
+}
+.pc-contact[data-state="failed"] .pc-contact-name {
+  text-decoration-color: var(--pc-alert);
+}
+.pc-contact-role {
+  margin-top: 0.1rem;
+  color: var(--pc-muted);
+  font-size: 0.82rem;
+}
+.pc-contact-icon {
+  position: relative;
+  display: inline-flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.65rem;
+  background: var(--pc-mist);
+  color: var(--pc-slate);
+}
+.pc-contact--vaven .pc-contact-icon {
+  background: var(--pc-surface);
+  box-shadow: inset 0 0 0 1px var(--pc-line);
+}
+/* Ringing */
+.pc-contact[data-state="calling"] .pc-contact-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--pc-slate);
+  border-radius: inherit;
+  animation: pc-ring 1.1s ease-out infinite;
+}
+
+/* "Calling…", then how the call ended. Both share one spot, so the card never changes size. */
+.pc-contact-chip {
+  display: inline-grid;
+  border-radius: 999px;
+  padding: 0.125rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 650;
+  visibility: hidden;
+}
+.pc-contact-chip > * {
+  display: inline-flex;
+  grid-area: 1 / 1;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  visibility: hidden;
+}
+.pc-contact[data-state="calling"] .pc-contact-chip {
+  visibility: visible;
+  background: var(--pc-mist);
+  color: var(--pc-slate);
+}
+.pc-contact[data-state="calling"] .pc-chip-calling {
+  visibility: visible;
+  animation: pc-blink 1.2s infinite;
+}
+.pc-contact[data-state="failed"] .pc-contact-chip {
+  visibility: visible;
+  background: var(--pc-alert-tint);
+  color: var(--pc-alert);
+}
+.pc-contact[data-state="connected"] .pc-contact-chip {
+  visibility: visible;
+  background: var(--pc-ok-tint);
+  color: var(--pc-ok-ink);
+}
+.pc-contact:is([data-state="failed"], [data-state="connected"]) .pc-chip-verdict {
+  visibility: visible;
+}
+
+/* What you hear back */
+.pc-contact-reply {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
+}
+.pc-contact:is([data-state="failed"], [data-state="connected"]) .pc-contact-reply {
+  opacity: 1;
+  transform: none;
+}
+.pc-contact[data-state="failed"] .pc-contact-reply {
+  color: var(--pc-alert);
+}
+.pc-contact[data-state="connected"] .pc-contact-reply {
+  color: var(--pc-accent);
+}
+
+/* The engineer's messages on VavenCloud's card: each row opens, shows typing dots, then the message */
+.pc-fix-step {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s ease;
+}
+.pc-fix-step:is([data-step-state="typing"], [data-step-state="in"]) {
+  grid-template-rows: 1fr;
+}
+.pc-fix-typing {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.pc-fix-typing i {
+  height: 0.375rem;
+  width: 0.375rem;
+  border-radius: 999px;
+  background: var(--pc-faint);
+  animation: pc-bounce 0.9s ease-in-out infinite;
+}
+.pc-fix-typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.pc-fix-typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.pc-fix-step[data-step-state="typing"] .pc-fix-typing {
+  opacity: 1;
+}
+.pc-fix-text {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
+}
+.pc-fix-step[data-step-state="in"] .pc-fix-text {
+  opacity: 1;
+  transform: none;
+}
+.pc-fix-time {
+  flex: none;
+  color: var(--pc-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.pc-fix-msg {
+  color: var(--pc-ink);
+  font-weight: 600;
+}
+.pc-fix-done {
+  color: var(--pc-ok-ink);
+  font-weight: 600;
+}
+
+/* ---------- The strings ---------- */
+/* Every possible call, faintly dotted, so the picture reads before anything happens */
+.pc-wire-guide {
+  fill: none;
+  stroke: var(--pc-field);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 6;
+  stroke-linecap: round;
+  transition: opacity 0.3s ease;
+}
+[data-wire]:not([data-state="idle"]) .pc-wire-guide {
+  opacity: 0;
+}
+/* A call: the string draws out from your phone to the person you ring */
+.pc-wire {
+  fill: none;
+  stroke: var(--pc-slate);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: var(--len) var(--len);
+  stroke-dashoffset: var(--len);
+  opacity: 0;
+  transition:
+    stroke-dashoffset 0.9s cubic-bezier(0.65, 0, 0.35, 1),
+    stroke 0.35s ease,
+    opacity 0.35s ease;
+}
+[data-wire]:is([data-state="calling"], [data-state="connected"]) .pc-wire {
+  stroke-dashoffset: 0;
+  opacity: 1;
+}
+/* Nobody helps: the string goes red and is cut where the ✗ sits (a gap a little wider than the ✗) */
+[data-wire][data-state="failed"] .pc-wire {
+  stroke: var(--pc-alert);
+  stroke-dasharray: calc(var(--cut) - 23px) 46px var(--len);
+  stroke-dashoffset: 0;
+  opacity: 0.55;
+}
+/* VavenCloud picks up: the string holds */
+[data-wire][data-state="connected"] .pc-wire {
+  stroke: var(--pc-accent);
+  stroke-width: 2.5;
+}
+/* The signal running along a live string */
+.pc-wire-flow {
+  fill: none;
+  stroke: var(--pc-surface);
+  stroke-width: 2;
+  stroke-dasharray: 3 12;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+[data-wire][data-state="calling"] .pc-wire-flow {
+  opacity: 0.9;
+  transition-delay: 0.8s;
+  animation: pc-flow 0.7s linear infinite;
+}
+[data-wire][data-state="connected"] .pc-wire-flow {
+  opacity: 0.85;
+  animation: pc-flow 0.9s linear infinite;
+}
+
+/* ✗ or ✓ on the string */
+.pc-wire-badge {
+  position: absolute;
+  display: inline-flex;
+  height: 1.5rem;
+  width: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #fff;
+  box-shadow: 0 0 0 4px var(--pc-surface);
+  translate: -50% -50%;
+  scale: 0;
+  opacity: 0;
+  transition:
+    scale 0.45s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.2s ease;
+}
+.pc-wire-badge[data-state="failed"] {
+  background: rgb(225 29 72);
+  scale: 1;
+  opacity: 1;
+  animation: pc-shake 0.45s ease 0.1s;
+}
+.pc-wire-badge[data-state="connected"] {
+  background: rgb(5 150 105);
+  scale: 1;
+  opacity: 1;
+}
+.pc-wire-badge[data-state="connected"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgb(5 150 105);
+  border-radius: inherit;
+  animation: pc-ring 1.6s ease-out infinite;
+}
+
+@keyframes pc-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes pc-wobble {
+  25% {
+    transform: rotate(-14deg);
+  }
+  75% {
+    transform: rotate(14deg);
+  }
+}
+@keyframes pc-ring {
+  from {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+@keyframes pc-flow {
+  to {
+    stroke-dashoffset: -15;
+  }
+}
+@keyframes pc-shake {
+  25% {
+    rotate: -16deg;
+  }
+  75% {
+    rotate: 16deg;
+  }
+}
+@keyframes pc-bounce {
+  50% {
+    transform: translateY(-3px);
+    opacity: 0.5;
+  }
+}
+
+@media (min-width: 640px) {
+  .pc {
+    padding: 0.75rem;
+  }
+  .pc-body {
+    padding: 2rem;
+  }
+  .pc-summary {
+    padding-inline: 2rem;
+  }
+}
+/* Wide screens: the app on the left, the strings across the middle, the people you call on the right */
+@media (min-width: 1024px) {
+  .pc-body {
+    grid-template-columns: 18.5rem minmax(7rem, 1fr) 25rem;
+    align-items: center;
+    padding: 2.5rem;
+  }
+  .pc-list {
+    padding-left: 0;
+  }
+}
+
+/* Reduced motion: the end, standing still */
+@media (prefers-reduced-motion: reduce) {
+  .pc * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

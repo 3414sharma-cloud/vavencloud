@@ -1,6 +1,6 @@
 import { routes } from '@/app/routes.ts'
 import { site } from '@/app/site.config.ts'
-import type { LayerId } from '@/modules/one-team/one-team.data.ts'
+import { reviews } from '@/modules/reviews/reviews.data.ts'
 import type { IconName } from '@/shared/ui/icons.ts'
 
 /*
@@ -11,7 +11,6 @@ import type { IconName } from '@/shared/ui/icons.ts'
 /** The header's links: the story's chapters, in reading order. The one on screen is marked as you scroll. */
 export const chapters = [
   { label: 'The problem', href: `${routes.home}#problem` },
-  { label: 'The fix', href: `${routes.home}#solution` },
   { label: 'Clients', href: `${routes.home}#clients` },
   { label: 'Plans', href: `${routes.home}#plans` },
   { label: 'FAQ', href: `${routes.home}#faq` },
@@ -20,19 +19,71 @@ export const chapters = [
 /** The design spaces the number out; the link itself comes from site.config.ts */
 export const emergency = { label: '+91 90609 79706', href: site.contact.phones[0].href }
 
-/** What three vendors cost you, beyond the outage itself */
-export const costs: { icon: IconName; text: string }[] = [
-  { icon: 'wallet', text: 'Every minute down costs sales, sign-ups and trust you don’t get back.' },
-  { icon: 'code', text: 'Your developers get pulled off the roadmap to fight fires.' },
-  { icon: 'phone', text: 'And the 2am call still comes to you.' },
+/* ---------- The problem: "Who do you call?", played as a live example (from the live landing page) ---------- */
+
+/** One call in the example: who you ring, what you hear back, and when. Times are minutes past 02:00. */
+export interface Call {
+  id: string
+  name: string
+  role: string
+  reply: string
+  /** How the call ended, on its card */
+  verdict: string
+  /** You dial at `dial`; by `end` the call is over (or answered) */
+  dial: number
+  end: number
+}
+
+/** Checkout goes down at 02:14 */
+export const downAt = 14
+
+export const vendorCalls: (Call & { icon: IconName })[] = [
+  { id: 'host', icon: 'server', name: 'Your host', role: 'Keeps the machine on.', reply: '“Your server is running normally.”', verdict: 'Not our problem', dial: 16, end: 29 },
+  { id: 'freelancer', icon: 'infinity', name: 'Your DevOps freelancer', role: 'Set up the pipeline last year.', reply: 'Seen 6 hours ago. No reply.', verdict: 'No answer', dial: 31, end: 38 },
+  { id: 'developers', icon: 'code', name: 'Your developers', role: 'Wrote the code.', reply: '“It works on our machines.”', verdict: 'Not our code', dial: 40, end: 52 },
 ]
 
-/** The fix's layer stack: who usually owns each layer (the three vendors from the problem chapter), and who does with us */
-export const owners: Record<LayerId, { before: string; now: string }> = {
-  code: { before: 'Your developers', now: 'Vavensoft developers' },
-  delivery: { before: 'Your freelancer', now: 'Senior DevOps engineers' },
-  infra: { before: 'Your host', now: 'VavenCloud or your cloud' },
+export const vavenCall: Call = {
+  id: 'vaven',
+  name: 'VavenCloud',
+  role: 'Servers, deployments and code. One team.',
+  reply: 'Picked up on the first ring: “I’m on it.”',
+  verdict: 'Answered',
+  dial: 53,
+  end: 53,
 }
+
+/** After VavenCloud picks up: the engineer's messages, ending in the fix */
+export const fixSteps = [
+  { at: 65, text: 'Cause found: a missing database index on the orders table.' },
+  { at: 80, text: 'Fixed and verified. Checkout is fast again.' },
+]
+
+/**
+ * Client stories: one card each, in a row that scrolls sideways, so add as many as there are. Real clients and
+ * their own words only (docs/messaging.md). `highlight` is a phrase from the quote, underlined on the card.
+ * A video review adds `video` (the YouTube id and its title); its card shows the thumbnail and loads the player
+ * only when played. Its `quote` is optional: a line the client says in the video, word for word.
+ */
+export interface Testimonial {
+  name: string
+  topic: string
+  quote?: string
+  highlight?: string
+  video?: { id: string; title: string }
+}
+
+const highlights: Record<string, string> = {
+  'Kyle Bagley': 'a trusted long-term partner',
+  'Mohammed Imtiaz Ali': 'their support team is always available',
+  'Jon God Gilly': 'A true partner in our app journey.',
+}
+
+export const testimonials: Testimonial[] = [
+  // The reviews published on vavencloud.com
+  ...reviews.map((r) => ({ ...r, highlight: highlights[r.name] })),
+  // Video reviews go here, e.g. { name: '…', topic: '…', video: { id: '<YouTube id>', title: '…' } }
+]
 
 /** Beside the plans: why saying yes is safe */
 export const safety: { icon: IconName; title: string; text: string }[] = [

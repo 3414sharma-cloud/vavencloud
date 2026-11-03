@@ -2,47 +2,50 @@ import './hero.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
-import { heroVisual, playVisual } from '@/modules/hero-visuals/hero-visuals.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { heroSlides, type HeroSlide } from './hero.data.ts'
 
 /*
- * The hero: a slider of the three things we sell (24/7 DevOps support, managed cloud, cloud servers), with a
- * numbered index underneath. Each slide is the message on the left and, on the right, what it looks like
- * (modules/hero-visuals): the visual plays each time its slide comes on. It moves on by itself: the line over
- * the active name fills to show how long is left. It holds while a keyboard user is inside it or it is
- * scrolled away, and stops for good with the pause button. The names, the arrow keys and a swipe all change
- * slide. With reduced motion it never moves by itself. Slides not on show are inert, so only the visible one
- * can be reached by keyboard or screen reader.
+ * The hero: a slider of the three things we sell (24/7 DevOps support, managed cloud, cloud servers), centred,
+ * with a numbered index underneath and two soft glows drifting behind. Each time a slide comes on (and on
+ * load, for the first) it plays in: the eyebrow, then the title word by word, then the description, the
+ * buttons and the note. The slider moves on by itself: the line over the active name fills to show how long
+ * is left. It holds while a keyboard user is inside it or it is scrolled away, and stops for good with the
+ * pause button. The names, the arrow keys and a swipe all change slide. With reduced motion nothing moves by
+ * itself and the slides simply show. Slides not on show are inert, so only the visible one can be reached by
+ * keyboard or screen reader.
  */
 
-/** How long each slide stays before the next one, in ms: long enough to read it and watch its visual play */
-const DURATIONS = [10000, 9000, 9000]
+/** How long each slide stays before the next one, in ms. The first stays longer, so its title can play in. */
+const DURATIONS = [9000, 8000, 8000]
 const count = heroSlides.length
 
 const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 
-/**
- * A slide: the message (eyebrow, two-line title, description, the buttons) and its visual. Only the first
- * slide's lines rise in on load; its visual starts playing at once.
- */
+/** A title line split into words, so they can rise in one after another; `from` carries the count across lines */
+const words = (text: string, from: number) =>
+  text
+    .split(' ')
+    .map((w, k) => `<span class="hero-word" style="--w:${from + k}">${w}</span>`)
+    .join(' ')
+
+/** A slide: eyebrow, two-line title, description, the buttons and a reassuring note, all centred */
 const slide = (s: HeroSlide, i: number) => {
   const first = i === 0
-  const cls = (name: string, k: number) => (first ? `class="${name} hero-enter" style="--i:${k}"` : `class="${name}"`)
   const tag = first ? 'h1' : 'h2'
+  const lead = s.title[0].split(' ').length
+  // The lines under the title start once its last word is on its way
+  const after = lead + s.title[1].split(' ').length
   return `
-      <div id="hero-slide-${i}" role="tabpanel" aria-roledescription="slide" aria-label="${i + 1} of ${count}: ${s.tab}" class="hero-slide${first ? ' is-active' : ''}" data-slide ${first ? '' : 'inert'}>
-        <div class="hero-slide-copy">
-          <p ${cls('hero-eyebrow', 1)}>${s.eyebrow.map((part) => `<span>${part}</span>`).join('<i></i>')}</p>
-          <${tag} ${first ? 'id="hero-title"' : ''} ${cls('hero-title', 2)}><span class="hero-title-line"><span>${s.title[0]}</span></span><span class="hero-title-line"><em>${s.title[1]}</em></span></${tag}>
-          <p ${cls('hero-description', 3)}>${s.description}</p>
-          <div ${cls('hero-actions', 4)}>
-            <a href="${s.primary.href}" class="btn-primary !px-7 !py-3.5 !text-base">${s.primary.label} ${icon('arrow-right', 'h-4 w-4')}</a>
-            <a href="${s.secondary.href}" ${s.secondary.external ? 'target="_blank" rel="noopener"' : ''} class="hero-link">${s.secondary.label}${s.secondary.external ? newTab : ''} ${icon('arrow-right', 'h-4 w-4')}</a>
-          </div>
-          <p ${cls('hero-reassurance', 5)}>${s.reassurance}</p>
+      <div id="hero-slide-${i}" role="tabpanel" aria-roledescription="slide" aria-label="${i + 1} of ${count}: ${s.tab}" class="hero-slide${first ? ' is-active' : ''}" data-slide ${first ? '' : 'inert'} style="--after:${after}">
+        <p class="hero-eyebrow">${s.eyebrow.map((part) => `<span>${part}</span>`).join('<i></i>')}</p>
+        <${tag} ${first ? 'id="hero-title"' : ''} class="hero-title"><span class="hero-title-line"><span>${words(s.title[0], 0)}</span></span><span class="hero-title-line"><em>${words(s.title[1], lead)}</em></span></${tag}>
+        <p class="hero-description">${s.description}</p>
+        <div class="hero-actions">
+          <a href="${s.primary.href}" class="btn-primary !px-7 !py-3.5 !text-base">${s.primary.label} ${icon('arrow-right', 'h-4 w-4')}</a>
+          <a href="${s.secondary.href}" ${s.secondary.external ? 'target="_blank" rel="noopener"' : ''} class="hero-link">${s.secondary.label}${s.secondary.external ? newTab : ''} ${icon('arrow-right', 'h-4 w-4')}</a>
         </div>
-        ${heroVisual[s.visual]({ playing: first, className: first ? 'hero-enter' : '', style: first ? '--i:4' : '' })}
+        <p class="hero-reassurance">${s.reassurance}</p>
       </div>`
 }
 
@@ -55,6 +58,7 @@ const tab = (s: HeroSlide, i: number) => `
 
 const html = () => `
 <section id="top" class="hero band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
+  <div class="hero-glow" aria-hidden="true"><span></span><span></span></div>
   <div class="hero-noise" aria-hidden="true"></div>
   <div class="container-page relative pt-32 pb-14 sm:pt-40 sm:pb-20">
     <div class="hero-inner">
@@ -98,9 +102,6 @@ function initSlider(root: HTMLElement): void {
     from.inert = true
     to.classList.add('is-active')
     to.inert = false
-    // The new slide's visual plays from the start; the old one rests on its end state
-    playVisual(from, false)
-    playVisual(to)
     // The new active name's line starts filling by itself, as its CSS animation only applies while selected
     tabs.forEach((t, i) => {
       t.setAttribute('aria-selected', String(i === next))

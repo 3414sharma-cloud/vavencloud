@@ -1,5 +1,4 @@
 import { routes } from '@/app/routes.ts'
-import type { VisualName } from '@/modules/hero-visuals/hero-visuals.ts'
 
 interface Link {
   label: string
@@ -22,8 +21,6 @@ export interface HeroSlide {
   primary: Link
   secondary: Link
   reassurance: string
-  /** Which picture plays beside the copy */
-  visual: VisualName
 }
 
 /** Copy follows docs/messaging.md. The first slide's title is the page's h1. */
@@ -36,7 +33,6 @@ export const heroSlides: HeroSlide[] = [
     primary: book,
     secondary: { label: 'See how it works', href: routes.process },
     reassurance: '45 minutes with a senior engineer, not a salesperson. You keep the written growth roadmap, whether or not you work with us.',
-    visual: 'incident',
   },
   {
     tab: 'Managed cloud',
@@ -46,7 +42,6 @@ export const heroSlides: HeroSlide[] = [
     primary: book,
     secondary: { label: 'See the plans', href: routes.plans },
     reassurance: 'Same team · same chat · same 24/7 cover',
-    visual: 'cloud',
   },
   {
     // Facts from vavencloud.com/cloud-services (October 2026): keep them in step with the site
@@ -57,6 +52,5 @@ export const heroSlides: HeroSlide[] = [
     primary: book,
     secondary: { label: 'Explore our cloud', href: 'https://vavencloud.com/cloud-services', external: true },
     reassurance: 'From $12 a month · live in 60 seconds · 99.9% uptime guarantee',
-    visual: 'servers',
   },
 ]

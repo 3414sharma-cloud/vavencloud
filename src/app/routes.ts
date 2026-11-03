@@ -12,7 +12,8 @@ export const routes = {
   about: '/about/',
   top: `${landing}#top`,
   oneTeam: `${landing}#one-team`,
-  process: `${landing}#how-it-works`,
+  /** v2 has no "how it works" chapter: there, it goes to what you get after an incident (the report) */
+  process: landing === '/v2/' ? `${landing}#report` : `${landing}#how-it-works`,
   plans: `${landing}#plans`,
   proof: `${landing}#proof`,
   faq: `${landing}#faq`,

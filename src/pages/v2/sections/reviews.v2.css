@@ -1,0 +1,379 @@
+/*
+ * v2's client stories (reviews.v2.ts): a night-blue panel (.surface-ink) holding one row of glass cards that
+ * scrolls sideways, with a bar and arrows under it. The row runs out to the panel's edges (--tm-pad is the
+ * panel's side padding) and fades there while there's more to see (.is-start / .is-end, set by the script).
+ * Written reviews underline one phrase in sky; video reviews show the thumbnail with a play button.
+ */
+.tm {
+  --tm-pad: 0.75rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 2rem;
+  padding: 3.5rem var(--tm-pad) 1.5rem;
+}
+/* A second glow, bottom right, so the panel isn't lit from one corner only */
+.tm::before {
+  content: '';
+  position: absolute;
+  right: -10rem;
+  bottom: -12rem;
+  height: 30rem;
+  width: 30rem;
+  border-radius: 999px;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-400) 22%, transparent), transparent);
+  pointer-events: none;
+}
+.dark .tm::before {
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--color-brand-500) 14%, transparent), transparent);
+}
+.tm > * {
+  position: relative;
+}
+.tm .v2-overline {
+  color: var(--color-brand-300);
+}
+.tm .v2-title {
+  color: #fff;
+  text-wrap: balance;
+}
+.tm .v2-title span {
+  color: color-mix(in srgb, #fff 45%, transparent);
+}
+
+/* ---------- The row ---------- */
+.tm-track {
+  --fade: 3rem;
+  display: flex;
+  gap: 1rem;
+  margin: 2.5rem calc(-1 * var(--tm-pad)) 0;
+  /* Room above for a card lifting on hover */
+  padding: 0.5rem var(--tm-pad) 0.25rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--tm-pad);
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  cursor: grab;
+}
+.tm-track::-webkit-scrollbar {
+  display: none;
+}
+.tm-track.is-start {
+  mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+}
+.tm-track.is-end {
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade));
+}
+.tm-track.is-start.is-end {
+  mask-image: none;
+}
+.tm-track:focus-visible {
+  outline: 2px solid var(--color-brand-300);
+  outline-offset: -2px;
+  border-radius: 1.5rem;
+}
+.tm-track.is-dragging {
+  scroll-snap-type: none;
+  cursor: grabbing;
+  user-select: none;
+}
+
+.tm-card {
+  position: relative;
+  display: flex;
+  flex: 0 0 min(23rem, 86%);
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1.5rem;
+  background: rgb(255 255 255 / 0.045);
+  padding: 1.4rem;
+  scroll-snap-align: start;
+  backdrop-filter: blur(6px);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+/* The light under the pointer */
+.tm-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(22rem circle at var(--x, 50%) var(--y, 0%), color-mix(in srgb, var(--color-brand-400) 16%, transparent), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.tm-card > * {
+  position: relative;
+}
+@media (hover: hover) and (pointer: fine) {
+  .tm-track:not(.is-dragging) .tm-card:hover {
+    border-color: color-mix(in srgb, var(--color-brand-300) 35%, transparent);
+    background: rgb(255 255 255 / 0.07);
+    transform: translateY(-4px);
+  }
+  .tm-card:hover::before {
+    opacity: 1;
+  }
+}
+
+.tm-mark {
+  height: 1.9rem;
+  width: auto;
+  flex: none;
+  fill: var(--color-brand-400);
+}
+.tm-topic {
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  color: var(--color-brand-200);
+  font-size: 0.72rem;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.dark .tm-topic {
+  color: var(--color-brand-300);
+}
+
+.tm-quote {
+  margin-top: 1.4rem;
+  color: rgb(255 255 255 / 0.82);
+  font-size: 1.06rem;
+  line-height: 1.7;
+}
+/* The phrase that matters, in the client's own words: brighter, with a sky marker stroke that sweeps in behind it */
+.tm-quote mark {
+  border-radius: 0.2em;
+  background: linear-gradient(color-mix(in srgb, var(--color-brand-400) 30%, transparent), color-mix(in srgb, var(--color-brand-400) 30%, transparent)) no-repeat 0 88% / 100% 0.5em;
+  color: #fff;
+  font-weight: 600;
+  transition: background-size 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(0.35s + var(--d, 0) * 0.22s);
+}
+.tm-card[data-state='waiting'] .tm-quote mark {
+  background-size: 0% 0.5em;
+}
+
+/* Pinned to the bottom, so the names line up along the row */
+.tm-who {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-top: auto;
+  border-top: 1px solid rgb(255 255 255 / 0.1);
+  padding-top: 1.25rem;
+}
+/* At least this much space above the names, however short the card */
+.tm-card > :nth-last-child(2) {
+  margin-bottom: 1.6rem;
+}
+.tm-avatar {
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-600));
+  box-shadow:
+    0 0 0 3px rgb(255 255 255 / 0.08),
+    0 10px 24px -10px var(--color-brand-400);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.tm-name {
+  display: block;
+  color: #fff;
+  font-weight: 650;
+}
+.tm-client {
+  display: block;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.85rem;
+}
+
+/* ---------- A video review ---------- */
+.tm-video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: rgb(0 0 0 / 0.4);
+  box-shadow: 0 18px 40px -22px rgb(0 0 0 / 0.8);
+}
+.tm-poster {
+  display: block;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+.tm-poster img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tm-poster::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / 0.45));
+}
+.tm-poster:hover img {
+  transform: scale(1.04);
+}
+.tm-poster:focus-visible {
+  outline: 3px solid var(--color-brand-300);
+  outline-offset: -3px;
+}
+.tm-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  display: inline-flex;
+  height: 3.75rem;
+  width: 3.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-brand-600);
+  box-shadow: 0 12px 30px -8px rgb(0 0 0 / 0.6);
+  transform: translate(-50%, -50%);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* A ring that pulses out of the button, asking to be played */
+.tm-play::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 0 rgb(255 255 255 / 0.5);
+  animation: tm-ring 2.4s ease-out infinite;
+}
+.tm-poster:hover .tm-play {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+@keyframes tm-ring {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 255 255 / 0.45);
+  }
+  70%,
+  100% {
+    box-shadow: 0 0 0 1.1rem rgb(255 255 255 / 0);
+  }
+}
+.tm-frame {
+  height: 100%;
+  width: 100%;
+  border: 0;
+}
+.tm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-brand-400) 18%, transparent);
+  padding: 0.25rem 0.7rem;
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+
+/* ---------- Under the row: where you are, and the arrows ---------- */
+.tm-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+  padding-inline: 0.5rem;
+}
+.tm-controls[hidden] {
+  display: none;
+}
+.tm-progress {
+  position: relative;
+  height: 3px;
+  flex: 1;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.12);
+}
+.tm-progress span {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: inherit;
+  background: var(--color-brand-300);
+}
+.tm-arrow {
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 999px;
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    opacity 0.2s ease;
+}
+.tm-arrow:hover:not(:disabled) {
+  border-color: rgb(255 255 255 / 0.4);
+  background: rgb(255 255 255 / 0.08);
+}
+.tm-arrow:focus-visible {
+  outline: 2px solid var(--color-brand-300);
+  outline-offset: 2px;
+}
+.tm-arrow:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+@media (min-width: 640px) {
+  .tm {
+    --tm-pad: 2.5rem;
+    padding-block: 4.5rem 2.25rem;
+  }
+  .tm-card {
+    padding: 2rem;
+  }
+  .tm-controls {
+    padding-inline: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .tm {
+    --tm-pad: 3.5rem;
+    padding-block: 5rem 3rem;
+  }
+  .tm-track {
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-card,
+  .tm-card::before,
+  .tm-quote mark,
+  .tm-poster img,
+  .tm-play {
+    transition: none;
+  }
+  .tm-play::before {
+    animation: none;
+  }
+}

@@ -1,17 +1,18 @@
 /*
- * Text-first hero (hero.section.ts): a slider of three slides with a numbered index underneath.
- * The ownership narrative lives in its own scroll-triggered section.
+ * The hero (hero.section.ts): a centred slider of three slides with a numbered index underneath and two soft
+ * glows drifting behind. A slide plays in each time it becomes .is-active: the eyebrow, the title word by
+ * word (--w), then the lines under it (after --after words). The ownership narrative lives in its own section.
  */
 .hero {
   isolation: isolate;
   background-image:
-    radial-gradient(90% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-200) 24%, transparent), transparent 68%),
-    linear-gradient(155deg, var(--color-linen), var(--color-paper) 60%);
+    radial-gradient(90% 80% at 50% 0%, color-mix(in srgb, var(--color-brand-200) 22%, transparent), transparent 68%),
+    linear-gradient(180deg, var(--color-linen), var(--color-paper) 70%);
 }
 .dark .hero {
   background-image:
-    radial-gradient(80% 80% at 90% 12%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 70%),
-    linear-gradient(155deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950)));
+    radial-gradient(80% 80% at 50% 0%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 70%),
+    linear-gradient(180deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950)));
 }
 .hero-noise {
   position: absolute;
@@ -21,10 +22,40 @@
   pointer-events: none;
   background-image: radial-gradient(color-mix(in srgb, var(--color-neutral-950) 10%, transparent) 0.55px, transparent 0.55px);
   background-size: 7px 7px;
-  mask-image: linear-gradient(to bottom, black, transparent 85%);
+  mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent 85%);
 }
 .dark .hero-noise {
   opacity: 0.13;
+}
+/* Two soft brand glows drifting slowly behind the text (gradients, not blur filters, so they cost little) */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-glow span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 44rem;
+  width: 44rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-300) 34%, transparent), transparent 66%);
+  animation: hero-drift-a 18s ease-in-out infinite alternate;
+}
+.hero-glow span + span {
+  height: 36rem;
+  width: 36rem;
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-200) 42%, transparent), transparent 66%);
+  animation: hero-drift-b 22s ease-in-out infinite alternate;
+}
+.dark .hero-glow span {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-700) 34%, transparent), transparent 66%);
+}
+.dark .hero-glow span + span {
+  background: radial-gradient(circle, color-mix(in srgb, var(--color-brand-500) 16%, transparent), transparent 66%);
 }
 
 /* ---------- Slides: stacked in one cell (the tallest sets the height), only the active one shown ---------- */
@@ -35,85 +66,107 @@
 .hero-slide {
   grid-area: 1 / 1;
   align-self: center;
-  max-width: 59rem;
+  justify-self: center;
+  width: 100%;
+  max-width: 62rem;
+  text-align: center;
   opacity: 0;
   visibility: hidden;
-  /* --out is set as the slider moves: the old slide leaves the opposite way to the new one's arrival */
-  transform: translateX(var(--out, -48px));
+  /* The old slide softens and fades quickly, so it's gone before the new title plays in on the same spot.
+     --out is set as the slider moves: it leaves the opposite way to the new one's arrival */
+  filter: blur(6px);
+  transform: translateX(var(--out, -32px));
   transition:
-    opacity 0.5s ease,
-    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
-    visibility 0s linear 0.8s;
+    opacity 0.28s ease,
+    filter 0.28s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.6s;
 }
 .hero-slide.is-active {
   opacity: 1;
   visibility: visible;
+  filter: none;
   transform: none;
   transition-delay: 0s;
 }
-/* The picture sits under the copy until there is room for two equal columns */
-.hero-slide .hv {
-  margin-top: 2.5rem;
-}
 
+/* The eyebrow, as a pill with a live dot: someone is on call right now */
 .hero-eyebrow {
-  display: flex;
+  display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.55rem;
-  color: var(--color-neutral-500);
-  font-size: 0.72rem;
+  justify-content: center;
+  gap: 0.35rem 0.55rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.65);
+  padding: 0.4rem 0.95rem 0.4rem 0.8rem;
+  color: var(--color-neutral-600);
+  font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(8px);
+}
+.dark .hero-eyebrow {
+  border-color: var(--color-neutral-800);
+  background: rgb(255 255 255 / 0.04);
+  color: var(--color-neutral-400);
+}
+.hero-eyebrow::before {
+  content: "";
+  height: 0.45rem;
+  width: 0.45rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--color-brand-500);
+  animation: hero-live 2s ease-out infinite;
 }
 .hero-eyebrow i {
-  width: 1.8rem;
+  width: 1.4rem;
   height: 1px;
   background: var(--color-brand-500);
 }
-/* One size on every slide, so each title (two short sentences) fills about the same height */
+
+/* One size on every slide, so each title fills about the same height; lines balanced, as it's centred */
 .hero-title {
-  margin-top: 1.5rem;
+  margin-top: 1.6rem;
   color: var(--color-neutral-950);
-  font-size: clamp(2.6rem, 7.4vw, 7rem);
+  font-size: clamp(2.5rem, 5.4vw, 5.1rem);
   font-weight: 620;
-  line-height: 0.92;
-  letter-spacing: -0.065em;
+  line-height: 0.98;
+  letter-spacing: -0.06em;
 }
 .dark .hero-title {
   color: #fff;
 }
 .hero-title-line {
   display: block;
-  overflow: hidden;
-  padding: 0.04em 0.08em 0.1em 0;
+  padding: 0.04em 0.04em 0.1em;
+  text-wrap: balance;
 }
 .hero-title-line > span,
 .hero-title-line > em {
   display: block;
 }
-/* Each time a slide comes in, its title rises in line by line */
-.hero-slide.is-active .hero-title-line > * {
-  animation: hero-title-line-in 0.95s cubic-bezier(0.22, 1, 0.36, 1) both;
-  animation-delay: 0.3s;
-}
-.hero-slide.is-active .hero-title-line + .hero-title-line > em {
-  animation-delay: 0.43s;
-}
 .hero-title em {
-  color: var(--color-neutral-400);
+  color: var(--color-brand-600);
   font-style: normal;
 }
 .dark .hero-title em {
-  color: var(--color-neutral-500);
+  color: var(--color-brand-400);
+}
+.hero-word {
+  display: inline-block;
 }
 .hero-description {
-  max-width: 36rem;
-  margin-top: 1.9rem;
+  max-width: 38rem;
+  margin: 1.75rem auto 0;
   color: var(--color-neutral-600);
-  font-size: 1.08rem;
+  font-size: 1.12rem;
   line-height: 1.65;
+  text-wrap: pretty;
 }
 .dark .hero-description {
   color: var(--color-neutral-400);
@@ -122,8 +175,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 1rem 1.5rem;
-  margin-top: 2rem;
+  justify-content: center;
+  gap: 1rem 1.75rem;
+  margin-top: 2.1rem;
 }
 .hero-link {
   display: inline-flex;
@@ -147,20 +201,39 @@
   transform: translateX(3px);
 }
 .hero-reassurance {
-  max-width: 33rem;
-  margin-top: 1.15rem;
+  max-width: 34rem;
+  margin: 1.2rem auto 0;
   color: var(--color-neutral-500);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   line-height: 1.5;
+}
+
+/* Playing in, each time a slide comes on: eyebrow, then the title word by word, then the rest */
+.hero-slide.is-active .hero-eyebrow {
+  animation: hero-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both 0.15s;
+}
+.hero-slide.is-active .hero-word {
+  animation: hero-word-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.3s + var(--w) * 55ms);
+}
+.hero-slide.is-active :is(.hero-description, .hero-actions, .hero-reassurance) {
+  animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(0.5s + var(--after) * 55ms);
+}
+.hero-slide.is-active .hero-actions {
+  animation-delay: calc(0.6s + var(--after) * 55ms);
+}
+.hero-slide.is-active .hero-reassurance {
+  animation-delay: calc(0.7s + var(--after) * 55ms);
 }
 
 /* ---------- Under the slides: a numbered index of the three, then a small pause button ---------- */
 .hero-nav {
   display: flex;
-  max-width: 59rem;
+  max-width: 50rem;
   align-items: flex-start;
   gap: 1.5rem;
-  margin-top: 2.5rem;
+  margin: 3.25rem auto 0;
 }
 .hero-tabs {
   display: grid;
@@ -179,7 +252,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.35;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   transition: color 0.3s ease;
 }
@@ -206,6 +279,7 @@
   height: 2px;
   margin-bottom: 0.9rem;
   overflow: hidden;
+  border-radius: 999px;
   background: var(--color-neutral-200);
 }
 .dark .hero-tab-bar {
@@ -215,6 +289,7 @@
   display: block;
   height: 100%;
   width: 0;
+  border-radius: inherit;
   background: var(--color-brand-600);
 }
 .dark .hero-tab-bar i {
@@ -229,6 +304,7 @@
 .hero-tab-name {
   display: flex;
   align-items: baseline;
+  justify-content: center;
   gap: 0.6rem;
 }
 .hero-tab-num {
@@ -289,10 +365,12 @@
     transform: translateY(13px);
   }
 }
-@keyframes hero-title-line-in {
+/* A word comes up out of a soft blur */
+@keyframes hero-word-in {
   from {
     opacity: 0;
-    transform: translateY(112%) skewY(4deg);
+    filter: blur(10px);
+    transform: translateY(0.35em);
   }
 }
 @keyframes hero-slide-progress {
@@ -300,28 +378,29 @@
     width: 100%;
   }
 }
-
-/* Wide screens: copy in the left half, the picture in the right half */
-@media (min-width: 1024px) {
-  .hero-slide,
-  .hero-nav {
-    max-width: none;
+@keyframes hero-live {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-brand-400) 60%, transparent);
   }
-  .hero-slide {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: center;
-    column-gap: 3rem;
+  70%,
+  100% {
+    box-shadow: 0 0 0 7px transparent;
   }
-  .hero-slide-copy,
-  .hero-slide .hv {
-    min-width: 0;
+}
+@keyframes hero-drift-a {
+  from {
+    transform: translate(-95%, -70%);
   }
-  .hero-slide .hv {
-    margin-top: 0;
+  to {
+    transform: translate(-60%, -40%) scale(1.12);
   }
-  .hero-title {
-    font-size: clamp(2.4rem, 3.1vw, 3.5rem);
+}
+@keyframes hero-drift-b {
+  from {
+    transform: translate(-10%, -45%);
+  }
+  to {
+    transform: translate(-40%, -70%) scale(1.15);
   }
 }
 
@@ -331,8 +410,14 @@
  */
 @media (max-width: 639px) {
   .hero-eyebrow {
-    display: block;
+    display: inline-block;
+    border-radius: 1.1rem;
     line-height: 1.6;
+  }
+  .hero-eyebrow::before {
+    display: inline-block;
+    margin-right: 0.5rem;
+    vertical-align: 0.05em;
   }
   .hero-eyebrow i {
     margin: 0 0.45em;
@@ -341,9 +426,12 @@
   .hero-eyebrow i::before {
     content: "·";
   }
+  .hero-description {
+    font-size: 1.04rem;
+  }
   .hero-nav {
     gap: 1rem;
-    margin-top: 2rem;
+    margin-top: 2.5rem;
   }
   .hero-tabs {
     gap: 0.75rem;
@@ -356,6 +444,7 @@
   }
   .hero-tab-name {
     flex-direction: column;
+    align-items: center;
     gap: 0.2rem;
   }
   .hero-pause {
@@ -365,7 +454,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero-enter,
-  .hero-slide.is-active .hero-title-line > * {
+  .hero-slide.is-active :is(.hero-eyebrow, .hero-word, .hero-description, .hero-actions, .hero-reassurance),
+  .hero-eyebrow::before,
+  .hero-glow span {
     animation: none;
   }
   .hero-slide {
