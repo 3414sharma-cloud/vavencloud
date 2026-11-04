@@ -10,7 +10,8 @@ import { behindIntro, behindStats, behindVideo, founders, teamIntro } from '../v
 /*
  * Who's behind it, just before the client stories, in two halves on a wide screen. On the left who VavenCloud
  * is and four numbers; on the right a co-founder on video, the two co-founders side by side, and a button that
- * opens the rest of the team (the engineers on your account, by role). The video is YouTube's thumbnail until
+ * opens the rest of the team (the engineers on your account, by role) across the whole width under both
+ * halves. The video is YouTube's thumbnail until
  * it's played, then the player (youtube-nocookie), as in the client stories (reviews.v2.css styles both).
  */
 
@@ -46,17 +47,20 @@ const founderCards = () => `
           .join('')}
       </ul>`
 
-/** The button, and the engineers it shows: roles only, no invented names */
-const team = () => `
+/** The button, under the co-founders */
+const teamButton = () => `
       <button type="button" class="btn-secondary v4-team-toggle" data-team-toggle aria-expanded="false" aria-controls="v4-team">
         <span data-team-label>Meet the rest of the team</span> ${icon('chevron-down', 'h-4 w-4')}
-      </button>
+      </button>`
+
+/** The engineers it shows, across the whole section under both halves: roles only, no invented names */
+const teamPanel = () => `
       <div id="v4-team" class="v4-team" hidden>
         <p class="v4-team-intro">${teamIntro}</p>
         <ul class="v4-team-roles">
           ${accountTeam.map((m) => `<li><span class="icon-box">${icon(m.icon, 'h-4 w-4')}</span><span><b>${m.role}</b>${m.focus}</span></li>`).join('')}
         </ul>
-        <a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="v4-team-link">Meet the whole Vavensoft team${newTab} ${icon('arrow-right', 'h-4 w-4')}</a>
+        <p class="v4-team-more"><a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="v4-team-link">Meet the whole Vavensoft team${newTab} ${icon('arrow-right', 'h-4 w-4')}</a></p>
       </div>`
 
 export function behindV4(): Section {
@@ -78,8 +82,9 @@ export function behindV4(): Section {
     <div class="v4-behind-side min-w-0">
       ${video()}
       ${founderCards()}
-      ${team()}
+      ${teamButton()}
     </div>
+    ${teamPanel()}
   </div>
 </section>`,
     init() {

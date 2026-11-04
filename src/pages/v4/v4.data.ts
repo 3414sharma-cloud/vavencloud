@@ -69,9 +69,9 @@ export const heroSlides: V4HeroSlide[] = [
 /* ---------- The problem: v3's story with v4's script (story.v4.ts plays it, v3.data.ts explains the shape) ---------- */
 
 export const callers: Record<CallerId, Caller> = {
-  host: { name: 'Hosting provider', role: 'Keeps the server on', icon: 'server', excuse: '“The server’s up. Must be your application.”', verdict: 'Not our layer' },
-  devops: { name: 'DevOps freelancer', role: 'Set up the servers last year', icon: 'infinity', excuse: '“The pipeline deployed fine. Ask your developers.”', verdict: 'Not my scope' },
-  devs: { name: 'Your developers', role: 'Wrote the code', icon: 'code', excuse: '“We haven’t changed anything. Must be the server.”', verdict: 'Not our code' },
+  host: { name: 'Hosting provider', role: 'Keeps the server on', icon: 'server', excuse: '“The server’s up. Must be your application.”', verdict: 'Server looks fine' },
+  devops: { name: 'DevOps freelancer', role: 'Set up the servers last year', icon: 'infinity', excuse: '“The pipeline deployed fine. Ask your developers.”', verdict: 'Pipeline looks fine' },
+  devs: { name: 'Your developers', role: 'Wrote the code', icon: 'code', excuse: '“We haven’t changed anything. Must be the server.”', verdict: 'Code looks fine' },
   vaven: { name: 'VavenCloud', role: 'Servers, deployments and code', excuse: '“I can see it. I’m on it.”', verdict: 'Fixed in 27 min' },
 }
 
@@ -215,7 +215,6 @@ export const scenes: Scene[] = [
 
 /** Under the story: what the night cost (the minutes come from the story's clock), and the next step */
 export const payoff = {
-  illustration: 'An illustrative example, not a real client.',
   text: 'The fix was never the hard part. Finding someone who owned it was.',
   question: 'Who would you call tonight?',
   note: 'Free · Any cloud · No commitment',

@@ -10,7 +10,8 @@ import { report, reportIntro, workspace } from '../v4.data.ts'
  * v4's morning after: the report chapter (report.section.ts, same markup and report.css) with v4's copy. On the
  * left the promise and where you follow the work, each tool with a one-line headline; on the right the example
  * report for the story's night. Its time bar is split at the call (red before it, blue with us), and the first
- * time the report is seen the bar sweeps in and a RESOLVED stamp lands. An example, not a real client.
+ * time the report is seen the bar sweeps in and a RESOLVED stamp lands. It's an example (labelled so on the
+ * report itself), not a real client.
  */
 
 /** "02:53" → minutes since midnight */
@@ -58,7 +59,6 @@ const doc = () => `
           </dl>
         </div>
       </div>
-      <figcaption class="rp-caption">An example report, not a real client.</figcaption>
     </figure>`
 
 export function reportV4(): Section {

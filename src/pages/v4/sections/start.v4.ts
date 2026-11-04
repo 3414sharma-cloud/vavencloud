@@ -4,16 +4,17 @@ import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { handover, startSteps } from '../v4.data.ts'
 
 /*
- * How we start, just before the plans: the five steps from the first call to fully covered, joined by a dotted
- * line on a wide screen (one under another on smaller ones, the number beside each), the last one filled in.
- * Then what the handover promises, so switching doesn't feel like a risk.
+ * How we start, just before the plans, all from the left like the chapters around it: the heading, then the
+ * five steps from the first call to fully covered, joined by a dotted line through their numbers on a wide
+ * screen (one under another on smaller ones, the number beside each), the last one filled in. Then what the
+ * handover promises, so switching doesn't feel like a risk.
  */
 export function startV4(): Section {
   return {
     html: `
 <section id="start" class="v2-section band-linen border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="start-title">
   <div class="container-page">
-    <div class="heading-wide mx-auto max-w-5xl text-center">
+    <div class="v4-wide-head">
       ${sectionHeading({
         id: 'start-title',
         eyebrow: 'How we start',

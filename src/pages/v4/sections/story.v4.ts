@@ -332,7 +332,6 @@ const html = () => `
       </div>
     </div>
     ${transcript()}
-    <p class="v4-illus">${payoff.illustration}</p>
     ${payoffBand()}
   </div>
 </section>`
