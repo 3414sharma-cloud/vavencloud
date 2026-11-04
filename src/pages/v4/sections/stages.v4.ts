@@ -1,10 +1,12 @@
 import type { Section } from '@/app/types.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { stages } from '../v4.data.ts'
+import { stageArt } from './stage-art.v4.ts'
 
 /*
  * Where are you today: the five moments founders come to us, in order from idea to "nobody owns it", each with
- * the worry in their words and what we do about it. Five across on a wide screen, two on a tablet, one on a phone.
+ * a small diagram of that moment (stage-art.v4.ts), the worry in their words and what we do about it. Three
+ * then two on a wide screen, two on a tablet, one on a phone.
  */
 export function stagesV4(): Section {
   return {
@@ -24,6 +26,7 @@ export function stagesV4(): Section {
         .map(
           (s, i) => `
       <li class="v4-stage card">
+        <div class="v4-stage-art">${stageArt[s.id]}</div>
         <span class="v4-stage-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
         <h3 class="v4-stage-title">${s.title}</h3>
         <p class="v4-stage-worry">${s.worry}</p>

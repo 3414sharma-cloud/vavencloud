@@ -1,10 +1,9 @@
 import '@/pages/home/sections/hero.css'
 import type { Section } from '@/app/types.ts'
-import type { HeroSlide } from '@/pages/home/sections/hero.data.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
-import { heroSlides } from '../v4.data.ts'
+import { heroSlides, type V4HeroSlide as HeroSlide } from '../v4.data.ts'
 
 /*
  * v4's hero: the landing page's slider (hero.section.ts) with v4's slides (v4.data.ts), so their copy can change
@@ -41,7 +40,7 @@ const slide = (s: HeroSlide, i: number) => {
   // The lines under the title start once its last word is on its way
   const after = lead + s.title[1].split(' ').length
   return `
-      <div id="hero-slide-${i}" role="tabpanel" aria-roledescription="slide" aria-label="${i + 1} of ${count}: ${s.tab}" class="hero-slide${first ? ' is-active' : ''}" data-slide ${first ? '' : 'inert'} style="--after:${after}">
+      <div id="hero-slide-${i}" role="tabpanel" aria-roledescription="slide" aria-label="${i + 1} of ${count}: ${s.tab}" class="hero-slide${first ? ' is-active' : ''}${s.titleEm ? ' hero-slide--long-title' : ''}${s.longText ? ' hero-slide--long-text' : ''}" data-slide ${first ? '' : 'inert'} style="--after:${after}${s.titleEm ? `;--title-em:${s.titleEm}` : ''}">
         <p class="eyebrow hero-eyebrow">${s.eyebrow.map((part) => `<span>${part}</span>`).join('<i></i>')}</p>
         <${tag} ${first ? 'id="hero-title"' : ''} class="section-title hero-title"><span class="hero-title-line"><span>${words(s.title[0], 0)}</span></span><span class="hero-title-line"><em>${words(s.title[1], lead)}</em></span></${tag}>
         <p class="section-lead hero-description">${s.description}</p>
@@ -49,7 +48,7 @@ const slide = (s: HeroSlide, i: number) => {
           <a href="${s.primary.href}" class="btn-primary !px-7 !py-3.5 !text-base">${s.primary.label} ${icon('arrow-right', 'h-4 w-4')}</a>
           <a href="${s.secondary.href}" ${s.secondary.external ? 'target="_blank" rel="noopener"' : ''} class="hero-link">${s.secondary.label}${s.secondary.external ? newTab : ''} ${icon('arrow-right', 'h-4 w-4')}</a>
         </div>
-        <p class="hero-reassurance">${s.reassurance}</p>
+        ${s.reassurance ? `<p class="hero-reassurance">${s.reassurance}</p>` : ''}
       </div>`
 }
 

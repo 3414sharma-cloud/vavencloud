@@ -20,7 +20,7 @@ export function compareV4(): Section {
     html: `
 <section id="compare" class="v2-section band-mist border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="compare-title">
   <div class="container-page">
-    <div class="max-w-5xl">
+    <div class="v4-wide-head">
       ${sectionHeading({
         id: 'compare-title',
         eyebrow: 'Your options',

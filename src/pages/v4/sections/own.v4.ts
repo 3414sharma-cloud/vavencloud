@@ -25,7 +25,7 @@ export function ownV4(): Section {
     html: `
 <section id="own" class="v2-section band-linen border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="own-title">
   <div class="container-page">
-    <div class="max-w-5xl">
+    <div class="v4-wide-head">
       ${sectionHeading({
         id: 'own-title',
         eyebrow: 'What we own',

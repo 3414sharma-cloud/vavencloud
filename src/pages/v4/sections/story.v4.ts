@@ -311,9 +311,9 @@ const payoffBand = () => `
     </div>`
 
 const html = () => `
-<section id="problem" class="v2-section" aria-labelledby="problem-title">
+<section id="problem" class="v2-section v4-story" aria-labelledby="problem-title">
   <div class="container-page">
-    ${problemHeading()}
+    <div class="v4-problem-head">${problemHeading()}</div>
     <div class="st" data-story data-scene="${timeline[0].id}" data-site="ok">
       ${narration()}
       <div class="st-body" aria-hidden="true">

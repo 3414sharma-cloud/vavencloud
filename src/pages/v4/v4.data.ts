@@ -23,7 +23,15 @@ export const chapters = [
 
 const book: HeroSlide['primary'] = { label: 'Book a free production review', href: routes.book }
 
-export const heroSlides: HeroSlide[] = [
+/**
+ * The landing page's slide, with the note under the buttons optional. For long copy the slide takes the hero's
+ * full width (v4.css). `titleEm`: how wide the title's longer half is on one line, in its own em, with a little
+ * to spare (measured in the browser; measure again when the title changes): the title is sized so each half
+ * keeps to one line. `longText`: the paragraph runs in two even lines.
+ */
+export type V4HeroSlide = Omit<HeroSlide, 'reassurance'> & { reassurance?: string; titleEm?: number; longText?: boolean }
+
+export const heroSlides: V4HeroSlide[] = [
   {
     tab: 'One call fixes it',
     eyebrow: ['Managed DevOps and 24/7 server support', 'by Vavensoft'],
@@ -31,23 +39,27 @@ export const heroSlides: HeroSlide[] = [
     description: 'One team runs your servers, deployments and code, on call 24/7. No more chasing your host, freelancer and developers.',
     primary: book,
     secondary: { label: 'See how it works', href: `${routes.home}#problem` },
-    reassurance: '45 minutes with a senior engineer, not a salesperson. You keep the written growth roadmap, whether or not you work with us.',
   },
   {
     tab: 'Stay on your cloud',
     eyebrow: ['Managed AWS, Azure and Google Cloud'],
-    title: ['Keep your cloud.', 'Hand us the 2am calls.'],
+    title: ['On AWS, Azure or Google Cloud?', 'We run it right where it is.'],
+    titleEm: 14.9,
     description:
-      'Keep your hosting platform. Zero migration. We secure, monitor and right-size your infrastructure 24/7, so it stays online, you stop paying for idle capacity, and it’s scalable when you’re ready to grow.',
+      'Keep your hosting platform. Zero migration. We secure, monitor and optimise your infrastructure 24/7, with right-sized resources, so everything stays secure and online, you stop paying for idle capacity, and it’s scalable when you’re ready to grow.',
+    longText: true,
     primary: book,
     secondary: { label: 'See the plans', href: routes.plans },
     reassurance: 'Same team · same chat · same 24/7 cover',
   },
   {
     tab: 'Or run on ours',
-    eyebrow: ['VavenCloud servers', 'US and EU data centres'],
-    title: ['Our own servers, engineers and developers.', 'One team that owns your product.'],
-    description: 'We host it, run it and fix it, from the infrastructure to your code, so you stay focused on your business and we handle the rest.',
+    eyebrow: ['VavenCloud Infrastructure + Services'],
+    title: ['Cloud servers with engineers attached,', 'so you’re never managing them alone.'],
+    titleEm: 17.6,
+    longText: true,
+    description:
+      'High-performance private cloud with built-in security, backups and auto-scaling, managed around the clock by the team that runs your deployments and code.',
     primary: book,
     secondary: { label: 'Explore our cloud', href: 'https://vavencloud.com/cloud-services', external: true },
     reassurance: 'Same team · same chat · no lock-in',
@@ -268,12 +280,15 @@ export const layers: Layer[] = [
 
 /* ---------- Where are you today: five moments founders come to us ---------- */
 
-export const stages: { title: string; worry: string; answer: string }[] = [
-  { title: 'I have an idea', worry: '“Will I pick the wrong team? Will it fall apart after launch?”', answer: 'Build it once, built to last, with one team from build to run.' },
-  { title: 'I have an MVP', worry: '“Will it survive real users?”', answer: 'Find what breaks first and fix it before your customers do.' },
-  { title: 'I’m live, but it won’t scale', worry: '“Every growth spike becomes an outage.”', answer: 'Find the bottleneck and plan the next step ahead of time.' },
-  { title: 'I’m paying too much for cloud', worry: '“Our bill keeps growing and nobody can explain it.”', answer: 'Show you where the money goes, and right-size it.' },
-  { title: 'It works. Nobody owns it.', worry: '“My developer left. Nobody owns this.”', answer: 'Take it over, document it, and give you one team that understands it.' },
+export type StageId = 'idea' | 'mvp' | 'scale' | 'cost' | 'owner'
+
+/** `id` picks the stage's diagram (stage-art.v4.ts) */
+export const stages: { id: StageId; title: string; worry: string; answer: string }[] = [
+  { id: 'idea', title: 'I have an idea', worry: '“Will I pick the wrong team? Will it fall apart after launch?”', answer: 'Build it once, built to last, with one team from build to run.' },
+  { id: 'mvp', title: 'I have an MVP', worry: '“Will it survive real users?”', answer: 'Find what breaks first and fix it before your customers do.' },
+  { id: 'scale', title: 'I’m live, but it won’t scale', worry: '“Every growth spike becomes an outage.”', answer: 'Find the bottleneck and plan the next step ahead of time.' },
+  { id: 'cost', title: 'I’m paying too much for cloud', worry: '“Our bill keeps growing and nobody can explain it.”', answer: 'Show you where the money goes, and right-size it.' },
+  { id: 'owner', title: 'It works. Nobody owns it.', worry: '“My developer left. Nobody owns this.”', answer: 'Take it over, document it, and give you one team that understands it.' },
 ]
 
 /* ---------- After every fix: the report the next morning (the same night as the story) ---------- */
@@ -356,8 +371,17 @@ export const behindStats: { value: string; label: string }[] = [
   { value: '100%', label: 'Job Success and Top Rated on Upwork' },
 ]
 
-/** The founders, then the engineers on your account (roles only, no invented names) */
-export const people: { initials: string; name: string; role: string; bio: string; team?: boolean }[] = [
+/** Beside them: a co-founder on video (YouTube, loaded only when played) */
+export const behindVideo = {
+  id: 'N186wgIn-lo',
+  title: 'Jerry Bopara | Co-Founder, DevOps & AI Integration Architect | Vavensoft',
+  caption: 'Jerry Bopara, co-founder of Vavensoft and VavenCloud',
+  /** Where the thumbnail draws its own play button, so ours sits right on it (change it with the thumbnail) */
+  play: { x: '57.6%', y: '60.5%' },
+}
+
+/** The two co-founders */
+export const founders: { initials: string; name: string; role: string; bio: string }[] = [
   {
     initials: 'JB',
     name: 'Jerry Bopara',
@@ -370,14 +394,11 @@ export const people: { initials: string; name: string; role: string; bio: string
     role: 'Co-founder · Operations',
     bio: 'Leads Vavensoft’s operations. An AI agent and SaaS developer who makes sure every client has one team that knows their product.',
   },
-  {
-    initials: '+',
-    name: 'Your engineers',
-    role: 'DevOps, cloud and development',
-    bio: 'A senior bench of DevOps, DevSecOps and full-stack engineers. On the Partner plan, a named lead engineer knows your product inside out.',
-    team: true,
-  },
 ]
+
+/** Behind the "rest of the team" button, above the engineers on your account (by role, from stats.data.ts) */
+export const teamIntro =
+  'A senior bench of DevOps, DevSecOps and full-stack engineers. On the Partner plan, a named lead engineer knows your product inside out.'
 
 /* ---------- How we start: first call to fully covered ---------- */
 

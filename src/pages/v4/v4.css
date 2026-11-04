@@ -5,6 +5,69 @@
  * Status colours as in the story: rose for a gap or time lost, the brand blue for VavenCloud.
  */
 
+/*
+ * ---------- The hero (hero.v4.ts, hero.css) ----------
+ * Slides with long copy (titleEm, longText in v4.data.ts) take the hero's full width from a tablet up.
+ * A long title is sized to the room, never above its usual size: the hero's width (the page's, up to the
+ * 72rem container, less its padding) over how many em its longer half needs (--title-em), so each half keeps
+ * to one line. A long paragraph runs in two even lines on a desktop (slide 2's is about 116em on one line, so
+ * about 60em a line, shrunk a little only where the hero is narrower than that). Phones let both wrap.
+ */
+@media (min-width: 768px) {
+  .hero-slide:is(.hero-slide--long-title, .hero-slide--long-text) {
+    max-width: none;
+  }
+  .hero-slide--long-title .hero-title {
+    font-size: min(calc((min(100vw, 72rem) - 3rem) / var(--title-em)), 5.4vw, 5.1rem);
+  }
+}
+@media (min-width: 1024px) {
+  .hero-slide--long-text .hero-description {
+    max-width: none;
+    font-size: min(1.12rem, calc((100vw - 3rem) / 63.5));
+    text-wrap: balance;
+  }
+}
+
+/*
+ * ---------- The problem's heading (problem-heading.ts, shared with v2 and v3) ----------
+ * Across the whole width instead of a narrow column with the right of the page empty: "Three vendors. Three
+ * answers." on one line (the title a touch smaller on the widest screens so it fits), "Zero fixes." under it,
+ * and the paragraph the full width under that. Narrow screens still wrap the beats one a line.
+ */
+.v4-problem-head > div {
+  max-width: none;
+}
+.v4-problem-head .section-title {
+  font-size: clamp(2.5rem, 5.4vw, 4.6rem);
+}
+.v4-problem-head .section-lead {
+  max-width: none;
+}
+
+/*
+ * ---------- The story's phone (story.v3.css): phone-shaped ----------
+ * Narrower than v3's, about a real phone's proportions (roughly 1 wide to 2 tall), at the same height. On a
+ * wide screen the site and the calls beside it get the room it gives up.
+ */
+.v4-story .st-phone {
+  max-width: 17rem;
+  border-radius: 2.6rem;
+}
+.v4-story .st-glass {
+  border-radius: 2.15rem;
+}
+@media (min-width: 1024px) {
+  .v4-story .st-body {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+  }
+}
+@media (max-width: 639px) {
+  .v4-story .st-glass {
+    height: 33rem;
+  }
+}
+
 /* ---------- Under the story: what the night cost, and the next step ---------- */
 .v4-illus {
   margin-top: 1rem;
@@ -56,6 +119,11 @@
 .v4-payoff-note {
   font-size: 0.8rem;
   opacity: 0.75;
+}
+
+/* A heading across the whole width, as the problem's (what we own, compare): the paragraph as wide as what's under it */
+.v4-wide-head .section-lead {
+  max-width: none;
 }
 
 /* ---------- What we own ---------- */
@@ -192,6 +260,112 @@
 .v4-stage:hover {
   transform: translateY(-3px);
   box-shadow: var(--shadow-lift);
+}
+/* Each stage's diagram (stage-art.v4.ts) on a soft panel at the top of its card, the same size on every card */
+.v4-stage-art {
+  display: flex;
+  height: 8.25rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+  border: 1px solid var(--color-neutral-100);
+  border-radius: 1rem;
+  background: var(--color-neutral-50);
+}
+.v4-stage-art svg {
+  height: 7rem;
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+}
+.dark .v4-stage-art {
+  border-color: var(--color-neutral-800);
+  background: color-mix(in srgb, var(--color-neutral-800) 40%, transparent);
+}
+/* The diagrams' colours: structure, labels, the fix (brand) and the problem (rose) */
+.v4-dg-line {
+  stroke: var(--color-neutral-300);
+}
+.v4-dg-ink {
+  stroke: var(--color-neutral-700);
+}
+.v4-dg-surface {
+  fill: #fff;
+}
+.v4-dg-text {
+  fill: var(--color-neutral-700);
+}
+.v4-dg-muted {
+  fill: var(--color-neutral-500);
+}
+.v4-dg-track {
+  fill: var(--color-neutral-200);
+}
+.v4-dg-used {
+  fill: var(--color-neutral-300);
+}
+.v4-dg-brand {
+  stroke: var(--color-brand-500);
+}
+.v4-dg-brand-fill {
+  fill: var(--color-brand-500);
+}
+.v4-dg-tint {
+  fill: var(--color-brand-100);
+}
+.v4-dg-brand-text {
+  fill: var(--color-brand-700);
+}
+.v4-dg-bad {
+  stroke: rgb(244 63 94);
+}
+.v4-dg-bad-fill {
+  fill: rgb(244 63 94);
+}
+.v4-dg-bad-tint {
+  fill: rgb(244 63 94 / 0.16);
+}
+.v4-dg-bad-text {
+  fill: rgb(190 18 60);
+}
+.dark .v4-dg-line {
+  stroke: var(--color-neutral-700);
+}
+.dark .v4-dg-ink {
+  stroke: var(--color-neutral-300);
+}
+.dark .v4-dg-surface {
+  fill: var(--color-neutral-900);
+}
+.dark .v4-dg-text {
+  fill: var(--color-neutral-300);
+}
+.dark .v4-dg-muted {
+  fill: var(--color-neutral-400);
+}
+.dark .v4-dg-track {
+  fill: var(--color-neutral-800);
+}
+.dark .v4-dg-used {
+  fill: var(--color-neutral-700);
+}
+.dark .v4-dg-brand {
+  stroke: var(--color-brand-400);
+}
+.dark .v4-dg-tint {
+  fill: var(--color-brand-900);
+}
+.dark .v4-dg-brand-text {
+  fill: var(--color-brand-300);
+}
+.dark .v4-dg-bad {
+  stroke: rgb(251 113 133);
+}
+.dark .v4-dg-bad-fill {
+  fill: rgb(251 113 133);
+}
+.dark .v4-dg-bad-text {
+  fill: rgb(253 164 175);
 }
 .v4-stage-n {
   color: var(--color-brand-600);
@@ -414,9 +588,11 @@
   background: var(--color-neutral-800);
   color: var(--color-neutral-300);
 }
+/* Sized to fit one line under the table on a desktop; where the page is narrower it wraps in two even lines */
 .v4-means {
-  max-width: 48rem;
   margin-top: 1.5rem;
+  font-size: 0.94rem;
+  text-wrap: balance;
   color: var(--color-neutral-700);
 }
 .v4-means b {
@@ -482,55 +658,66 @@
 .dark .v4-stats dt {
   color: var(--color-neutral-400);
 }
-.v4-people {
+/* The right half: the video, the co-founders, the rest of the team */
+.v4-behind-side {
+  display: grid;
+  gap: 1rem;
+}
+.v4-video-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.8rem;
+  color: var(--color-neutral-600);
+  font-size: 0.86rem;
+}
+.dark .v4-video-caption {
+  color: var(--color-neutral-400);
+}
+.v4-founders {
   display: grid;
   gap: 1rem;
 }
 .v4-person {
-  display: flex;
-  gap: 1.1rem;
   border-radius: 1.4rem;
-  padding: 1.35rem;
+  padding: 1.2rem;
+}
+.v4-person-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
 }
 .v4-avatar {
   display: inline-flex;
-  height: 3.5rem;
-  width: 3.5rem;
+  height: 2.75rem;
+  width: 2.75rem;
   flex: none;
   align-items: center;
   justify-content: center;
   border-radius: 999px;
   background: linear-gradient(160deg, var(--color-brand-500), var(--color-brand-800));
   color: #fff;
-  font-size: 1.05rem;
+  font-size: 0.92rem;
   font-weight: 700;
 }
 .v4-person-name {
   color: var(--color-neutral-950);
-  font-size: 1.05rem;
+  font-size: 1rem;
   font-weight: 650;
   letter-spacing: -0.01em;
 }
 .v4-person-role {
   margin-top: 0.1rem;
   color: var(--color-brand-600);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
+  line-height: 1.35;
 }
 .v4-person-bio {
-  margin-top: 0.5rem;
-  font-size: 0.9rem;
+  margin-top: 0.8rem;
+  font-size: 0.86rem;
   line-height: 1.6;
-}
-/* The engineers on your account: tinted, the avatar a plus */
-.v4-person--team {
-  border-color: var(--color-brand-100);
-  background: var(--color-brand-50);
-}
-.v4-person--team .v4-avatar {
-  border: 1px solid var(--color-brand-200);
-  background: #fff;
-  color: var(--color-brand-600);
 }
 .dark .v4-person-name {
   color: #fff;
@@ -538,14 +725,135 @@
 .dark .v4-person-role {
   color: var(--color-brand-400);
 }
-.dark .v4-person--team {
+.v4-team-toggle {
+  width: 100%;
+}
+.v4-team-toggle svg {
+  transition: transform 0.2s ease;
+}
+.v4-team-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+/* The engineers on your account, once the button opens them: a tinted panel, by role */
+.v4-team {
+  border: 1px solid var(--color-brand-100);
+  border-radius: 1.4rem;
+  background: var(--color-brand-50);
+  padding: 1.2rem;
+}
+.v4-team-intro {
+  color: var(--color-neutral-700);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.v4-team-roles {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+.v4-team-roles li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--color-neutral-600);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+.v4-team-roles .icon-box {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.6rem;
+  background: #fff;
+}
+.v4-team-roles b {
+  display: block;
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.v4-team-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.1rem;
+  color: var(--color-brand-700);
+  font-size: 0.88rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+  text-underline-offset: 0.25rem;
+}
+.dark .v4-team {
   border-color: var(--color-brand-900);
   background: var(--color-brand-950);
 }
-.dark .v4-person--team .v4-avatar {
-  border-color: var(--color-brand-900);
+.dark .v4-team-intro {
+  color: var(--color-neutral-300);
+}
+.dark .v4-team-roles li {
+  color: var(--color-neutral-400);
+}
+.dark .v4-team-roles .icon-box {
   background: var(--color-neutral-900);
+}
+.dark .v4-team-roles b {
+  color: #fff;
+}
+.dark .v4-team-link {
   color: var(--color-brand-300);
+}
+
+/*
+ * ---------- The client stories (reviews.v2.ts, shared with v2 and v3), shorter on v4 ----------
+ * Less room around the section, a smaller heading, smaller cards and type. Scoped by the section's id, so the
+ * cards keep their v2 look on v2 and v3.
+ */
+#clients.v2-section {
+  padding-block: 3.5rem;
+}
+#clients .section-title {
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+}
+#clients .tm-track {
+  margin-top: 1.5rem;
+  padding-bottom: 1.25rem;
+}
+#clients .tm-card {
+  flex-basis: min(20rem, 86%);
+  border-radius: 1.25rem;
+  padding: 1.1rem;
+}
+#clients .tm-mark {
+  height: 1.45rem;
+}
+#clients .tm-topic {
+  font-size: 0.66rem;
+}
+#clients .tm-quote {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+#clients .tm-card > :nth-last-child(2) {
+  margin-bottom: 1.1rem;
+}
+#clients .tm-who {
+  gap: 0.7rem;
+  padding-top: 0.9rem;
+}
+#clients .tm-avatar {
+  height: 2.25rem;
+  width: 2.25rem;
+  font-size: 0.78rem;
+}
+#clients .tm-name {
+  font-size: 0.9rem;
+}
+#clients .tm-client {
+  font-size: 0.76rem;
+}
+#clients .tm-play {
+  height: 3rem;
+  width: 3rem;
 }
 
 /* ---------- How we start ---------- */
@@ -707,6 +1015,23 @@
   border-color: var(--color-neutral-800);
 }
 
+/*
+ * ---------- The blog (blog.section.ts, shared with v2 and v3) ----------
+ * Its heading takes all the room beside "View all articles": "What we've learned" on one line, "on the 2am side
+ * of production." on the next (at the wide headings' size, so it fits), and the paragraph as wide.
+ */
+#blog .max-w-4xl {
+  min-width: 0;
+  max-width: none;
+  flex: 1;
+}
+#blog .section-title {
+  font-size: clamp(2.25rem, 4.6vw, 4.3rem);
+}
+#blog .section-lead {
+  max-width: none;
+}
+
 /* Phones: each row of the comparison stacks, every answer under its column's name */
 @media (max-width: 767px) {
   .v4-compare table,
@@ -765,6 +1090,14 @@
   .v4-handover-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  /* The co-founders side by side, the roles two by two */
+  .v4-founders,
+  .v4-team-roles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #clients.v2-section {
+    padding-block: 4.5rem;
+  }
 }
 @media (min-width: 768px) {
   .v4-payoff {
@@ -814,14 +1147,20 @@
   .v4-own--feature {
     grid-column: span 2;
   }
+  /* Three, then two: wide enough for each card's diagram to read */
   .v4-stages {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
+  .v4-stage,
   .v4-stage:last-child {
-    grid-column: auto;
+    grid-column: span 2;
   }
+  .v4-stage:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+  /* Two equal halves: who we are on the left, the video and the people on the right */
   .v4-behind {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
     gap: 3.5rem;
   }
