@@ -294,22 +294,20 @@ const html = () => `
   <div class="container-page">
     ${problemHeading()}
     <div class="st" data-story data-scene="${timeline[0].id}" data-site="ok">
-      <div class="st-window">
-        ${narration()}
-        <div class="st-body" aria-hidden="true">
-          ${siteCard()}
-          ${callList()}
-          ${phone()}
+      ${narration()}
+      <div class="st-body" aria-hidden="true">
+        ${siteCard()}
+        ${callList()}
+        ${phone()}
+      </div>
+      <div class="st-foot">
+        <div class="st-scenes" role="group" aria-label="Scenes">
+          ${timeline.map(sceneTab).join('')}
         </div>
-        <div class="st-foot">
-          <div class="st-scenes" role="group" aria-label="Scenes">
-            ${timeline.map(sceneTab).join('')}
-          </div>
-          <button type="button" class="st-control" data-control>
-            <span data-icon="pause" hidden>${icon('pause', 'h-3 w-3', true)}</span><span data-icon="play">${icon('play', 'h-3 w-3', true)}</span>
-            <span data-control-label>Play</span><span class="sr-only"> the story</span>
-          </button>
-        </div>
+        <button type="button" class="st-control" data-control>
+          <span data-icon="pause" hidden>${icon('pause', 'h-3 w-3', true)}</span><span data-icon="play">${icon('play', 'h-3 w-3', true)}</span>
+          <span data-control-label>Play</span><span class="sr-only"> the story</span>
+        </button>
       </div>
     </div>
     ${transcript()}

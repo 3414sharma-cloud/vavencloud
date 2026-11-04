@@ -6,7 +6,8 @@ import { posts } from './blog.data.ts'
 
 /**
  * Three recent guides from the blog, as a numbered list under hairlines. The blog is its own site, so links
- * open in a new tab. `covers` shows each article's own cover image (from the blog) above it.
+ * open in a new tab. `covers` shows each article's own cover image (from the blog) above it; `title` words the
+ * heading for a page that has its own.
  */
 
 /* Topic colours, written out in full so Tailwind picks them up */
@@ -22,7 +23,7 @@ const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 const cover = (src: string) =>
   `<img src="${src}" alt="" width="600" height="315" loading="lazy" decoding="async" class="mb-5 aspect-[40/21] w-full rounded-2xl border border-neutral-200 object-cover transition-transform duration-500 group-hover:-translate-y-1 dark:border-neutral-800" />`
 
-export function blogSection({ covers = false }: { covers?: boolean } = {}): Section {
+export function blogSection({ covers = false, title = 'Plain-English guides <em>from our engineers.</em>' }: { covers?: boolean; title?: string } = {}): Section {
   return {
     html: `
 <section id="blog" class="border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
@@ -30,7 +31,7 @@ export function blogSection({ covers = false }: { covers?: boolean } = {}): Sect
     <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
       <div class="max-w-4xl">
         ${sectionHeading({
-          title: 'Plain-English guides <em>from our engineers.</em>',
+          title,
           description: 'Short answers to the questions business owners ask us most.',
         })}
       </div>

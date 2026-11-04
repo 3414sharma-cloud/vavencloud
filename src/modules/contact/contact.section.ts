@@ -149,13 +149,14 @@ const confirmation = `
     ${site.bookingCalendarUrl ? `<a href="${site.bookingCalendarUrl}" target="_blank" rel="noopener noreferrer" class="btn-primary mt-8 w-full !py-3">Pick your time<span class="sr-only"> (opens in a new tab)</span> ${icon('arrow-right', 'h-4 w-4')}</a>` : ''}
   </div>`
 
-export function contactSection(): Section {
+/** `title`: the closing line above the form, for a page that ends on its own (an <em> goes on its own line) */
+export function contactSection({ title = 'Stop running servers. <em>Start running your business.</em>' }: { title?: string } = {}): Section {
   return {
     html: `
 <section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="book-title">
   <div class="container-page">
     <div class="max-w-5xl">
-      ${sectionHeading({ id: 'book-title', eyebrow: 'A free production review', title: 'Stop running servers. <em>Start running your business.</em>' })}
+      ${sectionHeading({ id: 'book-title', eyebrow: 'A free production review', title })}
     </div>
 
     <div class="mx-auto mt-14 max-w-4xl border-t border-neutral-200 pt-10 dark:border-neutral-800">

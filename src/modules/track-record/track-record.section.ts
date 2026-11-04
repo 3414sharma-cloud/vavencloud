@@ -26,12 +26,13 @@ const logo = (name: string) => {
   return l.wordmark ? `${svg}<span class="sr-only">${name}</span>` : `${svg}<span>${name}</span>`
 }
 
-export function trackRecordSection(): Section {
+/** `label`: the line before the logos, for a page that words it its own way */
+export function trackRecordSection({ label = 'Any cloud · Open standards' }: { label?: string } = {}): Section {
   return {
     html: `
 <section id="track-record" aria-labelledby="track-record-title" class="border-b border-neutral-200 dark:border-neutral-800">
   <div class="tr-band">
-    <p id="track-record-title" class="tr-label">Any cloud · Open standards</p>
+    <p id="track-record-title" class="tr-label">${label}</p>
     <ul class="tr-logos">
       ${stack.map((s) => `<li class="tr-logo">${logo(s)}</li>`).join('')}
     </ul>

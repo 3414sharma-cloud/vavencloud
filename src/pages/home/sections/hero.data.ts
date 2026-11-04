@@ -44,7 +44,7 @@ export const heroSlides: HeroSlide[] = [
     reassurance: 'Same team · same chat · same 24/7 cover',
   },
   {
-    // Facts from vavencloud.com/cloud-services (October 2026): keep them in step with the site
+
     tab: 'Cloud servers',
     eyebrow: ['VavenCloud servers', 'US and EU data centres'],
     title: ['Fast private cloud servers,', 'run by the same team.'],

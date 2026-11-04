@@ -21,9 +21,6 @@
   --st-good: rgb(4 120 87);
   --st-good-tint: rgb(209 250 229);
   margin-top: 3rem;
-  border-radius: 1.75rem;
-  background: color-mix(in srgb, var(--color-brand-100) 45%, var(--color-neutral-100));
-  padding: 0.5rem;
 }
 .dark .st {
   --st-surface: var(--color-neutral-900);
@@ -38,7 +35,6 @@
   --st-bad-tint: rgb(244 63 94 / 0.14);
   --st-good: rgb(110 231 183);
   --st-good-tint: rgb(16 185 129 / 0.16);
-  background: rgb(255 255 255 / 0.03);
 }
 /* Jumping to a moment: nothing animates on the way */
 .st.is-jumping * {
@@ -49,14 +45,7 @@
   animation-play-state: paused !important;
 }
 
-/* ---------- The window ---------- */
-.st-window {
-  overflow: hidden;
-  border: 1px solid var(--st-line);
-  border-radius: 1.4rem;
-  background: var(--st-surface);
-  box-shadow: var(--shadow-lift);
-}
+/* ---------- On the page itself, no frame round it: the narration, then the site, the calls and the phone, then the index ---------- */
 .st-mark {
   flex: none;
   object-fit: contain;
@@ -89,8 +78,6 @@
 /* ---------- The narration: one line per moment, sharing one spot ---------- */
 .st-caption {
   display: grid;
-  border-bottom: 1px solid var(--st-line);
-  padding: 1rem 1.5rem;
 }
 .st-line {
   display: flex;
@@ -147,16 +134,15 @@
   display: grid;
   grid-template-areas: "phone" "site" "log";
   gap: 1rem;
-  background: color-mix(in srgb, var(--st-mist) 40%, var(--st-surface));
-  padding: 1rem;
+  margin-top: 1.25rem;
 }
 @media (min-width: 1024px) {
   .st-body {
     grid-template-columns: minmax(0, 1fr) 20.5rem;
     grid-template-rows: auto 1fr;
     grid-template-areas: "site phone" "log phone";
-    gap: 1rem 2rem;
-    padding: 1.5rem;
+    gap: 1rem 2.5rem;
+    margin-top: 1.75rem;
   }
   .st-log {
     align-self: start;
@@ -454,13 +440,11 @@
   margin-top: 0.05rem;
   font-size: 0.8rem;
 }
+/* The role and what they said share one spot, so a quote that wraps never moves the row */
 .st-row-sub > span {
   grid-area: 1 / 1;
-  overflow: hidden;
   color: var(--st-muted);
   opacity: 0;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   transition: opacity 0.35s ease;
 }
 .st-row-sub > span[data-on] {
@@ -1015,8 +999,7 @@
   display: flex;
   align-items: center;
   gap: 1.25rem;
-  border-top: 1px solid var(--st-line);
-  padding: 0.8rem 1.25rem 0.85rem;
+  margin-top: 1.75rem;
 }
 .st-scenes {
   display: grid;
@@ -1161,8 +1144,8 @@
  * width), and the index shows numbers only (the narration names the scene)
  */
 @media (max-width: 639px) {
-  .st-caption {
-    padding: 1rem;
+  .st {
+    margin-top: 2.5rem;
   }
   .st-line {
     flex-direction: column;
@@ -1170,6 +1153,9 @@
   }
   .st-line-text {
     font-size: 1.15rem;
+  }
+  .st-dots {
+    display: none;
   }
   .st-stats {
     align-items: end;
@@ -1183,15 +1169,12 @@
     justify-items: start;
     margin-top: 0.35rem;
   }
-  .st-row-sub > span {
-    white-space: normal;
-  }
   .st-glass {
-    height: 33rem;
+    height: 31rem;
   }
   .st-foot {
     gap: 0.75rem;
-    padding-inline: 1rem;
+    margin-top: 1.25rem;
   }
   .st-scenes {
     gap: 0.5rem;

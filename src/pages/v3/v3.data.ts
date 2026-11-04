@@ -24,14 +24,14 @@ export interface Caller {
 }
 
 export const callers: Record<CallerId, Caller> = {
-  host: { name: 'Hosting provider', role: 'Keeps the server on', icon: 'server', excuse: '“Must be your application.”', verdict: 'Not our problem' },
-  devops: { name: 'DevOps freelancer', role: 'Set up the servers last year', icon: 'infinity', excuse: '“Ask your developers.”', verdict: 'Not my job' },
-  devs: { name: 'Your developers', role: 'Wrote the code', icon: 'code', excuse: '“Must be the server.”', verdict: 'Not our code' },
-  vaven: { name: 'VavenCloud', role: 'Servers, deployments and code', excuse: '“I’m on it.”', verdict: 'Fixed' },
+  host: { name: 'Hosting provider', role: 'Keeps the server on', icon: 'server', excuse: '“The server’s up. Must be your application.”', verdict: 'Not our layer' },
+  devops: { name: 'DevOps freelancer', role: 'Set up the servers last year', icon: 'infinity', excuse: '“The pipeline deployed fine. Ask your developers.”', verdict: 'Not my scope' },
+  devs: { name: 'Your developers', role: 'Wrote the code', icon: 'code', excuse: '“We haven’t changed anything. Must be the server.”', verdict: 'Not our code' },
+  vaven: { name: 'VavenCloud', role: 'Servers, deployments and code', excuse: '“I can see it. I’m on it.”', verdict: 'Fixed in 27 min' },
 }
 
 /** On the list of calls, once all three have passed the problem on */
-export const loopNote = 'Everyone points at someone else. You’re back where you started.'
+export const loopNote = 'Three answers, all true on their own. Nobody owns the whole. You’re back where you started.'
 
 /** What's said on the phone: by you, by them, or the phone's own small print */
 export type Line = { at: number; you: string } | { at: number; them: string; time?: boolean } | { at: number; note: string }
@@ -151,7 +151,7 @@ export const scenes: Scene[] = [
     lines: [
       { at: 1500, you: 'Checkout is down. Did anything change today?' },
       { at: 3200, them: 'It works on my machine.' },
-      { at: 5000, them: 'We haven’t deployed since Tuesday. Must be the server. Ask your host.' },
+      { at: 5000, them: 'We haven’t changed anything since Tuesday. Must be the server. Ask your host.' },
     ],
     verdict: 6300,
     loop: 7300,

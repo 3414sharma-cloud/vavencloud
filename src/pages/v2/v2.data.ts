@@ -34,6 +34,10 @@ export interface Call {
   end: number
 }
 
+/** Under the heading (problem-heading.ts, also on v3): the same night, in one paragraph */
+export const problemIntro =
+  'It’s 2:14am. Your checkout is down and customers can’t pay. Your host says the server is fine. Your DevOps freelancer says the pipeline is fine. Your developers say the code is fine. Each of them is right about their own part, and nobody owns the whole. So you’re the one awake, relaying messages between three vendors while the orders stop.'
+
 /** Checkout goes down at 02:14 */
 export const downAt = 14
 

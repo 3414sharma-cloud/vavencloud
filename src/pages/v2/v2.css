@@ -10,8 +10,8 @@
 .v2-section {
   padding-block: 5rem;
 }
-/* The problem's title, "One platform. One team. One call." (problem.v2.ts). Its beats rise in one by one once it's
-   in view ([data-state] waiting → in, set by the script); then "One call." is underlined. */
+/* The problem's title, "Three vendors. Three answers. Zero fixes." (problem-heading.ts). Its beats rise in one by one
+   once it's in view ([data-state] waiting → in, set by the script); then a dry brush stroke is drawn under "Zero fixes." */
 .v2-tagline span,
 .v2-tagline strong {
   display: inline-block;
@@ -31,24 +31,37 @@
 .dark .v2-tagline strong {
   color: var(--color-brand-400);
 }
-.v2-tagline strong::after {
-  content: '';
+/* Room for the brush, which hangs below the last line */
+.v2-tagline {
+  padding-bottom: 0.2em;
+}
+/* An absolute svg sizes itself from its viewBox, not from left and right, so the width is set outright */
+.v2-brush {
   position: absolute;
-  inset: auto 0.04em -0.06em 0;
-  height: 0.08em;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.35;
-  transform-origin: left;
-  transition: transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) 0.8s;
+  left: -0.05em;
+  width: calc(100% + 0.17em);
+  bottom: -0.27em;
+  height: 0.36em;
+  overflow: visible;
+  pointer-events: none;
+}
+.v2-brush path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 17;
+  stroke-linecap: round;
+  /* One dash as long as the stroke, then a gap: moving it along draws the stroke from the left */
+  stroke-dasharray: 1 3;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.7s cubic-bezier(0.65, 0.05, 0.3, 1) 0.85s;
 }
 .v2-tagline[data-state='waiting'] :is(span, strong) {
   opacity: 0;
   filter: blur(8px);
   transform: translateY(0.35em);
 }
-.v2-tagline[data-state='waiting'] strong::after {
-  transform: scaleX(0);
+.v2-tagline[data-state='waiting'] .v2-brush path {
+  stroke-dashoffset: 1.02;
 }
 
 /* ---------- Plans, and why it's safe to start ---------- */
