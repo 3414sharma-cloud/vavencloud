@@ -1,3 +1,4 @@
+import { v5Nav } from '@/pages/v5/v5.shell.ts'
 import { createPage } from '@/app/create-page.ts'
 import { routes } from '@/app/routes.ts'
 import type { Section } from '@/app/types.ts'
@@ -24,5 +25,6 @@ const aboutIntro = (): Section => ({
 })
 
 createPage({
+  nav: v5Nav,
   sections: [aboutIntro(), founderSection(), teamSection(), reviewsSection()],
 })

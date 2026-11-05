@@ -1,0 +1,1415 @@
+/*
+ * v4's own chapters (v5.page.ts): what we own, where you are today, the comparison, who's behind it and how we
+ * start, plus what v4 adds to v3's chapters (what the night cost under the story, the report's split time bar,
+ * what the plan hours cover). Everything else is styled by v2.css, story.v3.css and the modules' own sheets.
+ * Status colours as in the story: rose for a gap or time lost, the brand blue for VavenCloud.
+ */
+
+/*
+ * ---------- The hero (hero.v5.ts, hero.css) ----------
+ * Slides with long copy (titleEm, longText in v5.data.ts) take the hero's full width from a tablet up.
+ * A long title is sized to the room, never above its usual size: the hero's width (the page's, up to the
+ * 72rem container, less its padding) over how many em its longer half needs (--title-em), so each half keeps
+ * to one line. A long paragraph runs in two even lines on a desktop (slide 2's is about 116em on one line, so
+ * about 60em a line, shrunk a little only where the hero is narrower than that). Phones let both wrap.
+ */
+@media (min-width: 768px) {
+  .hero-slide:is(.hero-slide--long-title, .hero-slide--long-text) {
+    max-width: none;
+  }
+  .hero-slide--long-title .hero-title {
+    font-size: min(calc((min(100vw, 72rem) - 3rem) / var(--title-em)), 5.4vw, 5.1rem);
+  }
+}
+@media (min-width: 1024px) {
+  .hero-slide--long-text .hero-description {
+    max-width: none;
+    font-size: min(1.12rem, calc((100vw - 3rem) / 63.5));
+    text-wrap: balance;
+  }
+}
+
+/*
+ * ---------- The problem's heading (problem-heading.ts, shared with v2 and v3) ----------
+ * Across the whole width instead of a narrow column with the right of the page empty: "Three vendors. Three
+ * answers." on one line (the title a touch smaller on the widest screens so it fits), "Zero fixes." under it,
+ * and the paragraph the full width under that. Narrow screens still wrap the beats one a line.
+ */
+.v4-problem-head > div {
+  max-width: none;
+}
+.v4-problem-head .section-title {
+  font-size: clamp(2.5rem, 5.4vw, 4.6rem);
+}
+.v4-problem-head .section-lead {
+  max-width: none;
+}
+
+/*
+ * ---------- The story's phone (story.v3.css): phone-shaped ----------
+ * Narrower than v3's, about a real phone's proportions (roughly 1 wide to 2 tall), at the same height. On a
+ * wide screen the site and the calls beside it get the room it gives up.
+ */
+.v4-story .st-phone {
+  max-width: 17rem;
+  border-radius: 2.6rem;
+}
+.v4-story .st-glass {
+  border-radius: 2.15rem;
+}
+/* How each call ended, stamped across the narrower phone: a touch smaller, so "Pipeline looks fine" fits */
+.v4-story .st-stamp {
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+}
+@media (min-width: 1024px) {
+  .v4-story .st-body {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+  }
+}
+@media (max-width: 639px) {
+  .v4-story .st-glass {
+    height: 33rem;
+  }
+}
+/*
+ * "Who you called" keeps one height from the first moment. Beside the phone it reaches down to the phone's
+ * foot from the start, so when the loop note opens the VavenCloud row only moves down inside it. Where the
+ * list is narrower than that (up to 1280px, where the quotes wrap and the list would outgrow the phone) and
+ * stacked on tablets and phones, the note's room is kept from the start and the note fades into it, so
+ * nothing moves.
+ */
+@media (min-width: 1024px) {
+  .v4-story .st-log {
+    align-self: stretch;
+  }
+}
+@media (max-width: 1279px) {
+  .v4-story .st-log .st-item {
+    grid-template-rows: 1fr;
+  }
+}
+
+/* ---------- Under the story: what the night cost, and the next step ---------- */
+.v4-payoff {
+  display: grid;
+  align-items: center;
+  gap: 1.75rem;
+  margin-top: 2.5rem;
+  border-radius: 1.5rem;
+  padding: 1.75rem 1.5rem;
+}
+.v4-payoff-big {
+  color: #fff;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  font-weight: 650;
+  line-height: 1.08;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.v4-payoff-lost {
+  color: rgb(253 164 175);
+}
+.v4-payoff-fix {
+  color: var(--color-brand-300);
+}
+.v4-payoff-text {
+  margin-top: 0.7rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.v4-payoff-cta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: center;
+}
+.v4-payoff-cta .btn-primary {
+  width: 100%;
+}
+.v4-payoff-q {
+  color: #fff;
+  font-weight: 650;
+}
+.v4-payoff-note {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+/* A heading across the whole width, as the problem's (what we own, compare): the paragraph as wide as what's under it */
+.v4-wide-head .section-lead {
+  max-width: none;
+}
+
+/* ---------- What we own ---------- */
+.v4-owns {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 3rem;
+}
+.v4-own {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.5rem;
+  padding: 1.6rem 1.5rem 1.5rem;
+}
+.v4-own-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.v4-own-tag {
+  border-radius: 999px;
+  background: var(--color-brand-500);
+  padding: 0.2rem 0.65rem;
+  color: #fff;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.v4-own-title {
+  margin-top: 1.1rem;
+  color: var(--color-neutral-950);
+  font-size: 1.2rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.v4-own-text {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.v4-own-points {
+  display: grid;
+  gap: 0.45rem;
+  margin: 0.95rem 0 1.25rem;
+  color: var(--color-neutral-700);
+  font-size: 0.9rem;
+}
+.v4-own-points li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+.v4-tick {
+  display: inline-flex;
+  height: 1.05rem;
+  width: 1.05rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  background: var(--color-brand-50);
+  color: var(--color-brand-600);
+}
+.v4-own-means {
+  margin-top: auto;
+  border-top: 1px solid var(--color-neutral-100);
+  padding-top: 1rem;
+  color: var(--color-neutral-700);
+  font-size: 0.87rem;
+}
+.v4-own-means b {
+  color: var(--color-brand-600);
+  font-weight: 650;
+}
+.dark .v4-own-title {
+  color: #fff;
+}
+.dark .v4-own-points,
+.dark .v4-own-means {
+  color: var(--color-neutral-300);
+}
+.dark .v4-tick {
+  background: var(--color-brand-950);
+  color: var(--color-brand-300);
+}
+.dark .v4-own-means {
+  border-color: var(--color-neutral-800);
+}
+.dark .v4-own-means b {
+  color: var(--color-brand-400);
+}
+/* The dark card: our difference */
+.v4-own--feature .v4-own-title {
+  color: #fff;
+}
+.v4-own--feature .icon-box {
+  border-color: rgb(255 255 255 / 0.12);
+  background: rgb(255 255 255 / 0.08);
+  color: var(--color-brand-300);
+}
+.v4-own--feature .v4-own-points {
+  color: color-mix(in srgb, #fff 82%, transparent);
+}
+.v4-own--feature .v4-tick {
+  background: rgb(255 255 255 / 0.1);
+  color: var(--color-brand-300);
+}
+.v4-own--feature .v4-own-means {
+  border-color: rgb(255 255 255 / 0.12);
+  color: inherit;
+}
+.v4-own--feature .v4-own-means b {
+  color: var(--color-brand-300);
+}
+
+/*
+ * ---------- Where are you today ----------
+ * Night-blue cards (.surface-ink) in both themes, so the diagrams and the type are drawn light on dark.
+ */
+.v4-stages {
+  display: grid;
+  gap: 1rem;
+  margin-top: 3rem;
+}
+.v4-stage {
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.4rem;
+  padding: 1.35rem 1.25rem;
+  transition: transform 0.2s ease;
+}
+.v4-stage:hover {
+  transform: translateY(-3px);
+}
+/* Each stage's diagram (stage-art.v5.ts) on a faint panel at the top of its card, the same size on every card */
+.v4-stage-art {
+  display: flex;
+  height: 8.25rem;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.1rem;
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 1rem;
+  background: rgb(255 255 255 / 0.05);
+}
+.v4-stage-art svg {
+  height: 7rem;
+  width: auto;
+  max-width: 100%;
+  overflow: visible;
+}
+/* The diagrams' colours, light on the dark card: structure, labels, the fix (brand) and the problem (rose) */
+.v4-dg-line {
+  stroke: rgb(255 255 255 / 0.25);
+}
+.v4-dg-ink {
+  stroke: rgb(255 255 255 / 0.85);
+}
+.v4-dg-surface {
+  fill: var(--color-ink-800);
+}
+.v4-dg-text {
+  fill: rgb(255 255 255 / 0.85);
+}
+.v4-dg-muted {
+  fill: rgb(255 255 255 / 0.55);
+}
+.v4-dg-track {
+  fill: rgb(255 255 255 / 0.1);
+}
+.v4-dg-used {
+  fill: rgb(255 255 255 / 0.22);
+}
+.v4-dg-brand {
+  stroke: var(--color-brand-300);
+}
+.v4-dg-brand-fill {
+  fill: var(--color-brand-500);
+}
+.v4-dg-tint {
+  fill: rgb(255 255 255 / 0.1);
+}
+.v4-dg-brand-text {
+  fill: var(--color-brand-200);
+}
+.v4-dg-bad {
+  stroke: rgb(253 164 175);
+}
+.v4-dg-bad-fill {
+  fill: rgb(251 113 133);
+}
+.v4-dg-bad-tint {
+  fill: rgb(244 63 94 / 0.16);
+}
+.v4-dg-bad-text {
+  fill: rgb(254 205 211);
+}
+.v4-stage-n {
+  color: var(--color-brand-300);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.v4-stage-title {
+  margin-top: 0.6rem;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+}
+.v4-stage-worry {
+  margin: 0.75rem 0 1.1rem;
+  color: rgb(253 164 175);
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+.v4-stage-answer {
+  margin-top: auto;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  padding-top: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.v4-stage-answer b {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--color-brand-300);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* ---------- The report: each tool's headline, and the time bar split at the call ---------- */
+.v4-rp-headline {
+  margin-top: 0.5rem;
+  color: var(--color-neutral-950);
+  font-size: 0.95rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
+.dark .v4-rp-headline {
+  color: #fff;
+}
+.v4-rp-bar {
+  display: flex;
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.6s cubic-bezier(0.65, 0, 0.35, 1) 0.3s;
+}
+.rp-doc:not(.is-in) .v4-rp-bar {
+  clip-path: inset(0 100% 0 0);
+}
+.v4-rp-bar .v4-rp-lost {
+  width: var(--lost);
+}
+.v4-rp-bar .v4-rp-fix {
+  flex: 1;
+}
+.v4-rp-lost {
+  background: rgb(244 63 94);
+}
+.v4-rp-fix {
+  background: var(--color-brand-500);
+}
+.dark .v4-rp-lost {
+  background: rgb(251 113 133);
+}
+.dark .v4-rp-fix {
+  background: var(--color-brand-400);
+}
+.v4-rp-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  margin-top: 0.6rem;
+  color: var(--color-neutral-600);
+  font-size: 0.75rem;
+}
+.v4-rp-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.v4-rp-legend i {
+  height: 0.45rem;
+  width: 0.45rem;
+  border-radius: 999px;
+}
+.dark .v4-rp-legend {
+  color: var(--color-neutral-400);
+}
+
+/* ---------- Compare ---------- */
+.v4-compare {
+  margin-top: 3rem;
+  overflow-x: auto;
+}
+.v4-compare:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 3px;
+}
+.v4-compare table {
+  width: 100%;
+  min-width: 42rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.v4-compare :is(th, td) {
+  border-bottom: 1px solid var(--color-neutral-100);
+  padding: 1.1rem 1.35rem;
+  text-align: left;
+  vertical-align: top;
+}
+.v4-compare thead :is(th, td) {
+  background: var(--color-neutral-50);
+  padding-block: 1.25rem;
+  color: var(--color-neutral-600);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.v4-compare thead .v4-us {
+  background: linear-gradient(180deg, var(--color-brand-500), var(--color-brand-600));
+  color: #fff;
+  font-size: 0.95rem;
+}
+.v4-compare tbody th {
+  width: 22%;
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.v4-compare tbody td {
+  width: 26%;
+  color: var(--color-neutral-600);
+}
+.v4-compare tbody .v4-us {
+  background: var(--color-brand-50);
+  color: var(--color-neutral-950);
+  font-weight: 600;
+}
+.v4-compare tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.v4-cell {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+.dark .v4-compare :is(th, td) {
+  border-color: var(--color-neutral-800);
+}
+.dark .v4-compare thead :is(th, td):not(.v4-us) {
+  background: color-mix(in srgb, var(--color-neutral-800) 45%, transparent);
+  color: var(--color-neutral-400);
+}
+.dark .v4-compare tbody th {
+  color: #fff;
+}
+.dark .v4-compare tbody td {
+  color: var(--color-neutral-400);
+}
+.dark .v4-compare tbody .v4-us {
+  background: var(--color-brand-950);
+  color: #fff;
+}
+/* A cross for a gap, a tick for VavenCloud, a $ for work quoted first */
+.v4-mark {
+  display: inline-flex;
+  height: 1.1rem;
+  width: 1.1rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  margin-top: 0.15rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+.v4-mark--no {
+  background: rgb(255 228 230);
+  color: rgb(190 18 60);
+}
+.v4-mark--yes {
+  background: var(--color-brand-100);
+  color: var(--color-brand-600);
+}
+.v4-mark--quote {
+  background: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+}
+.dark .v4-mark--no {
+  background: rgb(244 63 94 / 0.15);
+  color: rgb(253 164 175);
+}
+.dark .v4-mark--yes {
+  background: var(--color-brand-900);
+  color: var(--color-brand-300);
+}
+.dark .v4-mark--quote {
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-300);
+}
+/* Sized to fit one line under the table on a desktop; where the page is narrower it wraps in two even lines */
+.v4-means {
+  margin-top: 1.5rem;
+  font-size: 0.94rem;
+  text-wrap: balance;
+  color: var(--color-neutral-700);
+}
+.v4-means b {
+  color: var(--color-neutral-950);
+}
+.dark .v4-means {
+  color: var(--color-neutral-300);
+}
+.dark .v4-means b {
+  color: #fff;
+}
+
+/* ---------- Who's behind it ---------- */
+.v4-behind {
+  display: grid;
+  gap: 3rem;
+}
+.v4-behind .section-title {
+  font-size: clamp(2.4rem, 4.2vw, 3.6rem);
+}
+.v4-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 2.25rem;
+  overflow: hidden;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 1.25rem;
+  background: var(--color-neutral-200);
+}
+/* The number above its label */
+.v4-stats > div {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  background: #fff;
+  padding: 1.35rem;
+}
+.v4-stats dd {
+  color: var(--color-neutral-950);
+  font-size: 2.1rem;
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.v4-stats dt {
+  margin-top: 0.5rem;
+  color: var(--color-neutral-600);
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+.dark .v4-stats {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-800);
+}
+.dark .v4-stats > div {
+  background: var(--color-neutral-900);
+}
+.dark .v4-stats dd {
+  color: #fff;
+}
+.dark .v4-stats dt {
+  color: var(--color-neutral-400);
+}
+/* The right half: the video, the co-founders, the rest of the team */
+.v4-behind-side {
+  display: grid;
+  gap: 1rem;
+}
+.v4-video-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  margin-top: 0.8rem;
+  color: var(--color-neutral-600);
+  font-size: 0.86rem;
+}
+.dark .v4-video-caption {
+  color: var(--color-neutral-400);
+}
+.v4-founders {
+  display: grid;
+  gap: 1rem;
+}
+.v4-person {
+  border-radius: 1.4rem;
+  padding: 1.2rem;
+}
+.v4-person-head {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.v4-avatar {
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(160deg, var(--color-brand-500), var(--color-brand-800));
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+.v4-person-name {
+  color: var(--color-neutral-950);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+.v4-person-role {
+  margin-top: 0.1rem;
+  color: var(--color-brand-600);
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.v4-person-bio {
+  margin-top: 0.8rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+.dark .v4-person-name {
+  color: #fff;
+}
+.dark .v4-person-role {
+  color: var(--color-brand-400);
+}
+.v4-team-toggle {
+  width: 100%;
+}
+.v4-team-toggle svg {
+  transition: transform 0.2s ease;
+}
+.v4-team-toggle[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+/*
+ * The engineers on your account, once the button opens them: a tinted panel across the whole section, under
+ * both halves (pulled up to sit closer than the halves' own gap), the roles four across on a wide screen
+ */
+.v4-team {
+  grid-column: 1 / -1;
+  margin-top: -2rem;
+  border: 1px solid var(--color-brand-100);
+  border-radius: 1.4rem;
+  background: var(--color-brand-50);
+  padding: 1.4rem 1.5rem;
+}
+.v4-team-intro {
+  color: var(--color-neutral-700);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.v4-team-roles {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1rem;
+}
+.v4-team-roles li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  color: var(--color-neutral-600);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+.v4-team-roles .icon-box {
+  height: 2rem;
+  width: 2rem;
+  border-radius: 0.6rem;
+  background: #fff;
+}
+.v4-team-roles b {
+  display: block;
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+/* The link to the whole team, under the roles, on the right */
+.v4-team-more {
+  margin-top: 1.1rem;
+  text-align: right;
+}
+.v4-team-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--color-brand-700);
+  font-size: 0.88rem;
+  font-weight: 650;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 30%, transparent);
+  text-underline-offset: 0.25rem;
+}
+.dark .v4-team {
+  border-color: var(--color-brand-900);
+  background: var(--color-brand-950);
+}
+.dark .v4-team-intro {
+  color: var(--color-neutral-300);
+}
+.dark .v4-team-roles li {
+  color: var(--color-neutral-400);
+}
+.dark .v4-team-roles .icon-box {
+  background: var(--color-neutral-900);
+}
+.dark .v4-team-roles b {
+  color: #fff;
+}
+.dark .v4-team-link {
+  color: var(--color-brand-300);
+}
+
+/*
+ * ---------- The client stories (reviews.v2.ts, shared with v2 and v3), shorter on v4 ----------
+ * Less room around the section, a smaller heading, smaller cards and type. Scoped by the section's id, so the
+ * cards keep their v2 look on v2 and v3.
+ */
+#clients.v2-section {
+  padding-block: 3.5rem;
+}
+#clients .section-title {
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+}
+#clients .tm-track {
+  margin-top: 1.5rem;
+  padding-bottom: 1.25rem;
+}
+#clients .tm-card {
+  flex-basis: min(20rem, 86%);
+  border-radius: 1.25rem;
+  padding: 1.1rem;
+}
+#clients .tm-mark {
+  height: 1.45rem;
+}
+#clients .tm-topic {
+  font-size: 0.66rem;
+}
+#clients .tm-quote {
+  margin-top: 0.9rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+#clients .tm-card > :nth-last-child(2) {
+  margin-bottom: 1.1rem;
+}
+#clients .tm-who {
+  gap: 0.7rem;
+  padding-top: 0.9rem;
+}
+#clients .tm-avatar {
+  height: 2.25rem;
+  width: 2.25rem;
+  font-size: 0.78rem;
+}
+#clients .tm-name {
+  font-size: 0.9rem;
+}
+#clients .tm-client {
+  font-size: 0.76rem;
+}
+#clients .tm-play {
+  height: 3rem;
+  width: 3rem;
+}
+
+/* ---------- How we start ---------- */
+.v4-steps {
+  position: relative;
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 3.5rem;
+}
+/* One under another: the number beside its three lines */
+.v4-step {
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr);
+  column-gap: 1.1rem;
+}
+.v4-step-dot {
+  position: relative;
+  display: inline-flex;
+  height: 3rem;
+  width: 3rem;
+  grid-row: span 3;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-brand-200);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-brand-600);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-card);
+}
+.v4-step:last-child .v4-step-dot {
+  border: 0;
+  background: linear-gradient(180deg, var(--color-brand-500), var(--color-brand-600));
+  color: #fff;
+}
+.v4-step-when {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-500);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.v4-step-title {
+  margin-top: 0.3rem;
+  color: var(--color-neutral-950);
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.v4-step-text {
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+}
+.dark .v4-step-dot {
+  border-color: var(--color-brand-900);
+  background: var(--color-neutral-900);
+  color: var(--color-brand-300);
+}
+.dark .v4-step-title {
+  color: #fff;
+}
+.v4-handover {
+  display: grid;
+  gap: 1.1rem;
+  margin-top: 3.5rem;
+  border-radius: 1.5rem;
+  padding: 1.6rem 1.5rem;
+}
+.v4-handover-title {
+  color: var(--color-neutral-950);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+.v4-handover-list {
+  display: grid;
+  gap: 1rem;
+  margin-top: 0.9rem;
+}
+.v4-handover-list li {
+  color: var(--color-neutral-700);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.v4-handover-list b {
+  display: block;
+  margin-bottom: 0.15rem;
+  color: var(--color-neutral-950);
+  font-weight: 650;
+}
+.dark .v4-handover-title,
+.dark .v4-handover-list b {
+  color: #fff;
+}
+.dark .v4-handover-list li {
+  color: var(--color-neutral-300);
+}
+
+/* ---------- Plans: what the plan hours cover ---------- */
+.v4-scope {
+  display: grid;
+  gap: 1.75rem;
+  margin-top: 1.25rem;
+  border-radius: 1.5rem;
+  padding: 1.75rem 1.5rem;
+}
+.v4-scope-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--color-neutral-950);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+.v4-scope-title .v4-mark {
+  margin-top: 0;
+}
+.v4-scope ul {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 0.9rem;
+  color: var(--color-neutral-700);
+  font-size: 0.92rem;
+}
+.v4-scope li {
+  display: flex;
+  gap: 0.65rem;
+}
+.v4-scope li::before {
+  content: "";
+  height: 0.35rem;
+  width: 0.35rem;
+  flex: none;
+  margin-top: 0.55rem;
+  border-radius: 999px;
+  background: var(--color-neutral-400);
+}
+.v4-scope-note {
+  border-top: 1px solid var(--color-neutral-100);
+  padding-top: 1.1rem;
+  color: var(--color-neutral-700);
+  font-size: 0.9rem;
+}
+.v4-scope-note b {
+  color: var(--color-neutral-950);
+}
+.dark .v4-scope-title,
+.dark .v4-scope-note b {
+  color: #fff;
+}
+.dark .v4-scope ul,
+.dark .v4-scope-note {
+  color: var(--color-neutral-300);
+}
+.dark .v4-scope-note {
+  border-color: var(--color-neutral-800);
+}
+
+/*
+ * ---------- The blog (blog.section.ts, shared with v2 and v3) ----------
+ * Its heading takes all the room beside "View all articles": "What we've learned" on one line, "on the 2am side
+ * of production." on the next (at the wide headings' size, so it fits), and the paragraph as wide.
+ */
+#blog .max-w-4xl {
+  min-width: 0;
+  max-width: none;
+  flex: 1;
+}
+#blog .section-title {
+  font-size: clamp(2.25rem, 4.6vw, 4.3rem);
+}
+#blog .section-lead {
+  max-width: none;
+}
+/* Each article's date and "Read the article" share its last line, at the foot of the card, so they line up along the row */
+#blog article {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto auto 1fr;
+  column-gap: 1rem;
+}
+#blog article > * {
+  grid-column: 1 / -1;
+}
+#blog article > :is(p:has(time), p:last-child) {
+  grid-row: 4;
+  align-self: end;
+  margin-top: 0;
+  padding-top: 1.1rem;
+}
+#blog article > p:has(time) {
+  grid-column: 1;
+}
+#blog article > p:last-child {
+  grid-column: 2;
+}
+
+/*
+ * ---------- The footer (layout/footer, shared with every page): dark on v4 ----------
+ * A night-blue block in light mode (like .surface-ink), near black in dark mode, with light type, links,
+ * logo, theme switch and wordmark. Scoped from #app, so it wins over the footer's own light and dark classes.
+ */
+#app > footer {
+  border-top-color: transparent;
+  background-color: var(--color-ink-950);
+  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 22%, transparent) 0%, transparent 55%);
+  color: var(--color-ink-text);
+}
+.dark #app > footer {
+  background-color: #050504;
+  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 10%, transparent) 0%, transparent 55%);
+  color: var(--color-neutral-400);
+}
+#app > footer .text-neutral-950 {
+  color: #fff;
+}
+#app > footer .text-neutral-500 {
+  color: inherit;
+  opacity: 0.7;
+}
+#app > footer a:hover {
+  color: #fff;
+}
+#app > footer .border-t,
+#app > footer a[aria-label^="VavenCloud on"],
+#app > footer #theme-switch > div {
+  border-color: rgb(255 255 255 / 0.14);
+}
+#app > footer a[aria-label^="VavenCloud on"],
+#app > footer #theme-switch label {
+  color: inherit;
+}
+#app > footer a[aria-label^="VavenCloud on"]:hover {
+  border-color: #fff;
+  color: #fff;
+}
+#app > footer #theme-switch label:hover {
+  color: #fff;
+}
+#app > footer #theme-switch label:has(input:checked) {
+  background: #fff;
+  color: var(--color-neutral-950);
+}
+/* The logo in its dark-ground colours: the V in the brand gradient, the wordmark white */
+#app > footer .vc-logo {
+  background: linear-gradient(90deg, var(--color-brand-300), var(--color-brand-400) 24%, #fff 24.5%);
+}
+#app > footer .footer-wordmark svg {
+  color: rgb(255 255 255 / 0.08);
+}
+#app > footer .footer-letter:hover {
+  fill: var(--color-brand-400);
+}
+
+/* Phones: each row of the comparison stacks, every answer under its column's name */
+@media (max-width: 767px) {
+  .v4-compare table,
+  .v4-compare :is(tbody, tr, th, td) {
+    display: block;
+    width: auto;
+    min-width: 0;
+  }
+  .v4-compare thead {
+    display: none;
+  }
+  .v4-compare tbody tr {
+    border-bottom: 1px solid var(--color-neutral-100);
+    padding: 1.1rem 1.2rem 1.2rem;
+  }
+  .dark .v4-compare tbody tr {
+    border-color: var(--color-neutral-800);
+  }
+  .v4-compare tbody tr:last-child {
+    border-bottom: 0;
+  }
+  .v4-compare tbody :is(th, td) {
+    width: auto;
+    border: 0;
+    padding: 0;
+  }
+  .v4-compare tbody th {
+    font-size: 1rem;
+  }
+  .v4-compare tbody td {
+    margin-top: 0.7rem;
+    font-size: 0.9rem;
+  }
+  .v4-compare tbody td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.2rem;
+    color: var(--color-neutral-500);
+    font-size: 0.66rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .v4-compare tbody .v4-us {
+    border-radius: 0.9rem;
+    padding: 0.7rem 0.85rem;
+  }
+  .v4-compare tbody .v4-us::before {
+    color: var(--color-brand-600);
+  }
+  .dark .v4-compare tbody .v4-us::before {
+    color: var(--color-brand-300);
+  }
+}
+@media (min-width: 640px) {
+  .v4-handover-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* The co-founders side by side, the roles two by two */
+  .v4-founders,
+  .v4-team-roles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  #clients.v2-section {
+    padding-block: 4.5rem;
+  }
+}
+@media (min-width: 768px) {
+  .v4-payoff {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    padding: 2rem 2.25rem;
+  }
+  .v4-payoff-cta .btn-primary {
+    width: auto;
+  }
+  /* Two a row, the dark card across */
+  .v4-owns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v4-own--feature {
+    grid-column: 1 / -1;
+  }
+  /* Two a row, the last one across */
+  .v4-stages {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v4-stage:last-child {
+    grid-column: 1 / -1;
+  }
+  .v4-handover {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1.25rem;
+    padding: 1.75rem 1.9rem;
+  }
+  .v4-scope {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 1.9rem;
+  }
+  .v4-scope-note {
+    grid-column: 1 / -1;
+  }
+}
+@media (min-width: 1024px) {
+  /* Two wide cards, then three */
+  .v4-owns {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .v4-own--wide {
+    grid-column: span 3;
+  }
+  .v4-own--third,
+  .v4-own--feature {
+    grid-column: span 2;
+  }
+  /* Three, then two: wide enough for each card's diagram to read */
+  .v4-stages {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  .v4-stage,
+  .v4-stage:last-child {
+    grid-column: span 2;
+  }
+  .v4-stage:nth-child(n + 4) {
+    grid-column: span 3;
+  }
+  /* Two equal halves: who we are on the left, the video and the people on the right */
+  .v4-behind {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 3.5rem;
+  }
+  .v4-team {
+    margin-top: -2.5rem;
+  }
+  .v4-team-roles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  /* Five across from the left, joined by a dotted line from the first number's centre to the last's */
+  .v4-steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+  }
+  .v4-steps::before {
+    content: "";
+    position: absolute;
+    top: 1.5rem;
+    right: calc(20% - 1.5rem);
+    left: 1.5rem;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, var(--color-neutral-300) 0 6px, transparent 6px 12px);
+  }
+  .dark .v4-steps::before {
+    background: repeating-linear-gradient(90deg, var(--color-neutral-700) 0 6px, transparent 6px 12px);
+  }
+  .v4-step {
+    display: block;
+    padding-right: 1.5rem;
+  }
+  .v4-step-when {
+    margin-top: 1.1rem;
+  }
+  .v4-handover-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v4-rp-bar,
+  .v4-stage {
+    transition: none;
+  }
+}
+
+/*
+ * v5: no eyebrow tags anywhere on the page. v5's own sections no longer render them; this also hides the ones
+ * that come from shared modules (booking form, client stories, the problem heading) on this page only, and
+ * removes the gap the title kept for them.
+ */
+#app .eyebrow {
+  display: none !important;
+}
+#app .eyebrow + :is(.section-title, h1, h2, h3) {
+  margin-top: 0;
+}
+
+/*
+ * v5: the hero's slide index uses a sine wave instead of a flat line. The bar keeps its fill animation; a
+ * repeating wave mask shapes both the track and the fill, and the active wave drifts slowly sideways.
+ */
+#app .hero-tab-bar {
+  height: 8px;
+  border-radius: 0;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+  -webkit-mask-size: 24px 8px;
+  mask-size: 24px 8px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+#app .hero-tab-bar i {
+  border-radius: 0;
+}
+#app .hero-tab[aria-selected="true"] .hero-tab-bar {
+  animation: v5-wave-drift 1.6s linear infinite;
+}
+#app .is-paused .hero-tab[aria-selected="true"] .hero-tab-bar {
+  animation-play-state: paused;
+}
+@keyframes v5-wave-drift {
+  to {
+    -webkit-mask-position: 24px 0;
+    mask-position: 24px 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .hero-tab[aria-selected="true"] .hero-tab-bar {
+    animation: none;
+  }
+}
+
+/*
+ * v5: the other straight lines on the page get the same sine wave as the hero's slide index:
+ * the story's scene progress bars, and the connector between the "How we start" steps.
+ */
+#app {
+  --v5-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+#app .st-scene-bar,
+#app .v4-steps::before {
+  -webkit-mask-image: var(--v5-wave);
+  mask-image: var(--v5-wave);
+  -webkit-mask-size: 24px 8px;
+  mask-size: 24px 8px;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+}
+/* Story scene tabs: wavy track, the fill keeps its scaleX animation; the active wave drifts */
+#app .st-scene-bar {
+  height: 8px;
+  border-radius: 0;
+}
+#app .st-scene[aria-current="true"] .st-scene-bar {
+  animation: v5-wave-drift 1.6s linear infinite;
+}
+/* "How we start": a solid wave instead of the dotted line, centred on the step numbers */
+#app .v4-steps::before {
+  top: calc(1.5rem - 3px);
+  height: 8px;
+  background: var(--color-neutral-300);
+}
+.dark #app .v4-steps::before {
+  background: var(--color-neutral-700);
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .st-scene[aria-current="true"] .st-scene-bar {
+    animation: none;
+  }
+}
+
+/*
+ * v5: the strip under the hero is a continuous slider. Two copies of the list sit side by side and move left
+ * by one copy's width, so the loop never jumps. Edges fade out; hover or focus pauses it.
+ */
+#app .tr-band--slider {
+  overflow: hidden;
+}
+#app .tr-marquee {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+#app .tr-marquee-track {
+  display: flex;
+  width: max-content;
+  animation: v5-marquee 40s linear infinite;
+}
+#app .tr-marquee:hover .tr-marquee-track,
+#app .tr-marquee:focus-within .tr-marquee-track {
+  animation-play-state: paused;
+}
+#app .tr-band--slider .tr-logos {
+  display: flex;
+  flex: none;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  width: auto;
+  zoom: 1;
+  gap: 0 3.5rem;
+  padding-right: 3.5rem;
+}
+#app .tr-tool i {
+  width: 0.6rem;
+  height: 0.6rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--c);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 16%, transparent);
+}
+@keyframes v5-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 1399px) {
+  #app .tr-marquee {
+    width: 100%;
+  }
+}
+@media (max-width: 639px) {
+  #app .tr-band--slider .tr-logos {
+    gap: 0 2.25rem;
+    padding-right: 2.25rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .tr-marquee {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  #app .tr-marquee-track {
+    width: 100%;
+    animation: none;
+  }
+  #app .tr-band--slider .tr-logos {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem 2rem;
+    padding-right: 0;
+  }
+  #app .tr-band--slider .tr-logos[aria-hidden="true"] {
+    display: none;
+  }
+}

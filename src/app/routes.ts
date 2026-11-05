@@ -5,7 +5,13 @@
  * The landing page has versions at /v2/ and /v3/ with their own copy of these sections, so on a version the
  * anchors point at that version (a visitor stays on the one they're reading). Everywhere else they point at /.
  */
-const version = typeof location !== 'undefined' ? /^\/(v\d+)(\/|$)/.exec(location.pathname)?.[1] : undefined
+/*
+ * Pages outside a version folder (about, the legal pages) can say which version they belong to with
+ * data-landing on <html> (e.g. data-landing="v5"), so their header, footer and buttons lead back to it.
+ */
+const fromPath = typeof location !== 'undefined' ? /^\/(v\d+)(\/|$)/.exec(location.pathname)?.[1] : undefined
+const fromPage = typeof document !== 'undefined' ? document.documentElement.dataset.landing : undefined
+const version = fromPath ?? (fromPage && /^v\d+$/.test(fromPage) ? fromPage : undefined)
 const landing = version ? `/${version}/` : '/'
 
 export const routes = {

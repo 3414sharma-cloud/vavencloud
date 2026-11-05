@@ -5,7 +5,7 @@ import { qs, qsa } from '@/shared/lib/dom.ts'
 import { getThemePreference, onThemeChange, setThemePreference, type ThemePreference } from '@/shared/lib/theme.ts'
 import { icon, type IconName } from '@/shared/ui/icons.ts'
 import { brandLink } from '@/shared/ui/logo.ts'
-import { footerColumns, legalLinks } from './footer.data.ts'
+import { copyrightOwner, footerColumns, legalLinks } from './footer.data.ts'
 
 const linkClass = 'transition-colors hover:text-neutral-950 dark:hover:text-white'
 
@@ -79,7 +79,7 @@ const html = () => `
     </div>
 
     <div class="relative mt-14 flex flex-col gap-6 border-t border-neutral-200 pt-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between dark:border-neutral-800">
-      <p>© <span id="year"></span> ${site.name}. All rights reserved.</p>
+      <p>© <span id="year"></span> ${copyrightOwner}</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
         <ul class="flex flex-wrap gap-x-6 gap-y-2">
           ${legalLinks.map((l) => `<li><a href="${l.href}" class="${linkClass}">${l.label}</a></li>`).join('')}
