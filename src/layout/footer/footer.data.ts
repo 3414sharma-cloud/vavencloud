@@ -27,6 +27,7 @@ export const footerColumns: FooterColumn[] = [
       { label: 'Mobile App Development', href: `${vc}/services#mobile`, external: true },
       { label: 'DevOps & Server Support', href: `${vc}/services#devops`, external: true },
       { label: 'Plans', href: routes.plans },
+      { label: 'AWS & Azure price comparison', href: routes.comparison },
     ],
   },
   {

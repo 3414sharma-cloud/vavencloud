@@ -24,17 +24,41 @@ export interface Caller {
 }
 
 export const callers: Record<CallerId, Caller> = {
-  host: { name: 'Hosting provider', role: 'Keeps the server on', icon: 'server', excuse: '“The server’s up. Must be your application.”', verdict: 'Not our layer' },
-  devops: { name: 'DevOps freelancer', role: 'Set up the servers last year', icon: 'infinity', excuse: '“The pipeline deployed fine. Ask your developers.”', verdict: 'Not my scope' },
-  devs: { name: 'Your developers', role: 'Wrote the code', icon: 'code', excuse: '“We haven’t changed anything. Must be the server.”', verdict: 'Not our code' },
-  vaven: { name: 'VavenCloud', role: 'Servers, deployments and code', excuse: '“I can see it. I’m on it.”', verdict: 'Fixed in 27 min' },
+  host: {
+    name: 'Hosting provider',
+    role: 'Keeps the server on',
+    icon: 'server',
+    excuse: '“The server’s up. Must be your application.”',
+    verdict: 'Not our layer',
+  },
+  devops: {
+    name: 'DevOps freelancer',
+    role: 'Set up the servers last year',
+    icon: 'infinity',
+    excuse: '“The pipeline deployed fine. Ask your developers.”',
+    verdict: 'Not my scope',
+  },
+  devs: {
+    name: 'Your developers',
+    role: 'Wrote the code',
+    icon: 'code',
+    excuse: '“We haven’t changed anything. Must be the server.”',
+    verdict: 'Not our code',
+  },
+  vaven: {
+    name: 'VavenCloud',
+    role: 'Servers, deployments and code',
+    excuse: '“I can see it. I’m on it.”',
+    verdict: 'Fixed in 27 min',
+  },
 }
 
 /** On the list of calls, once all three have passed the problem on */
 export const loopNote = 'Three answers, all true on their own. Nobody owns the whole. You’re back where you started.'
 
 /** What's said on the phone: by you, by them, or the phone's own small print */
-export type Line = { at: number; you: string } | { at: number; them: string; time?: boolean } | { at: number; note: string }
+export type Line =
+  { at: number; you: string } | { at: number; them: string; time?: boolean } | { at: number; note: string }
 
 export interface Scene {
   id: string
@@ -89,9 +113,30 @@ export const scenes: Scene[] = [
     captions: [{ at: 0, text: 'Your site goes down. Customers can’t pay.' }],
     site: [{ at: 700, state: 'down' }],
     alerts: [
-      { at: 1300, icon: 'activity', tone: 'bad', app: 'Uptime monitor', title: 'yourapp.com is down', text: '502 Bad Gateway on /checkout' },
-      { at: 2500, icon: 'wallet', tone: 'warn', app: 'Payments', title: 'No successful payments', text: 'None in the last 10 minutes' },
-      { at: 3700, icon: 'mail', tone: 'brand', app: 'Mail', title: 'A customer', text: '“I can’t pay. Is your site down?”' },
+      {
+        at: 1300,
+        icon: 'activity',
+        tone: 'bad',
+        app: 'Uptime monitor',
+        title: 'yourapp.com is down',
+        text: '502 Bad Gateway on /checkout',
+      },
+      {
+        at: 2500,
+        icon: 'wallet',
+        tone: 'warn',
+        app: 'Payments',
+        title: 'No successful payments',
+        text: 'None in the last 10 minutes',
+      },
+      {
+        at: 3700,
+        icon: 'mail',
+        tone: 'brand',
+        app: 'Mail',
+        title: 'A customer',
+        text: '“I can’t pay. Is your site down?”',
+      },
     ],
   },
   {
@@ -129,7 +174,10 @@ export const scenes: Scene[] = [
       { at: 2200, note: 'No answer' },
       { at: 2800, you: 'Site’s down. Can you take a look? It’s urgent.' },
       { at: 3600, note: 'Seen {time}' },
-      { at: 5300, them: 'I’m away until Monday. The pipeline deployed fine, so it’s not the servers. Ask your developers.' },
+      {
+        at: 5300,
+        them: 'I’m away until Monday. The pipeline deployed fine, so it’s not the servers. Ask your developers.',
+      },
     ],
     verdict: 6500,
   },
@@ -176,7 +224,11 @@ export const scenes: Scene[] = [
     lines: [
       { at: 900, you: 'Checkout is down.' },
       { at: 2200, them: 'I can see it on our monitoring. I’m on it.' },
-      { at: 4600, them: 'Found it: a missing database index on the orders table. Every checkout was timing out.', time: true },
+      {
+        at: 4600,
+        them: 'Found it: a missing database index on the orders table. Every checkout was timing out.',
+        time: true,
+      },
       { at: 7400, them: 'Index added and tested. Rolling it out now.', time: true },
     ],
   },
@@ -192,7 +244,13 @@ export const scenes: Scene[] = [
     ],
     captions: [{ at: 1800, text: 'Fixed in 27 minutes. You go back to sleep.' }],
     site: [{ at: 1800, state: 'up' }],
-    lines: [{ at: 1800, them: 'Fixed and verified. Checkout is fast again. Your written report will be in your inbox by 09:00.', time: true }],
+    lines: [
+      {
+        at: 1800,
+        them: 'Fixed and verified. Checkout is fast again. Your written report will be in your inbox by 09:00.',
+        time: true,
+      },
+    ],
     verdict: 3000,
   },
 ]

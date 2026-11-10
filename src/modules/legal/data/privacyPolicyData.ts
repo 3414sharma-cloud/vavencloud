@@ -75,9 +75,7 @@ export const PRIVACY_POLICY = {
     },
     {
       heading: '9. Your Rights',
-      body: [
-        'Subject to applicable law (including the DPDPA and, where applicable, GDPR), you may have the right to:',
-      ],
+      body: ['Subject to applicable law (including the DPDPA and, where applicable, GDPR), you may have the right to:'],
       list: [
         'Access the personal data we hold about you.',
         'Correct inaccurate or incomplete data.',

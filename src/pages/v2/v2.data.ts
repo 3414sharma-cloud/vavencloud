@@ -42,9 +42,36 @@ export const problemIntro =
 export const downAt = 14
 
 export const vendorCalls: (Call & { icon: IconName })[] = [
-  { id: 'host', icon: 'server', name: 'Your host', role: 'Keeps the machine on.', reply: '“Your server is running normally.”', verdict: 'Not our problem', dial: 16, end: 29 },
-  { id: 'freelancer', icon: 'infinity', name: 'Your DevOps freelancer', role: 'Set up the pipeline last year.', reply: 'Seen 6 hours ago. No reply.', verdict: 'No answer', dial: 31, end: 38 },
-  { id: 'developers', icon: 'code', name: 'Your developers', role: 'Wrote the code.', reply: '“It works on our machines.”', verdict: 'Not our code', dial: 40, end: 52 },
+  {
+    id: 'host',
+    icon: 'server',
+    name: 'Your host',
+    role: 'Keeps the machine on.',
+    reply: '“Your server is running normally.”',
+    verdict: 'Not our problem',
+    dial: 16,
+    end: 29,
+  },
+  {
+    id: 'freelancer',
+    icon: 'infinity',
+    name: 'Your DevOps freelancer',
+    role: 'Set up the pipeline last year.',
+    reply: 'Seen 6 hours ago. No reply.',
+    verdict: 'No answer',
+    dial: 31,
+    end: 38,
+  },
+  {
+    id: 'developers',
+    icon: 'code',
+    name: 'Your developers',
+    role: 'Wrote the code.',
+    reply: '“It works on our machines.”',
+    verdict: 'Not our code',
+    dial: 40,
+    end: 52,
+  },
 ]
 
 export const vavenCall: Call = {
@@ -103,7 +130,19 @@ export const testimonials: Testimonial[] = [written[0], sampleVideo, ...written.
 
 /** Beside the plans: why saying yes is safe */
 export const safety: { icon: IconName; title: string; text: string }[] = [
-  { icon: 'search', title: 'Free review first', text: '45 minutes with a senior engineer. You keep the written roadmap either way.' },
-  { icon: 'wallet', title: 'One fixed monthly fee', text: 'Agreed after your review. No hourly meter, no surprise invoices.' },
-  { icon: 'lock', title: 'Never locked in', text: 'Standard Linux, MySQL and PostgreSQL. Leave any time with everything handed over.' },
+  {
+    icon: 'search',
+    title: 'Free review first',
+    text: '45 minutes with a senior engineer. You keep the written roadmap either way.',
+  },
+  {
+    icon: 'wallet',
+    title: 'One fixed monthly fee',
+    text: 'Agreed after your review. No hourly meter, no surprise invoices.',
+  },
+  {
+    icon: 'lock',
+    title: 'Never locked in',
+    text: 'Standard Linux, MySQL and PostgreSQL. Leave any time with everything handed over.',
+  },
 ]

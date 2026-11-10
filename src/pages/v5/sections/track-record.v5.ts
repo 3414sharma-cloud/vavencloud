@@ -1,7 +1,6 @@
 import '@/modules/track-record/track-record.css'
 import type { Section } from '@/app/types.ts'
 import { brandLogos } from '@/modules/track-record/brand-logos.ts'
-import { logoImage } from '@/shared/ui/logo.ts'
 import { toolLogos } from './tool-logos.v5.ts'
 
 /*
@@ -12,17 +11,22 @@ import { toolLogos } from './tool-logos.v5.ts'
  * reduced motion it stops and simply wraps.
  */
 
-/** The clouds, as logos (brand-logos.ts), and VavenCloud as our own logo image */
-const clouds = ['AWS', 'Azure', 'Google Cloud', 'VavenCloud']
+/** The clouds, as logos (brand-logos.ts). Our own logo isn't in the strip: it's about what you already run */
+const clouds = ['AWS', 'Azure', 'Google Cloud']
 
 /** The tools we run on those clouds, drawn with their logos from tool-logos.v5.ts */
-const tools = ['DigitalOcean', 'Kubernetes', 'Docker', 'Terraform', 'Nginx', 'Redis', 'Cloudflare', 'GitHub Actions'].map((name) => ({ name }))
-
-const ownLogo = () =>
-  logoImage('/logo.png', 'tr-own dark:hidden', 'VavenCloud') + logoImage('/logo-light.png', 'tr-own hidden dark:block', 'VavenCloud')
+const tools = [
+  'DigitalOcean',
+  'Kubernetes',
+  'Docker',
+  'Terraform',
+  'Nginx',
+  'Redis',
+  'Cloudflare',
+  'GitHub Actions',
+].map((name) => ({ name }))
 
 const cloudLogo = (name: string) => {
-  if (name === 'VavenCloud') return ownLogo()
   const l = brandLogos[name]
   if (!l) return `<span>${name}</span>`
   const [, , w, h] = l.viewBox.split(' ').map(Number)

@@ -21,7 +21,9 @@ const minutes = (t: string) => {
 }
 
 /** How much of the night went by before the call, as a share of the bar */
-const lostShare = Math.round(((minutes(report.called) - minutes(report.started)) / (minutes(report.resolved) - minutes(report.started))) * 100)
+const lostShare = Math.round(
+  ((minutes(report.called) - minutes(report.started)) / (minutes(report.resolved) - minutes(report.started))) * 100,
+)
 
 const toolCards = () => `
       <ul class="rp-tools">

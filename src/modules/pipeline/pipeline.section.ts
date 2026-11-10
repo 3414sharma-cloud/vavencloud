@@ -102,7 +102,12 @@ function initPipeline(): void {
 
   tabs.forEach((t, i) => t.addEventListener('click', () => i !== index && show(i)))
   qs('[role="tablist"]', root).addEventListener('keydown', (e) => {
-    const keys: Record<string, number> = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: pipeline.length - 1 }
+    const keys: Record<string, number> = {
+      ArrowRight: index + 1,
+      ArrowLeft: index - 1,
+      Home: 0,
+      End: pipeline.length - 1,
+    }
     if (!(e.key in keys)) return
     e.preventDefault()
     show(keys[e.key], true)

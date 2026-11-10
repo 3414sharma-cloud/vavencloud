@@ -22,7 +22,11 @@ export const pipeline: PipelineStage[] = [
     title: 'Free production review',
     description:
       'A senior engineer learns your product, your business model and how it runs today. No slides, no pitch. Just an honest look at what’s working and what’s at risk.',
-    deliverables: ['A senior engineer, not a salesperson', 'How your product runs today', 'What’s working and what’s at risk'],
+    deliverables: [
+      'A senior engineer, not a salesperson',
+      'How your product runs today',
+      'What’s working and what’s at risk',
+    ],
   },
   {
     id: 'audit',
@@ -52,7 +56,11 @@ export const pipeline: PipelineStage[] = [
     title: 'Migration and hardening',
     description:
       'We fix the critical risks, move your product to its new setup and switch over with you at a quiet time for your users. Nothing goes live until you’ve seen it work.',
-    deliverables: ['Critical risks fixed first', 'Switch-over at a quiet time', 'Nothing goes live until you’ve seen it work'],
+    deliverables: [
+      'Critical risks fixed first',
+      'Switch-over at a quiet time',
+      'Nothing goes live until you’ve seen it work',
+    ],
   },
   {
     id: 'own',

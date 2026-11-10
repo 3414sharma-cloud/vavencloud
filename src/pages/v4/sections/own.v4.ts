@@ -30,7 +30,8 @@ export function ownV4(): Section {
         id: 'own-title',
         eyebrow: 'What we own',
         title: 'One team. <em>Every layer. Every fix.</em>',
-        description: 'Most founders run their product on three vendors. We replace all three with one named engineer, backed by a 24/7 operations team and Vavensoft’s developers. Whatever layer the problem sits in, it’s ours.',
+        description:
+          'Most founders run their product on three vendors. We replace all three with one named engineer, backed by a 24/7 operations team and Vavensoft’s developers. Whatever layer the problem sits in, it’s ours.',
       })}
     </div>
     <div class="v4-owns">

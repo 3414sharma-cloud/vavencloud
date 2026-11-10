@@ -80,7 +80,15 @@ type Card = {
   frame: Frame
 }
 type Metrics = { w: number; h: number; spacing: number; openH: number; openY: number; titleSpace: number }
-type Drag = { id: number; x0: number; y0: number; start: number; moved: boolean; samples: { x: number; t: number }[]; p: Point }
+type Drag = {
+  id: number
+  x0: number
+  y0: number
+  start: number
+  moved: boolean
+  samples: { x: number; t: number }[]
+  p: Point
+}
 type LabelSlot = { el: HTMLSpanElement; slot: number | null; font: string; text: string }
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> }
 
@@ -268,7 +276,10 @@ const el = <K extends keyof HTMLElementTagNameMap>(tag: K, className: string) =>
  * Mounts the gallery into `container` (which should have a height). Needs at least one item.
  * Returns null if WebGL2 is unavailable, so the page can show a fallback.
  */
-export function mountCircularGallery(container: HTMLElement, initial: CircularGalleryOptions): CircularGalleryInstance | null {
+export function mountCircularGallery(
+  container: HTMLElement,
+  initial: CircularGalleryOptions,
+): CircularGalleryInstance | null {
   let options: CircularGalleryOptions = { ...initial }
   let settings = resolve(options)
   if (!settings.items.length) return null
@@ -294,7 +305,13 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
   const live = el('div', CLASSES.hidden)
   live.setAttribute('aria-live', 'polite')
 
-  const gl = canvas.getContext('webgl2', { alpha: true, premultipliedAlpha: true, antialias: false, depth: false, stencil: false })
+  const gl = canvas.getContext('webgl2', {
+    alpha: true,
+    premultipliedAlpha: true,
+    antialias: false,
+    depth: false,
+    stencil: false,
+  })
   const program = gl && link(gl)
   if (!gl || !program) return null
 
@@ -319,7 +336,10 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
       const button = document.createElement('button')
       button.type = 'button'
       button.textContent = labelOf(item, index)
-      button.setAttribute('aria-label', `${labelOf(item, index)}${item.description ? `: ${item.description}` : ''}, ${index + 1} of ${items.length}`)
+      button.setAttribute(
+        'aria-label',
+        `${labelOf(item, index)}${item.description ? `: ${item.description}` : ''}, ${index + 1} of ${items.length}`,
+      )
       button.addEventListener('focus', () => engine.focus(index))
       button.addEventListener('click', () => (settings.openOnClick ? engine.open(index) : engine.focus(index)))
       li.appendChild(button)
@@ -742,7 +762,8 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
     }
 
     const idle = now - state.lastInput > 1800
-    const auto = s.autoScroll && !reduce && !state.drag && state.open < 0.01 && state.hovered === null && !state.keyboard && idle
+    const auto =
+      s.autoScroll && !reduce && !state.drag && state.open < 0.01 && state.hovered === null && !state.keyboard && idle
     if (auto) state.target += s.autoScroll * state.spacing * 0.25 * dt
 
     const follow = reduce ? 1 : 1 - Math.pow(1 - s.scrollEase, dt * 60)
@@ -876,7 +897,15 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
 
   const onPointerDown = (event: PointerEvent) => {
     if (event.button !== 0 || (event.target as Element).closest('[data-gallery-close]')) return
-    state.drag = { id: event.pointerId, x0: event.clientX, y0: event.clientY, start: state.target, moved: false, samples: [], p: point(event) }
+    state.drag = {
+      id: event.pointerId,
+      x0: event.clientX,
+      y0: event.clientY,
+      start: state.target,
+      moved: false,
+      samples: [],
+      p: point(event),
+    }
     state.lastInput = performance.now()
     wake()
   }
@@ -1046,7 +1075,9 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
     const count = settings.items.length
     const slot = nearest()
     const base = slot - wrap(slot, count) + index
-    return [base - count, base, base + count].reduce((best, value) => (Math.abs(value - slot) < Math.abs(best - slot) ? value : best))
+    return [base - count, base, base + count].reduce((best, value) =>
+      Math.abs(value - slot) < Math.abs(best - slot) ? value : best,
+    )
   }
 
   const engine = {
@@ -1096,7 +1127,9 @@ export function mountCircularGallery(container: HTMLElement, initial: CircularGa
       gl.getExtension('WEBGL_lose_context')?.loseContext()
       container.replaceChildren()
       container.className = previousClass
-      ;['role', 'aria-roledescription', 'aria-label', 'data-pointer', 'data-dragging'].forEach((a) => container.removeAttribute(a))
+      ;['role', 'aria-roledescription', 'aria-label', 'data-pointer', 'data-dragging'].forEach((a) =>
+        container.removeAttribute(a),
+      )
     },
   }
 }

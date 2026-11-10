@@ -1,4 +1,5 @@
 import type { Section } from '@/app/types.ts'
+import { routes } from '@/app/routes.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { compare, compareColumns, compareMeans } from '../v5.data.ts'
@@ -24,7 +25,8 @@ export function compareV5(): Section {
       ${sectionHeading({
         id: 'compare-title',
         title: 'Three ways to run production. <em>Only one has an owner.</em>',
-        description: 'The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team.',
+        description:
+          'The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team.',
       })}
     </div>
     <div class="v4-compare card" role="region" aria-labelledby="compare-title" tabindex="0">
@@ -48,6 +50,7 @@ export function compareV5(): Section {
       </table>
     </div>
     <p class="v4-means" data-reveal><b>What this means for you:</b> ${compareMeans}</p>
+    <p class="mt-6" data-reveal><a href="${routes.comparison}" class="inline-flex items-center gap-2 font-semibold text-neutral-950 underline decoration-neutral-950/25 underline-offset-[0.3rem] hover:text-brand-700 dark:text-white dark:decoration-white/25 dark:hover:text-brand-300">See the AWS and Azure price comparison ${icon('arrow-right', 'h-4 w-4')}</a></p>
   </div>
 </section>`,
   }

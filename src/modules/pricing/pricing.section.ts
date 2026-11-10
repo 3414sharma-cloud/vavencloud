@@ -6,7 +6,13 @@ import { mountAntigravity } from '@/shared/effects/antigravity.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { isMobileViewport } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
-import { planGroups as defaultGroups, type ComparisonRow, type Plan, type PlanCategory, type PlanGroup } from './pricing.data.ts'
+import {
+  planGroups as defaultGroups,
+  type ComparisonRow,
+  type Plan,
+  type PlanCategory,
+  type PlanGroup,
+} from './pricing.data.ts'
 
 /** Grid layout per number of plans, so 1–3 plans stay centred instead of stretching edge to edge. */
 const gridLayout: Record<number, string> = {
@@ -175,7 +181,10 @@ function comparisonMatrix({ label, plans, comparison }: PlanCategory): string {
 
 /** < md: a plan switcher + one stacked list per plan, instead of a sideways-scrolling table. */
 function comparisonStack({ label, plans, comparison }: PlanCategory): string {
-  const selected = Math.max(0, plans.findIndex((p) => p.popular))
+  const selected = Math.max(
+    0,
+    plans.findIndex((p) => p.popular),
+  )
   return `
   <div class="md:hidden">
     ${
@@ -377,7 +386,9 @@ function initPricing(groups: PlanGroup[]): void {
     const tab = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-compare-plan]')
     if (!tab) return
     const index = tab.dataset.comparePlan
-    qsa<HTMLButtonElement>('[data-compare-plan]', compareTable).forEach((t) => t.setAttribute('aria-selected', String(t === tab)))
+    qsa<HTMLButtonElement>('[data-compare-plan]', compareTable).forEach((t) =>
+      t.setAttribute('aria-selected', String(t === tab)),
+    )
     qsa('[data-compare-col]', compareTable).forEach((col) => (col.hidden = col.dataset.compareCol !== index))
   })
 

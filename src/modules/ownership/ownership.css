@@ -195,16 +195,12 @@
 /* Three vendors: white, with a faint red glow while the product is down */
 .ow-pane--vendors {
   border: 1px solid var(--color-neutral-200);
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgb(244 63 94 / 0.08), transparent 55%),
-    #fff;
+  background: radial-gradient(120% 90% at 100% 0%, rgb(244 63 94 / 0.08), transparent 55%), #fff;
   box-shadow: var(--shadow-card);
 }
 .dark .ow-pane--vendors {
   border-color: var(--color-neutral-800);
-  background:
-    radial-gradient(120% 90% at 100% 0%, rgb(244 63 94 / 0.1), transparent 55%),
-    var(--color-neutral-900);
+  background: radial-gradient(120% 90% at 100% 0%, rgb(244 63 94 / 0.1), transparent 55%), var(--color-neutral-900);
 }
 .ow-pane-top {
   display: flex;

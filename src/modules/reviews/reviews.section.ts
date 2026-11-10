@@ -81,7 +81,8 @@ function initVideo(): void {
     const iframe = document.createElement('iframe')
     iframe.src = `https://www.youtube-nocookie.com/embed/${founderVideo.id}?autoplay=1&rel=0&playsinline=1`
     iframe.title = founderVideo.title
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
+    iframe.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
     iframe.allowFullscreen = true
     iframe.className = 'rv-video-frame'
     ;(e.currentTarget as HTMLElement).replaceWith(iframe)
@@ -109,7 +110,12 @@ function initReviews(): void {
   }
   tabs.forEach((t, i) => t.addEventListener('click', () => show(i)))
   qs('[role="tablist"]', root).addEventListener('keydown', (e) => {
-    const keys: Record<string, number> = { ArrowRight: index + 1, ArrowLeft: index - 1, Home: 0, End: reviews.length - 1 }
+    const keys: Record<string, number> = {
+      ArrowRight: index + 1,
+      ArrowLeft: index - 1,
+      Home: 0,
+      End: reviews.length - 1,
+    }
     if (!(e.key in keys)) return
     e.preventDefault()
     show(keys[e.key], true)

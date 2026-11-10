@@ -5,6 +5,7 @@ import { initTagline, problemHeading } from '@/pages/v2/sections/problem-heading
 import type { CallerId, Line, Scene, SiteState } from '@/pages/v3/v3.data.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
+import { onScrollFrame } from '@/shared/lib/smooth-scroll.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { logoMark } from '@/shared/ui/logo.ts'
 import { callers, loopNote, payoff, scenes, site } from '../v5.data.ts'
@@ -23,7 +24,12 @@ import { callers, loopNote, payoff, scenes, site } from '../v5.data.ts'
  * Everything is placed on one timeline (ms from the start). Rendering a moment `t` sets data-on on every
  * [data-from] element whose time has come and whose data-to hasn't, and data-scene and data-site on the
  * stage; story.v3.css does the rest, so playing, pausing, jumping and replaying are all just "show t".
- * It plays once it's scrolled to and holds while off screen or in a background tab. The picture is hidden
+ *
+ * v5: instead of one stage that changes in place, every scene is its own card (sceneCard), and the cards stack
+ * over one another as you scroll (sticky, v5.css). Each card renders the same markup but only plays its own
+ * slice of the timeline, then holds on how that scene ended, so the stack reads as the night, step by step.
+ * Each card plays by itself once it's scrolled to, with no button and no pausing, through to how its scene
+ * ended, and stays there. (v3's index and play button below are v3's; the cards have neither.) The picture is hidden
  * from screen readers; a list tells the same story. With reduced motion nothing plays by itself: the end
  * shows, and the index shows the end of each scene.
  */
@@ -67,7 +73,10 @@ const timeAt = (t: number) => clockTime(minuteAt(t))
 
 /* ---------- The moments everything hangs on ---------- */
 
-const siteChanges: [number, SiteState][] = [[0, 'ok'], ...timeline.flatMap((s) => (s.site ?? []).map((c): [number, SiteState] => [s.start + c.at, c.state]))]
+const siteChanges: [number, SiteState][] = [
+  [0, 'ok'],
+  ...timeline.flatMap((s) => (s.site ?? []).map((c): [number, SiteState] => [s.start + c.at, c.state])),
+]
 const siteAt = (t: number) => siteChanges.filter(([ms]) => t >= ms).at(-1)![1]
 const minuteOf = (state: SiteState) => Math.floor(minuteAt(siteChanges.find(([, s]) => s === state)![0]))
 
@@ -85,7 +94,16 @@ const calls: Call[] = timeline.flatMap((s) => {
   const id = s.screen
   const ends = timeline.filter((x) => x.screen === id && x.verdict !== undefined).at(-1)!
   const abs = (ms?: number) => (ms === undefined ? undefined : s.start + ms)
-  return [{ id, dial: s.start, answered: abs(s.call.answered), missed: abs(s.call.missed), connected: s.call.connected, verdict: ends.start + ends.verdict! }]
+  return [
+    {
+      id,
+      dial: s.start,
+      answered: abs(s.call.answered),
+      missed: abs(s.call.missed),
+      connected: s.call.connected,
+      verdict: ends.start + ends.verdict!,
+    },
+  ]
 })
 const callOf = (id: CallerId) => calls.find((c) => c.id === id)!
 
@@ -101,7 +119,8 @@ const screens = [...new Set(timeline.map((s) => s.screen))].map((id) => {
 })
 
 /** Shown from `from` until `to` (or for good) */
-const when = (from: number, to?: number) => `data-from="${Math.round(from)}"${to === undefined ? '' : ` data-to="${Math.round(to)}"`}`
+const when = (from: number, to?: number) =>
+  `data-from="${Math.round(from)}"${to === undefined ? '' : ` data-to="${Math.round(to)}"`}`
 const pad = (n: number) => String(n).padStart(2, '0')
 const fill = (text: string, t: number) => text.replace('{time}', timeAt(t))
 
@@ -161,7 +180,9 @@ const logRow = (c: Call) => {
   const said = good ? c.answered! : c.verdict
   const chips: [string, string, number, number?][] = [
     ['ring', `${icon('phone', 'h-3 w-3')}Calling…`, c.dial, c.answered ?? c.missed ?? c.verdict],
-    ...(c.answered !== undefined ? [['live', good ? 'On it' : 'On the line', c.answered, c.verdict] as [string, string, number, number]] : []),
+    ...(c.answered !== undefined
+      ? [['live', good ? 'On it' : 'On the line', c.answered, c.verdict] as [string, string, number, number]]
+      : []),
     ...(c.missed !== undefined ? [['off', 'No answer', c.missed, c.verdict] as [string, string, number, number]] : []),
     [good ? 'good' : 'bad', `${icon(good ? 'check' : 'x', 'h-3 w-3')}${who.verdict}`, c.verdict],
   ]
@@ -181,7 +202,10 @@ const callList = () => `
         <div class="st-log">
           <p class="st-log-label">Who you called</p>
           <ol class="st-rows">
-            ${calls.filter((c) => c.id !== 'vaven').map(logRow).join('')}
+            ${calls
+              .filter((c) => c.id !== 'vaven')
+              .map(logRow)
+              .join('')}
             ${item(loopAt, undefined, `<p class="st-loop">${loopIcon}${loopNote}</p>`)}
             ${logRow(callOf('vaven'))}
           </ol>
@@ -230,7 +254,16 @@ const callScreen = (c: Call, from: number, to: number | undefined, own: Timed[])
   const good = c.id === 'vaven'
   const statuses: [string, string, number, number?][] = [
     ['ring', 'Calling…', c.dial, c.answered ?? c.missed ?? c.verdict],
-    ...(c.answered !== undefined ? [['live', c.connected ?? 'Connected', c.answered, good ? undefined : c.verdict] as [string, string, number, number?]] : []),
+    ...(c.answered !== undefined
+      ? [
+          ['live', c.connected ?? 'Connected', c.answered, good ? undefined : c.verdict] as [
+            string,
+            string,
+            number,
+            number?,
+          ],
+        ]
+      : []),
     ...(c.missed !== undefined ? [['off', 'No answer', c.missed] as [string, string, number]] : []),
     ...(c.answered !== undefined && !good ? [['off', 'Call ended', c.verdict] as [string, string, number]] : []),
   ]
@@ -268,11 +301,27 @@ const phone = () => `
 
 /* ---------- The index of scenes, and the story for screen readers ---------- */
 
-const sceneTab = (s: Timed, i: number) => `
-        <button type="button" class="st-scene" data-goto="${i}" aria-label="Scene ${i + 1}: ${s.tab}">
-          <span class="st-scene-bar" aria-hidden="true"><i></i></span>
-          <span class="st-scene-name" aria-hidden="true"><span class="st-scene-num">${pad(i + 1)}</span><span class="st-scene-label">${s.tab}</span></span>
-        </button>`
+/** The last moment a scene's card shows: the end of its scene (just before the next scene's screen takes over) */
+const endOf = (s: Timed) => (s === lastScene ? END : s.start + s.ms - 1)
+
+/**
+ * One scene as its own card: its number and name, its narration, then the site, the calls and the phone as they
+ * stand in that scene. The cards stick one over another as you scroll; each plays its own scene when it arrives
+ * and then holds on how that scene ended.
+ */
+const sceneCard = (s: Timed, i: number) => `
+      <article class="st st-card" style="--i:${i}" data-story data-start="${s.start}" data-end="${endOf(s)}" data-scene="${s.id}" data-site="ok">
+        <span class="st-card-shade" aria-hidden="true"></span>
+        <div class="st-card-head">
+          <p class="st-card-tag" aria-hidden="true"><span class="st-card-num">${pad(i + 1)}<span>/${pad(timeline.length)}</span></span>${s.tab}</p>
+        </div>
+        ${narration()}
+        <div class="st-body" aria-hidden="true">
+          ${siteCard()}
+          ${callList()}
+          ${phone()}
+        </div>
+      </article>`
 
 const said = (l: Line, s: Timed) => {
   if ('you' in l) return `You: “${l.you}”`
@@ -314,22 +363,11 @@ const html = () => `
 <section id="problem" class="v2-section v4-story" aria-labelledby="problem-title">
   <div class="container-page">
     <div class="v4-problem-head">${problemHeading()}</div>
-    <div class="st" data-story data-scene="${timeline[0].id}" data-site="ok">
-      ${narration()}
-      <div class="st-body" aria-hidden="true">
-        ${siteCard()}
-        ${callList()}
-        ${phone()}
+    <div class="st-stack" data-scroll-skip data-no-reveal>
+      <div class="st-stage">
+        ${timeline.map(sceneCard).join('')}
       </div>
-      <div class="st-foot">
-        <div class="st-scenes" role="group" aria-label="Scenes">
-          ${timeline.map(sceneTab).join('')}
-        </div>
-        <button type="button" class="st-control" data-control>
-          <span data-icon="pause" hidden>${icon('pause', 'h-3 w-3', true)}</span><span data-icon="play">${icon('play', 'h-3 w-3', true)}</span>
-          <span data-control-label>Play</span><span class="sr-only"> the story</span>
-        </button>
-      </div>
+      <div class="st-stack-hold" aria-hidden="true"></div>
     </div>
     ${transcript()}
     ${payoffBand()}
@@ -339,16 +377,15 @@ const html = () => `
 /* ---------- Playing it ---------- */
 
 function initStory(root: HTMLElement): void {
+  /** This card's part of the night: from the start of its scene to how it ended */
+  const from = Number(root.dataset.start)
+  const stop = Number(root.dataset.end)
   const timed = qsa('[data-from]', root).map((el) => ({
     el,
     from: Number(el.dataset.from),
     to: el.dataset.to === undefined ? Infinity : Number(el.dataset.to),
     on: false,
   }))
-  const tabs = qsa<HTMLButtonElement>('[data-goto]', root)
-  const bars = tabs.map((b) => qs('.st-scene-bar i', b))
-  const control = qs<HTMLButtonElement>('[data-control]', root)
-  const controlLabel = qs('[data-control-label]', control)
   const clocks = qsa('[data-clock]', root)
   const out = {
     down: qs('[data-down]', root),
@@ -360,19 +397,10 @@ function initStory(root: HTMLElement): void {
   }
   const total = upMinute - crashMinute
 
-  let t = 0
-  const shown = { scene: -1, site: '', minute: -1 }
+  let t = from
+  const shown = { site: '', minute: -1 }
 
   const render = () => {
-    const k = Math.max(
-      timeline.findLastIndex((s) => t >= s.start),
-      0,
-    )
-    if (k !== shown.scene) {
-      shown.scene = k
-      root.dataset.scene = timeline[k].id
-      tabs.forEach((b, i) => b.setAttribute('aria-current', String(i === k)))
-    }
     const state = siteAt(t)
     if (state !== shown.site) root.dataset.site = shown.site = state
     timed.forEach((x) => {
@@ -380,10 +408,6 @@ function initStory(root: HTMLElement): void {
       if (on === x.on) return
       x.on = on
       x.el.toggleAttribute('data-on', on)
-    })
-    bars.forEach((b, i) => {
-      const s = timeline[i]
-      b.style.transform = `scaleX(${Math.min(Math.max((t - s.start) / s.ms, 0), 1)})`
     })
     const m = Math.floor(minuteAt(t))
     if (m === shown.minute) return
@@ -409,88 +433,181 @@ function initStory(root: HTMLElement): void {
     root.classList.remove('is-jumping')
   }
 
-  let state: 'ready' | 'playing' | 'paused' | 'ended' = 'ready'
-  const holds = new Set<string>()
-  let frame = 0
+  let started = false
   let last = 0
 
-  const sync = () => {
-    const playing = state === 'playing'
-    root.classList.toggle('is-paused', !playing || holds.size > 0)
-    controlLabel.textContent = playing ? 'Pause' : state === 'ended' ? 'Replay' : 'Play'
-    qs('[data-icon="pause"]', control).hidden = !playing
-    qs('[data-icon="play"]', control).hidden = playing
-  }
-
   const tick = (now: number) => {
-    // A frame's timestamp can be a little earlier than the moment play was pressed: never run backwards
-    t = Math.min(t + Math.max(now - last, 0), END)
+    // A frame's timestamp can be a little earlier than the moment it started: never run backwards
+    t = Math.min(t + Math.max(now - last, 0), stop)
     last = now
     render()
-    if (t >= END) {
-      state = 'ended'
-      sync()
-      return
-    }
-    frame = requestAnimationFrame(tick)
+    if (t < stop) requestAnimationFrame(tick)
   }
 
-  /** Runs the clock while playing and nothing holds it */
-  const run = () => {
-    cancelAnimationFrame(frame)
-    sync()
-    if (state !== 'playing' || holds.size > 0) return
-    last = performance.now()
-    frame = requestAnimationFrame(tick)
-  }
+  /** Plays the card's scene once, through to its end; nothing pauses it */
   const play = () => {
-    if (state === 'ended') jump(0)
-    state = 'playing'
-    run()
-  }
-  const hold = (reason: string, on: boolean) => {
-    if (on) holds.add(reason)
-    else holds.delete(reason)
-    run()
+    if (started) return
+    started = true
+    root.classList.remove('is-paused')
+    last = performance.now()
+    requestAnimationFrame(tick)
   }
 
+  // With reduced motion each card simply shows how its scene ended
   if (prefersReducedMotion()) {
-    control.hidden = true
-    jump(END)
-    tabs.forEach((b, i) => b.addEventListener('click', () => jump(i === tabs.length - 1 ? END : timeline[i].start + timeline[i].ms - 1)))
+    jump(stop)
     return
   }
 
-  render()
-  control.addEventListener('click', () => {
-    if (state === 'playing') {
-      state = 'paused'
-      run()
-    } else play()
-  })
-  tabs.forEach((b, i) =>
-    b.addEventListener('click', () => {
-      jump(timeline[i].start)
-      state = 'playing'
-      run()
-    }),
-  )
-  document.addEventListener('visibilitychange', () => hold('hidden', document.hidden))
-  // Plays the first time it reaches the middle of the screen; holds whenever it's out of view
-  new IntersectionObserver(
+  // Waiting below the screen: the loops (ringing, typing) hold still until the card arrives
+  jump(from)
+  root.classList.add('is-paused')
+  // Plays the first time the card reaches the middle of the screen, and keeps playing to the end of its scene
+  const seen = new IntersectionObserver(
     ([e]) => {
-      hold('offscreen', !e.isIntersecting)
-      if (e.isIntersecting && state === 'ready') play()
+      if (!e.isIntersecting) return
+      play()
+      seen.disconnect()
     },
     { rootMargin: '-30% 0px -30% 0px' },
-  ).observe(root)
+  )
+  seen.observe(root)
+}
+
+/* ---------- The stack: pinned, each card glides up over the last, slower than the scroll ---------- */
+
+/** How the stack paces itself, in screen heights of scrolling */
+const PACE = {
+  /** a card's slide from below the screen to its place: about half the scroll's speed */
+  slide: 1.6,
+  /** the pause on each card once it has landed, before the next one starts */
+  pause: 0.45,
+  /** the hold once the last card has landed, before the stack moves on with the page */
+  hold: 0.5,
+}
+
+/**
+ * The stage (.st-stage) is pinned to the screen for the whole stack, which is made tall enough for each card's
+ * slide and pause (PACE). Each card after the first slides up from below the screen to its resting place,
+ * easing in and out, at about half the speed of the scroll; then the stack rests for a moment before the next.
+ * As a card lands it grows from 92% to full size; the cards it covers sink back (3.5% for each card on top,
+ * from their top edge so their peeking edges stay put) and their shade darkens. After the last card the stack
+ * holds and eases back by 5% before it scrolls on with the page.
+ *
+ * Kept cheap, since it runs every frame: it runs in the smooth scroll's own frame (onScrollFrame), so nothing
+ * lags the scroll; it does nothing unless the scroll or the window has changed and the stack is near the
+ * screen; sizes are read once (and when the page's size changes); and it writes each card's transform and its
+ * shade's opacity directly, only when they change. With reduced motion none of this runs: the cards simply
+ * stick one after another as you scroll (v5.css).
+ */
+function initStack(stack: HTMLElement): void {
+  const cards = qsa('.st-card', stack)
+  if (cards.length < 2 || prefersReducedMotion()) return
+  stack.classList.add('is-pinned')
+  const shades = cards.map((c) => qs('.st-card-shade', c))
+  const shown = cards.map(() => ({ transform: '', shade: '', hidden: false }))
+  const last = cards.length - 1
+  let rests: number[] = [] // each card's resting top, from the top of the screen
+  let stackTop = 0
+  let vh = 0
+  let lastY = NaN
+  let dirty = true
+
+  /** Read once, and again whenever the page's size changes: never in the middle of a frame */
+  const measure = () => {
+    vh = window.innerHeight
+    rests = cards.map((c) => parseFloat(getComputedStyle(c).top))
+    // Tall enough for every slide and pause, the hold, and the screen the stage itself fills
+    stack.style.height = `${Math.round(vh * (last * (PACE.slide + PACE.pause) + PACE.hold + 1))}px`
+    stackTop = stack.getBoundingClientRect().top + window.scrollY
+  }
+
+  const smooth = (x: number) => x * x * (3 - 2 * x) // ease in and out
+
+  const update = () => {
+    const y = window.scrollY
+    if (y === lastY && !dirty) return
+    lastY = y
+    if (dirty) measure()
+    dirty = false
+    const s = (y - stackTop) / vh // how far into the pinned stack, in screen heights
+    if (s < -2 || s > last * (PACE.slide + PACE.pause) + PACE.hold + 2) return
+
+    // How far each card has come in: 0 waiting below the screen, 1 at its place (the first one is there already)
+    const step = PACE.slide + PACE.pause
+    const came = cards.map((_, i) =>
+      i === 0 ? 1 : Math.min(Math.max((s - (i - 1) * step - PACE.pause) / PACE.slide, 0), 1),
+    )
+    const held = Math.min(Math.max((s - last * step) / PACE.hold, 0), 1)
+    const settle = 1 - 0.05 * smooth(held)
+
+    let covering = 0 // how much the cards after this one cover it, adding up from the front
+    for (let i = last; i >= 0; i--) {
+      const e = came[i]
+      const glide = smooth(e)
+      const below = (1 - glide) * (vh - rests[i] + 24) // from just under the screen's foot to its place
+      const arrive = 1 - (1 - e) * (1 - e)
+      const scale = (0.92 + 0.08 * arrive) * (1 - 0.035 * covering) * settle
+      const transform = `translate3d(0, ${below.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`
+      const shade = (Math.min(covering, 2) * 0.07).toFixed(3)
+      const hidden = e === 0 // still waiting below the screen: not drawn at all
+      if (transform !== shown[i].transform) cards[i].style.transform = shown[i].transform = transform
+      if (shade !== shown[i].shade) shades[i].style.opacity = shown[i].shade = shade
+      if (hidden !== shown[i].hidden) cards[i].style.visibility = (shown[i].hidden = hidden) ? 'hidden' : ''
+      covering += glide
+    }
+  }
+
+  // The page's size changing (the window, fonts or images loading above) moves the stack: measure again
+  new ResizeObserver(() => (dirty = true)).observe(document.body)
+  onScrollFrame(update)
+  update()
+}
+
+/* ---------- The phone mockup: laid out at one real size, zoomed to the room in its card ---------- */
+
+/** The phone's own size in rem (v5.css, .st-card .st-phone): 18 wide, 37 tall, or as short as 30 when room is short */
+const PHONE = { w: 18, h: 37, minH: 30 }
+
+/**
+ * Sizes each card's phone to the room its card has: the body's height beside the site and the calls on wide
+ * screens, the height left under the browser bar on narrow ones. The zoom (--phone-zoom) scales the whole
+ * phone as one, frame, text and bubbles together, never more than 15% over its own size. Where the room is
+ * short, the phone first gets a little shorter (--phone-h, down to 30rem) before it shrinks, so its text
+ * stays readable on short laptop screens and phones.
+ */
+function fitPhones(stack: HTMLElement): void {
+  const fit = (body: HTMLElement) => {
+    const phone = qs('.st-phone', body)
+    const siteEl = qs('.st-site', body)
+    const log = qs('.st-log', body)
+    const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
+    const stacked = log.offsetHeight === 0 // below 1024px: just the browser bar above the phone
+    const gap = parseFloat(getComputedStyle(body).rowGap) || 0
+    const roomH = body.clientHeight - (stacked ? siteEl.offsetHeight + gap : 0)
+    const roomW = stacked ? body.clientWidth : body.clientWidth * 0.34
+    // As big as the width allows, then as tall as fits at that size, then smaller only if even 30rem won't fit
+    let zoom = Math.min(roomW / (PHONE.w * rem), 1.15)
+    const h = Math.min(Math.max(roomH / zoom / rem, PHONE.minH), PHONE.h)
+    zoom = Math.max(Math.min(zoom, roomH / (h * rem)), 0.4)
+    phone.style.setProperty('--phone-h', h.toFixed(3))
+    phone.style.setProperty('--phone-zoom', zoom.toFixed(4))
+  }
+  const bodies = qsa('.st-body', stack)
+  const observer = new ResizeObserver((entries) => entries.forEach((e) => fit(e.target as HTMLElement)))
+  bodies.forEach((b) => {
+    fit(b)
+    observer.observe(b)
+  })
 }
 
 export function storyV5(): Section {
   return {
     html: html(),
     init: () => {
-      initStory(qs('#problem [data-story]'))
+      qsa('#problem [data-story]').forEach(initStory)
+      fitPhones(qs('#problem .st-stack'))
+      initStack(qs('#problem .st-stack'))
       initTagline()
     },
   }

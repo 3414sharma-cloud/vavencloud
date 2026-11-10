@@ -1,6 +1,6 @@
 import '@/pages/v2/sections/reviews.v2.css'
 import type { Section } from '@/app/types.ts'
-import { site } from '@/app/site.config.ts'
+import { routes } from '@/app/routes.ts'
 import { accountTeam } from '@/modules/stats/stats.data.ts'
 import { qs } from '@/shared/lib/dom.ts'
 import { icon } from '@/shared/ui/icons.ts'
@@ -14,8 +14,6 @@ import { behindIntro, behindStats, behindVideo, founders, teamIntro } from '../v
  * halves. The video is YouTube's thumbnail until
  * it's played, then the player (youtube-nocookie), as in the client stories (reviews.v2.css styles both).
  */
-
-const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 
 const video = () => `
       <figure>
@@ -60,7 +58,7 @@ const teamPanel = () => `
         <ul class="v4-team-roles">
           ${accountTeam.map((m) => `<li><span class="icon-box">${icon(m.icon, 'h-4 w-4')}</span><span><b>${m.role}</b>${m.focus}</span></li>`).join('')}
         </ul>
-        <p class="v4-team-more"><a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="v4-team-link">Meet the whole Vavensoft team${newTab} ${icon('arrow-right', 'h-4 w-4')}</a></p>
+        <p class="v4-team-more"><a href="${routes.team}" class="v4-team-link">Meet the whole Vavensoft team ${icon('arrow-right', 'h-4 w-4')}</a></p>
       </div>`
 
 export function behindV5(): Section {
@@ -95,7 +93,8 @@ export function behindV5(): Section {
         const iframe = document.createElement('iframe')
         iframe.src = `https://www.youtube-nocookie.com/embed/${behindVideo.id}?autoplay=1&rel=0&playsinline=1`
         iframe.title = behindVideo.title
-        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
+        iframe.allow =
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
         iframe.allowFullscreen = true
         iframe.className = 'tm-frame'
         poster.replaceWith(iframe)

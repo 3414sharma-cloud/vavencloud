@@ -29,10 +29,12 @@ export const heroSlides: HeroSlide[] = [
     tab: '24/7 DevOps support',
     eyebrow: ['Managed DevOps and 24/7 server support', 'by Vavensoft'],
     title: ['When something breaks, you make one call.', 'We fix the rest.'],
-    description: 'One team runs your servers, deployments and code, on call 24/7. No more chasing your host, freelancer and developers.',
+    description:
+      'One team runs your servers, deployments and code, on call 24/7. No more chasing your host, freelancer and developers.',
     primary: book,
     secondary: { label: 'See how it works', href: routes.process },
-    reassurance: '45 minutes with a senior engineer, not a salesperson. You keep the written growth roadmap, whether or not you work with us.',
+    reassurance:
+      '45 minutes with a senior engineer, not a salesperson. You keep the written growth roadmap, whether or not you work with us.',
   },
   {
     tab: 'Managed cloud',
@@ -44,7 +46,6 @@ export const heroSlides: HeroSlide[] = [
     reassurance: 'Same team · same chat · same 24/7 cover',
   },
   {
-
     tab: 'Cloud servers',
     eyebrow: ['VavenCloud servers', 'US and EU data centres'],
     title: ['Fast private cloud servers,', 'run by the same team.'],

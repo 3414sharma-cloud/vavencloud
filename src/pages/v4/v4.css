@@ -1029,12 +1029,20 @@
 #app > footer {
   border-top-color: transparent;
   background-color: var(--color-ink-950);
-  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 22%, transparent) 0%, transparent 55%);
+  background-image: radial-gradient(
+    90% 120% at 0% 0%,
+    color-mix(in srgb, var(--color-brand-500) 22%, transparent) 0%,
+    transparent 55%
+  );
   color: var(--color-ink-text);
 }
 .dark #app > footer {
   background-color: #050504;
-  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 10%, transparent) 0%, transparent 55%);
+  background-image: radial-gradient(
+    90% 120% at 0% 0%,
+    color-mix(in srgb, var(--color-brand-500) 10%, transparent) 0%,
+    transparent 55%
+  );
   color: var(--color-neutral-400);
 }
 #app > footer .text-neutral-950 {

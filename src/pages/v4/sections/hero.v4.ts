@@ -116,7 +116,12 @@ function initSlider(root: HTMLElement): void {
 
   tabs.forEach((t, i) => t.addEventListener('click', () => go(i, i > index ? 1 : -1)))
   qs('[role="tablist"]', root).addEventListener('keydown', (e) => {
-    const keys: Record<string, [number, 1 | -1]> = { ArrowRight: [index + 1, 1], ArrowLeft: [index - 1, -1], Home: [0, -1], End: [count - 1, 1] }
+    const keys: Record<string, [number, 1 | -1]> = {
+      ArrowRight: [index + 1, 1],
+      ArrowLeft: [index - 1, -1],
+      Home: [0, -1],
+      End: [count - 1, 1],
+    }
     if (!(e.key in keys)) return
     e.preventDefault()
     go(...keys[e.key], true)

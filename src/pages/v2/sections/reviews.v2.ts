@@ -175,7 +175,8 @@ function initVideos(track: HTMLElement): void {
     const iframe = document.createElement('iframe')
     iframe.src = `https://www.youtube-nocookie.com/embed/${video.id}?autoplay=1&rel=0&playsinline=1`
     iframe.title = video.title
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
+    iframe.allow =
+      'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen'
     iframe.allowFullscreen = true
     iframe.className = 'tm-frame'
     poster.replaceWith(iframe)

@@ -32,7 +32,12 @@ const avatarTone = {
   report: 'bg-brand-600 text-white',
 }
 
-const figure = (name: VisualName, caption: string, body: string, { playing = false, className = '', style = '' }: VisualOptions) => `
+const figure = (
+  name: VisualName,
+  caption: string,
+  body: string,
+  { playing = false, className = '', style = '' }: VisualOptions,
+) => `
       <figure class="hv hv--${name}${playing ? ' is-playing' : ''}${className ? ` ${className}` : ''}"${style ? ` style="${style}"` : ''} aria-labelledby="hv-${name}-caption">
         <div class="hv-window">${body}
         </div>

@@ -1,5 +1,5 @@
 import type { Section } from '@/app/types.ts'
-import { site } from '@/app/site.config.ts'
+import { routes } from '@/app/routes.ts'
 import { accountTeam } from '@/modules/stats/stats.data.ts'
 import { icon } from '@/shared/ui/icons.ts'
 
@@ -29,7 +29,7 @@ export function teamSection(): Section {
         )
         .join('')}
     </ul>
-    <a href="${site.vavensoftUrl}" target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-2 font-semibold text-neutral-950 underline underline-offset-4 hover:text-brand-700 dark:text-white dark:hover:text-brand-300">Meet the whole Vavensoft team<span class="sr-only"> (opens in a new tab)</span> ${icon('arrow-right', 'h-4 w-4')}</a>
+    <a href="${routes.team}" class="mt-8 inline-flex items-center gap-2 font-semibold text-neutral-950 underline underline-offset-4 hover:text-brand-700 dark:text-white dark:hover:text-brand-300">Meet the whole Vavensoft team ${icon('arrow-right', 'h-4 w-4')}</a>
   </div>
 </section>`,
   }

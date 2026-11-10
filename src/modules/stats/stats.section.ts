@@ -69,7 +69,8 @@ export function statsSection(): Section {
         id: 'proof-title',
         eyebrow: 'Built by Vavensoft',
         title: 'Built by the team behind <em>210+ products.</em>',
-        description: 'VavenCloud is run by the software company that has been building and operating live products for more than a decade.',
+        description:
+          'VavenCloud is run by the software company that has been building and operating live products for more than a decade.',
       })}
     </div>
 

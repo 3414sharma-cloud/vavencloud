@@ -25,7 +25,8 @@ export function compareV4(): Section {
         id: 'compare-title',
         eyebrow: 'Your options',
         title: 'Three ways to run production. <em>Only one has an owner.</em>',
-        description: 'The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team.',
+        description:
+          'The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team.',
       })}
     </div>
     <div class="v4-compare card" role="region" aria-labelledby="compare-title" tabindex="0">

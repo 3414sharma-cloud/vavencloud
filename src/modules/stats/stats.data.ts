@@ -22,10 +22,30 @@ export interface Stat {
 
 /* Vavensoft figures from the content doc. TODO: confirm every one before launch. */
 export const stats: Record<StatId, Stat> = {
-  products: { value: 210, suffix: '+', label: 'Products delivered by Vavensoft', note: 'Web apps, SaaS platforms and mobile apps, built and shipped.' },
-  years: { value: 12, suffix: '+', label: 'Years running production systems', note: 'Long enough to have seen most of the ways things break.' },
-  jobSuccess: { value: 100, suffix: '%', label: 'Job Success on Upwork', note: 'A Top Rated agency, rated by the clients who paid for the work.' },
-  returning: { value: 99, suffix: '%', label: 'Of clients come back', note: 'Most of our work comes from people we have worked with before.' },
+  products: {
+    value: 210,
+    suffix: '+',
+    label: 'Products delivered by Vavensoft',
+    note: 'Web apps, SaaS platforms and mobile apps, built and shipped.',
+  },
+  years: {
+    value: 12,
+    suffix: '+',
+    label: 'Years running production systems',
+    note: 'Long enough to have seen most of the ways things break.',
+  },
+  jobSuccess: {
+    value: 100,
+    suffix: '%',
+    label: 'Job Success on Upwork',
+    note: 'A Top Rated agency, rated by the clients who paid for the work.',
+  },
+  returning: {
+    value: 99,
+    suffix: '%',
+    label: 'Of clients come back',
+    note: 'Most of our work comes from people we have worked with before.',
+  },
 }
 
 export interface Story {

@@ -22,7 +22,9 @@ export interface Look {
 let portraitId = 0
 
 const hairBack = (l: Look) =>
-  l.style === 'long' ? `<path d="M26 46c-3-23 8-32 22-32s25 9 22 32c0 14 2 24-4 30H30c-6-6-4-16-4-30z" fill="${l.hair}"/>` : ''
+  l.style === 'long'
+    ? `<path d="M26 46c-3-23 8-32 22-32s25 9 22 32c0 14 2 24-4 30H30c-6-6-4-16-4-30z" fill="${l.hair}"/>`
+    : ''
 
 const hairFront = (l: Look) => {
   switch (l.style) {

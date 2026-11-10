@@ -11,13 +11,15 @@ const frame = (label: string, body: string) =>
   `<svg viewBox="0 0 220 112" role="img" aria-label="${label}" font-family="inherit">${body}</svg>`
 
 /** An arrow along y from x1 to x2, its head at x2 */
-const arrow = (x1: number, x2: number, y: number) => `<path class="v4-dg-line" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M${x1} ${y}H${x2}M${x2 - 4} ${y - 4}l4 4-4 4" />`
+const arrow = (x1: number, x2: number, y: number) =>
+  `<path class="v4-dg-line" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="M${x1} ${y}H${x2}M${x2 - 4} ${y - 4}l4 4-4 4" />`
 
 const label = (x: number, y: number, text: string, cls = 'v4-dg-text', size = 10.5) =>
   `<text class="${cls}" x="${x}" y="${y}" text-anchor="middle" font-size="${size}" font-weight="600">${text}</text>`
 
 /** A small uppercase title in the top left of a chart */
-const title = (text: string) => `<text class="v4-dg-muted" x="14" y="14" font-size="9" font-weight="650" letter-spacing="0.08em">${text}</text>`
+const title = (text: string) =>
+  `<text class="v4-dg-muted" x="14" y="14" font-size="9" font-weight="650" letter-spacing="0.08em">${text}</text>`
 
 export const stageArt: Record<StageId, string> = {
   /* Idea → build → run, all with one team */

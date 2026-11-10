@@ -132,7 +132,8 @@ function initActiveLink(siteHeader: HTMLElement): void {
 
 /** Glass background only once the page has scrolled (or while the mobile menu is open). */
 function initSolidOnScroll(siteHeader: HTMLElement): void {
-  const update = () => siteHeader.toggleAttribute('data-solid', window.scrollY > 8 || siteHeader.hasAttribute('data-menu-open'))
+  const update = () =>
+    siteHeader.toggleAttribute('data-solid', window.scrollY > 8 || siteHeader.hasAttribute('data-menu-open'))
   window.addEventListener('scroll', update, { passive: true })
   siteHeader.addEventListener('vc:headerstate', update)
   update()

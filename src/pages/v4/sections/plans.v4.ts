@@ -56,7 +56,8 @@ export function plansV4(): Section {
         id: 'plans-title',
         eyebrow: 'Plans',
         title: 'Two ways to hand over production. <em>Both on call 24/7.</em>',
-        description: 'Every plan includes your engineers, your client portal and round-the-clock cover, for one fixed monthly fee agreed after your free review. What changes is how much of your product we take on.',
+        description:
+          'Every plan includes your engineers, your client portal and round-the-clock cover, for one fixed monthly fee agreed after your free review. What changes is how much of your product we take on.',
       })}
     </div>
     <div class="v2-plans">

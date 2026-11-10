@@ -47,11 +47,7 @@ export const plans: Plan[] = [
 ]
 
 const planCard = (p: Plan) => `
-  <article class="flex flex-col rounded-3xl p-7 sm:p-9 ${
-    p.popular
-      ? 'surface-ink'
-      : 'card'
-  }">
+  <article class="flex flex-col rounded-3xl p-7 sm:p-9 ${p.popular ? 'surface-ink' : 'card'}">
     <div class="flex items-center justify-between gap-3">
       <h3 class="text-2xl font-semibold tracking-tight ${p.popular ? 'text-white' : 'text-neutral-950 dark:text-white'}">${p.name}</h3>
       ${p.popular ? '<span class="rounded-full bg-brand-500 px-3 py-1 text-xs font-semibold text-white">Most chosen</span>' : ''}
@@ -84,7 +80,8 @@ const exitPromise = () => `
           id: 'exit-title',
           eyebrow: 'The exit promise',
           title: 'You’re never <em>locked in. Ever.</em>',
-          description: 'Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.',
+          description:
+            'Your servers run standard Linux. Your databases are standard MySQL and PostgreSQL. If you ever decide to leave, we hand over everything.',
         })}
         <p class="mt-5 max-w-xl leading-relaxed text-neutral-500">We’d rather keep you by being good than by making it hard to go.</p>
       </div>
@@ -111,7 +108,8 @@ export function plansSection(): Section {
     <div class="mx-auto max-w-5xl text-center">
       ${sectionHeading({
         title: 'Two ways to hand over production. <em>Both with one team, 24/7.</em>',
-        description: 'Every plan includes your engineers, your client portal and round-the-clock cover. What changes is how much of your product we take on.',
+        description:
+          'Every plan includes your engineers, your client portal and round-the-clock cover. What changes is how much of your product we take on.',
       })}
     </div>
 

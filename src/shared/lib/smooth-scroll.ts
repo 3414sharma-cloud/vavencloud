@@ -11,6 +11,27 @@ import { prefersReducedMotion } from './motion.ts'
 
 let lenis: Lenis | null = null
 
+/** Run every frame straight after the scroll position moves (onScrollFrame) */
+const frameHooks: (() => void)[] = []
+
+/**
+ * Runs `hook` every frame, in the same frame and just after the smooth scroll has moved the page, so anything
+ * drawn from the scroll position (e.g. the story's stacked cards) moves in step with it instead of a frame
+ * behind, which reads as jitter. Without smooth scrolling (reduced motion) it falls back to `scroll` events.
+ * Keep hooks cheap: return early when nothing they draw from has changed.
+ */
+export function onScrollFrame(hook: () => void): void {
+  frameHooks.push(hook)
+  if (prefersReducedMotion()) {
+    let pending = 0
+    const run = () => {
+      pending = 0
+      hook()
+    }
+    window.addEventListener('scroll', () => (pending ||= requestAnimationFrame(run)), { passive: true })
+  }
+}
+
 export function initSmoothScroll(): void {
   if (lenis || prefersReducedMotion()) return
 
@@ -22,6 +43,7 @@ export function initSmoothScroll(): void {
 
   const frame = (time: number) => {
     lenis?.raf(time)
+    frameHooks.forEach((hook) => hook())
     requestAnimationFrame(frame)
   }
   requestAnimationFrame(frame)
@@ -40,14 +62,39 @@ export function initSmoothScroll(): void {
     if (!target) return
     e.preventDefault()
     // Lenis already stops short by the page's `scroll-padding-top`, so the sticky header never covers the section
+    if (hash !== '#top') skipPast(target.getBoundingClientRect().top + window.scrollY - scrollPadding())
     lenis?.scrollTo(hash === '#top' ? 0 : target, { duration: 1.4 })
     history.pushState(null, '', hash)
     window.dispatchEvent(new HashChangeEvent('hashchange'))
   })
 }
 
-/** Scrolls the page to a vertical position, smoothly. Falls back to the browser's own scroll. */
+const scrollPadding = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0
+
+/**
+ * Before a glide to `to`: if the way there crosses a [data-scroll-skip] block (the story's stacked cards,
+ * which would otherwise flash past one after another), jump straight past it so the glide only covers the
+ * rest. Going down, it lands where the block has just left the top of the screen; going up, where its top
+ * meets the top of the screen.
+ */
+function skipPast(to: number): void {
+  if (!lenis) return
+  const from = window.scrollY
+  let jump: number | undefined
+  document.querySelectorAll<HTMLElement>('[data-scroll-skip]').forEach((block) => {
+    const box = block.getBoundingClientRect()
+    const top = box.top + from
+    const bottom = box.bottom + from
+    // Down past the block's end, or up past its start: the far edge, unless the target is closer
+    if (to > from && bottom > from && bottom < to) jump = Math.max(jump ?? from, bottom)
+    if (to < from && top < from && top > to) jump = Math.min(jump ?? from, top)
+  })
+  if (jump !== undefined) lenis.scrollTo(jump, { immediate: true, force: true })
+}
+
+/** Scrolls the page to a vertical position, smoothly (skipping past the story's cards). Falls back to the browser's own scroll. */
 export function scrollToY(y: number): void {
+  skipPast(y)
   if (lenis) lenis.scrollTo(y, { duration: 1.3 })
   else window.scrollTo({ top: y, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
 }

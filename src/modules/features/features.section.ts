@@ -46,7 +46,13 @@ export function featuresSection(): Section {
       }
       const observer = new IntersectionObserver(
         (entries) => {
-          const active = entries.filter((entry) => entry.isIntersecting).sort((a, b) => Math.abs(a.boundingClientRect.top - window.innerHeight * 0.48) - Math.abs(b.boundingClientRect.top - window.innerHeight * 0.48))[0]
+          const active = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort(
+              (a, b) =>
+                Math.abs(a.boundingClientRect.top - window.innerHeight * 0.48) -
+                Math.abs(b.boundingClientRect.top - window.innerHeight * 0.48),
+            )[0]
           if (!active) return
           const selected = active.target as HTMLElement
           items.forEach((item) => {

@@ -6,9 +6,30 @@ export type LayerId = 'code' | 'delivery' | 'infra'
 
 /** The three layers of a product, top to bottom. `short` is the name on the fee chips. */
 export const layers: { id: LayerId; name: string; short: string; covers: string; by: string; icon: IconName }[] = [
-  { id: 'code', name: 'Your code', short: 'Your code', covers: 'Bug fixes, dependency upgrades, performance tuning', by: 'Vavensoft developers', icon: 'code' },
-  { id: 'delivery', name: 'Deployments and on-call', short: 'Deployments', covers: 'Pipelines, releases, monitoring, incidents at any hour', by: 'Senior DevOps engineers', icon: 'activity' },
-  { id: 'infra', name: 'Infrastructure', short: 'Infrastructure', covers: 'Servers, databases, backups, networks', by: 'VavenCloud, or your AWS, Azure or Google Cloud', icon: 'server' },
+  {
+    id: 'code',
+    name: 'Your code',
+    short: 'Your code',
+    covers: 'Bug fixes, dependency upgrades, performance tuning',
+    by: 'Vavensoft developers',
+    icon: 'code',
+  },
+  {
+    id: 'delivery',
+    name: 'Deployments and on-call',
+    short: 'Deployments',
+    covers: 'Pipelines, releases, monitoring, incidents at any hour',
+    by: 'Senior DevOps engineers',
+    icon: 'activity',
+  },
+  {
+    id: 'infra',
+    name: 'Infrastructure',
+    short: 'Infrastructure',
+    covers: 'Servers, databases, backups, networks',
+    by: 'VavenCloud, or your AWS, Azure or Google Cloud',
+    icon: 'server',
+  },
 ]
 
 export interface Cover {
@@ -30,10 +51,34 @@ const no: Cover = { state: 'no', note: 'Not covered' }
 
 /** By kind of provider. No competitor is named on purpose. VavenCloud is last: the walkthrough ends on it. */
 export const providers: Provider[] = [
-  { id: 'host', name: 'Cloud host', layers: { code: no, delivery: no, infra: yes() }, onCall: 'Server only', pay: 'Per server' },
-  { id: 'agency', name: 'DevOps agency', layers: { code: partly('Rarely'), delivery: yes(), infra: no }, onCall: 'If you pay extra', pay: 'Per hour or retainer' },
-  { id: 'support', name: 'Outsourced IT support', layers: { code: partly('Separate contract'), delivery: partly('Sometimes'), infra: no }, onCall: 'Yes, by the hour', pay: 'Per hour' },
-  { id: 'vaven', name: 'VavenCloud', layers: { code: yes('Within your plan'), delivery: yes(), infra: yes() }, onCall: 'Yes, 24/7', pay: 'One fixed monthly fee' },
+  {
+    id: 'host',
+    name: 'Cloud host',
+    layers: { code: no, delivery: no, infra: yes() },
+    onCall: 'Server only',
+    pay: 'Per server',
+  },
+  {
+    id: 'agency',
+    name: 'DevOps agency',
+    layers: { code: partly('Rarely'), delivery: yes(), infra: no },
+    onCall: 'If you pay extra',
+    pay: 'Per hour or retainer',
+  },
+  {
+    id: 'support',
+    name: 'Outsourced IT support',
+    layers: { code: partly('Separate contract'), delivery: partly('Sometimes'), infra: no },
+    onCall: 'Yes, by the hour',
+    pay: 'Per hour',
+  },
+  {
+    id: 'vaven',
+    name: 'VavenCloud',
+    layers: { code: yes('Within your plan'), delivery: yes(), infra: yes() },
+    onCall: 'Yes, 24/7',
+    pay: 'One fixed monthly fee',
+  },
 ]
 
 /**

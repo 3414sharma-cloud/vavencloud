@@ -67,7 +67,10 @@ const timeAt = (t: number) => clockTime(minuteAt(t))
 
 /* ---------- The moments everything hangs on ---------- */
 
-const siteChanges: [number, SiteState][] = [[0, 'ok'], ...timeline.flatMap((s) => (s.site ?? []).map((c): [number, SiteState] => [s.start + c.at, c.state]))]
+const siteChanges: [number, SiteState][] = [
+  [0, 'ok'],
+  ...timeline.flatMap((s) => (s.site ?? []).map((c): [number, SiteState] => [s.start + c.at, c.state])),
+]
 const siteAt = (t: number) => siteChanges.filter(([ms]) => t >= ms).at(-1)![1]
 const minuteOf = (state: SiteState) => Math.floor(minuteAt(siteChanges.find(([, s]) => s === state)![0]))
 
@@ -85,7 +88,16 @@ const calls: Call[] = timeline.flatMap((s) => {
   const id = s.screen
   const ends = timeline.filter((x) => x.screen === id && x.verdict !== undefined).at(-1)!
   const abs = (ms?: number) => (ms === undefined ? undefined : s.start + ms)
-  return [{ id, dial: s.start, answered: abs(s.call.answered), missed: abs(s.call.missed), connected: s.call.connected, verdict: ends.start + ends.verdict! }]
+  return [
+    {
+      id,
+      dial: s.start,
+      answered: abs(s.call.answered),
+      missed: abs(s.call.missed),
+      connected: s.call.connected,
+      verdict: ends.start + ends.verdict!,
+    },
+  ]
 })
 const callOf = (id: CallerId) => calls.find((c) => c.id === id)!
 
@@ -101,7 +113,8 @@ const screens = [...new Set(timeline.map((s) => s.screen))].map((id) => {
 })
 
 /** Shown from `from` until `to` (or for good) */
-const when = (from: number, to?: number) => `data-from="${Math.round(from)}"${to === undefined ? '' : ` data-to="${Math.round(to)}"`}`
+const when = (from: number, to?: number) =>
+  `data-from="${Math.round(from)}"${to === undefined ? '' : ` data-to="${Math.round(to)}"`}`
 const pad = (n: number) => String(n).padStart(2, '0')
 const fill = (text: string, t: number) => text.replace('{time}', timeAt(t))
 
@@ -161,7 +174,9 @@ const logRow = (c: Call) => {
   const said = good ? c.answered! : c.verdict
   const chips: [string, string, number, number?][] = [
     ['ring', `${icon('phone', 'h-3 w-3')}Calling…`, c.dial, c.answered ?? c.missed ?? c.verdict],
-    ...(c.answered !== undefined ? [['live', good ? 'On it' : 'On the line', c.answered, c.verdict] as [string, string, number, number]] : []),
+    ...(c.answered !== undefined
+      ? [['live', good ? 'On it' : 'On the line', c.answered, c.verdict] as [string, string, number, number]]
+      : []),
     ...(c.missed !== undefined ? [['off', 'No answer', c.missed, c.verdict] as [string, string, number, number]] : []),
     [good ? 'good' : 'bad', `${icon(good ? 'check' : 'x', 'h-3 w-3')}${who.verdict}`, c.verdict],
   ]
@@ -181,7 +196,10 @@ const callList = () => `
         <div class="st-log">
           <p class="st-log-label">Who you called</p>
           <ol class="st-rows">
-            ${calls.filter((c) => c.id !== 'vaven').map(logRow).join('')}
+            ${calls
+              .filter((c) => c.id !== 'vaven')
+              .map(logRow)
+              .join('')}
             ${item(loopAt, undefined, `<p class="st-loop">${loopIcon}${loopNote}</p>`)}
             ${logRow(callOf('vaven'))}
           </ol>
@@ -230,7 +248,16 @@ const callScreen = (c: Call, from: number, to: number | undefined, own: Timed[])
   const good = c.id === 'vaven'
   const statuses: [string, string, number, number?][] = [
     ['ring', 'Calling…', c.dial, c.answered ?? c.missed ?? c.verdict],
-    ...(c.answered !== undefined ? [['live', c.connected ?? 'Connected', c.answered, good ? undefined : c.verdict] as [string, string, number, number?]] : []),
+    ...(c.answered !== undefined
+      ? [
+          ['live', c.connected ?? 'Connected', c.answered, good ? undefined : c.verdict] as [
+            string,
+            string,
+            number,
+            number?,
+          ],
+        ]
+      : []),
     ...(c.missed !== undefined ? [['off', 'No answer', c.missed] as [string, string, number]] : []),
     ...(c.answered !== undefined && !good ? [['off', 'Call ended', c.verdict] as [string, string, number]] : []),
   ]
@@ -457,7 +484,9 @@ function initStory(root: HTMLElement): void {
   if (prefersReducedMotion()) {
     control.hidden = true
     jump(END)
-    tabs.forEach((b, i) => b.addEventListener('click', () => jump(i === tabs.length - 1 ? END : timeline[i].start + timeline[i].ms - 1)))
+    tabs.forEach((b, i) =>
+      b.addEventListener('click', () => jump(i === tabs.length - 1 ? END : timeline[i].start + timeline[i].ms - 1)),
+    )
     return
   }
 

@@ -51,9 +51,7 @@ export const TERMS_OF_SERVICE = {
     },
     {
       heading: '5. Acceptable Use Policy (AUP)',
-      body: [
-        'You agree not to use the Services, and not to permit any third party to use the Services, to:',
-      ],
+      body: ['You agree not to use the Services, and not to permit any third party to use the Services, to:'],
       list: [
         'Send unsolicited bulk email (“spam”) or engage in email/phone/SMS abuse.',
         'Host, distribute, or transmit malware, ransomware, or other malicious code.',

@@ -35,7 +35,8 @@ export interface LegalPage {
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 const para = (text: string) => `<p class="mt-3 leading-relaxed">${esc(text)}</p>`
-const linkCls = 'font-medium text-brand-700 underline underline-offset-4 hover:text-brand-900 dark:text-brand-300 dark:hover:text-brand-200'
+const linkCls =
+  'font-medium text-brand-700 underline underline-offset-4 hover:text-brand-900 dark:text-brand-300 dark:hover:text-brand-200'
 
 const table = (t: LegalTable) => `
   <div class="mt-4 overflow-x-auto rounded-2xl border border-neutral-200 dark:border-neutral-800" role="region" tabindex="0" aria-label="Table">
@@ -55,7 +56,9 @@ const links = (items: readonly { label: string; href: string }[]) => `
 
 const contact = (c: { email: string; address?: string }) => `
   <p class="mt-3 leading-relaxed"><strong class="font-semibold text-neutral-800 dark:text-neutral-200">Email:</strong> <a href="mailto:${esc(c.email)}" class="${linkCls}">${esc(c.email)}</a>${
-    c.address ? `<br><strong class="font-semibold text-neutral-800 dark:text-neutral-200">Address:</strong> ${esc(c.address)}` : ''
+    c.address
+      ? `<br><strong class="font-semibold text-neutral-800 dark:text-neutral-200">Address:</strong> ${esc(c.address)}`
+      : ''
   }</p>`
 
 const section = (s: LegalSection) => `

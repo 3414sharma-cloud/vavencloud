@@ -12,7 +12,9 @@ import { brandLogos } from './brand-logos.ts'
 const stack = ['AWS', 'Azure', 'Google Cloud', 'VavenCloud', 'Linux', 'PostgreSQL', 'MySQL']
 
 /** The VavenCloud logo, as in the header: the indigo wordmark in light mode, the white one in dark */
-const ownLogo = () => logoImage('/logo.png', 'tr-own dark:hidden', 'VavenCloud') + logoImage('/logo-light.png', 'tr-own hidden dark:block', 'VavenCloud')
+const ownLogo = () =>
+  logoImage('/logo.png', 'tr-own dark:hidden', 'VavenCloud') +
+  logoImage('/logo-light.png', 'tr-own hidden dark:block', 'VavenCloud')
 
 /** A logo at a fixed height (wordmarks a little taller, to match the marks with a name), its width from its viewBox */
 const logo = (name: string) => {

@@ -184,7 +184,14 @@ function initCompare(root: HTMLElement): void {
   }
   tabs.forEach((t, i) => t.addEventListener('click', () => choose(i)))
   qs('[role="tablist"]', root).addEventListener('keydown', (e) => {
-    const keys: Record<string, number> = { ArrowDown: index + 1, ArrowRight: index + 1, ArrowUp: index - 1, ArrowLeft: index - 1, Home: 0, End: OURS }
+    const keys: Record<string, number> = {
+      ArrowDown: index + 1,
+      ArrowRight: index + 1,
+      ArrowUp: index - 1,
+      ArrowLeft: index - 1,
+      Home: 0,
+      End: OURS,
+    }
     if (!(e.key in keys)) return
     e.preventDefault()
     choose((keys[e.key] + providers.length) % providers.length, true)

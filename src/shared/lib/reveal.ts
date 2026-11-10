@@ -23,7 +23,8 @@ function settle(el: HTMLElement): void {
  * Never list anything that sits inside a scroll container (e.g. a <table> in an overflow-x-auto box):
  * moving it would overflow the box for a moment and flash a scrollbar. Reveal the box instead.
  */
-const AUTO = ':is(.eyebrow, h2, h2 + p, h3, h3 + p, .section-lead, .card, article, figure, [role="region"], [data-reveal])'
+const AUTO =
+  ':is(.eyebrow, h2, h2 + p, h3, h3 + p, .section-lead, .card, article, figure, [role="region"], [data-reveal])'
 
 /**
  * Tags headings, cards and tables below the hero with `.reveal` and a small stagger between
@@ -31,7 +32,11 @@ const AUTO = ':is(.eyebrow, h2, h2 + p, h3, h3 + p, .section-lead, .card, articl
  */
 export function initAutoReveal(): void {
   if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
-  const els = qsa(`#main > section:not(#top) ${AUTO}`).filter((el) => !el.closest('.stats-panel, [data-done], [data-step]'))
+  // [data-no-reveal]: blocks that move their own content (e.g. the story's stacked cards, positioned every
+  // frame from the scroll), where `.reveal`'s transform transition would drag behind every move
+  const els = qsa(`#main > section:not(#top) ${AUTO}`).filter(
+    (el) => !el.closest('.stats-panel, [data-done], [data-step], [data-no-reveal]'),
+  )
   els.forEach((el) => {
     const siblings = el.parentElement ? [...el.parentElement.children].filter((c) => c.matches(AUTO)) : []
     const i = Math.min(Math.max(siblings.indexOf(el), 0), 4)

@@ -379,7 +379,11 @@ const link = (gl: WebGL2RenderingContext): Program | null => {
 
 const resolve = (o: AntigravityOptions): Settings => {
   const opts = { ...DEFAULTS, ...o }
-  const palette = opts.color ? [opts.color] : Array.isArray(opts.colors) && opts.colors.length ? opts.colors : DEFAULT_COLORS
+  const palette = opts.color
+    ? [opts.color]
+    : Array.isArray(opts.colors) && opts.colors.length
+      ? opts.colors
+      : DEFAULT_COLORS
   return {
     count: clamp(Math.round(opts.count), 1, 20000),
     magnet: Math.max(0, opts.magnetRadius),
@@ -481,7 +485,17 @@ function setup(
     if (s.paletteKey === paletteKey) return
     paletteKey = s.paletteKey
     gl.bindTexture(gl.TEXTURE_2D, paletteTexture)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA8, PALETTE_SIZE, 2, 0, gl.RGBA, gl.UNSIGNED_BYTE, buildPalette(s.palette, s.light))
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA8,
+      PALETTE_SIZE,
+      2,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      buildPalette(s.palette, s.light),
+    )
   }
 
   /** Jittered-grid home positions; keeps previous positions (scaled) when resizing so nothing jumps. */
@@ -568,7 +582,12 @@ function setup(
       cursor.y = cursor.ty = cssHeight / 2
       cursor.ready = true
     }
-    if (!field || field.total !== s.count || Math.abs(field.width - cssWidth) > 0.5 || Math.abs(field.height - cssHeight) > 0.5) {
+    if (
+      !field ||
+      field.total !== s.count ||
+      Math.abs(field.width - cssWidth) > 0.5 ||
+      Math.abs(field.height - cssHeight) > 0.5
+    ) {
       field = buildField(s.count, cssWidth, cssHeight, field)
     }
   }
@@ -610,7 +629,8 @@ function setup(
         const angle = Math.atan2(dy, dx) + turn
         const wave =
           wavePx *
-          (0.6 * Math.sin(angle * s.waveCount - time * s.waveSpeed * 2) + 0.4 * Math.sin(phase[index] + time * s.waveSpeed * 1.3))
+          (0.6 * Math.sin(angle * s.waveCount - time * s.waveSpeed * 2) +
+            0.4 * Math.sin(phase[index] + time * s.waveSpeed * 1.3))
         const radius = dist + (ringPx + wave + band[index] * spread - dist) * ease
         tx = cx + Math.cos(angle) * radius
         ty = cy + Math.sin(angle) * radius
@@ -734,7 +754,11 @@ function setup(
     return {
       x: event.clientX - rect.left,
       y: event.clientY - rect.top,
-      inside: event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom,
+      inside:
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom,
     }
   }
   const onPointerMove = (event: PointerEvent) => {
@@ -838,9 +862,15 @@ export function mountAntigravity(container: HTMLElement, initial: AntigravityOpt
   container.appendChild(canvas)
 
   const start = (generation: number) =>
-    setup(container, canvas, () => settings, generation, (fn) => {
-      wake = fn
-    })
+    setup(
+      container,
+      canvas,
+      () => settings,
+      generation,
+      (fn) => {
+        wake = fn
+      },
+    )
 
   let teardown = start(0)
   if (!teardown) {

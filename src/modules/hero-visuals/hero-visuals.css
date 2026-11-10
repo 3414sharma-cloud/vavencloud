@@ -591,7 +591,19 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hv.is-playing :is(.pm-chart-svg, .pm-msg, .pm-status > span, .cv-provider, .cv-row, .cv-row .hv-pill, .hv-chips li, .sv-bar i, .sv-progress-labels > span, .sv-server) {
+  .hv.is-playing
+    :is(
+      .pm-chart-svg,
+      .pm-msg,
+      .pm-status > span,
+      .cv-provider,
+      .cv-row,
+      .cv-row .hv-pill,
+      .hv-chips li,
+      .sv-bar i,
+      .sv-progress-labels > span,
+      .sv-server
+    ) {
     animation: none;
   }
 }

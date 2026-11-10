@@ -39,6 +39,13 @@ export const site = {
   /** External blog (navbar → Help Center → Blogs). */
   blogUrl: 'https://blog.vavencloud.com/',
 
+  /**
+   * The blog's Content API key (Ghost): read-only and public by design, the same key the blog puts in its own
+   * pages for its search. The blog section uses it to show the latest posts (modules/blog/blog.data.ts).
+   * Ghost admin → Settings → Integrations, if it ever needs replacing.
+   */
+  blogApiKey: 'c1840278296532fe6582c80c4f',
+
   /** From the old site (vavencloud-static-website/src/constants/contact/contactPageData.ts). */
   contact: {
     email: 'sales@vavencloud.com',

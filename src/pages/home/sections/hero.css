@@ -12,7 +12,11 @@
 .dark .hero {
   background-image:
     radial-gradient(80% 80% at 50% 0%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 70%),
-    linear-gradient(180deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950)));
+    linear-gradient(
+      180deg,
+      var(--color-neutral-950),
+      color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950))
+    );
 }
 .hero-noise {
   position: absolute;
@@ -20,7 +24,10 @@
   z-index: -1;
   opacity: 0.34;
   pointer-events: none;
-  background-image: radial-gradient(color-mix(in srgb, var(--color-neutral-950) 10%, transparent) 0.55px, transparent 0.55px);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--color-neutral-950) 10%, transparent) 0.55px,
+    transparent 0.55px
+  );
   background-size: 7px 7px;
   mask-image: radial-gradient(ellipse 70% 70% at 50% 40%, black, transparent 85%);
 }

@@ -98,7 +98,9 @@ async function paintCard(feature: Feature, index: number, total: number): Promis
   ctx.lineWidth = 2
   roundRect(ctx, PAD + 1, PAD + 1, tile - 2, tile - 2, 39)
   ctx.stroke()
-  const svg = icon(feature.icon, '').replace('<svg ', '<svg width="80" height="80" ').replaceAll('currentColor', accent.hex)
+  const svg = icon(feature.icon, '')
+    .replace('<svg ', '<svg width="80" height="80" ')
+    .replaceAll('currentColor', accent.hex)
   const glyph = await loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`)
   ctx.drawImage(glyph, PAD + (tile - 80) / 2, PAD + (tile - 80) / 2, 80, 80)
 

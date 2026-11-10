@@ -17,6 +17,10 @@ const landing = version ? `/${version}/` : '/'
 export const routes = {
   home: landing,
   about: '/about/',
+  /** The team page: the co-founders and the engineers (opened from "Meet the whole Vavensoft team") */
+  team: '/team/',
+  /** The price comparison: the same servers and cover on AWS, Azure and VavenCloud */
+  comparison: '/comparison/',
   top: `${landing}#top`,
   oneTeam: `${landing}#one-team`,
   /** The versions have no "how it works" chapter: there, it goes to what you get after an incident (the report) */

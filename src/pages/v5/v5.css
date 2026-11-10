@@ -90,6 +90,277 @@
   }
 }
 
+/*
+ * ---------- The story as a stack of cards (story.v5.ts) ----------
+ * One card per scene. Each sticks under the header a little lower than the one before, so as you scroll the
+ * next card slides up over the last and the earlier ones peek out above it. Every card fits in the screen:
+ * the phone takes whatever height is left. Below 1024px a card keeps just the browser bar and the phone.
+ */
+.v4-story .st-stack {
+  display: grid;
+  gap: 2.5rem;
+  margin-top: 3rem;
+}
+.v4-story .st-card {
+  /*
+   * Every card is as tall as the screen allows below the header and the five card edges peeking above the
+   * last one (so the last card fits too), never taller than 48rem. Inside, the head and caption take what they
+   * need and the body gets the rest; the phone fills the body's height and its width follows (about 1 : 2).
+   */
+  --peek: 0.9rem;
+  --top: 5.5rem;
+  --bottom: 1.25rem;
+  position: sticky;
+  top: calc(var(--top) + var(--i) * var(--peek));
+  display: flex;
+  height: min(calc(100svh - var(--top) - 5 * var(--peek) - var(--bottom)), 48rem);
+  min-height: 26rem;
+  flex-direction: column;
+  margin-top: 0;
+  border: 1px solid var(--st-line);
+  border-radius: 1.75rem;
+  background: color-mix(in srgb, var(--st-mist) 45%, var(--st-surface));
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow:
+    0 -12px 30px -18px rgb(5 15 30 / 0.28),
+    0 30px 60px -45px rgb(5 15 30 / 0.45);
+}
+/*
+ * The pop as cards stack (initStack in story.v5.ts sets each card's scale and its shade's opacity from the
+ * scroll): a card arriving grows from 92% to full size; a card being covered sinks back (smaller, from its top
+ * edge so its peeking edge stays put, 3.5% for each card on top) and its shade darkens it under the cards on
+ * top. Its own layer (will-change), so scaling it is only compositing, not a repaint.
+ */
+.v4-story .st-card {
+  transform-origin: 50% 0;
+  will-change: transform;
+}
+/*
+ * After the last card: room for the finished stack to stay pinned a while (the cards stick until the end of
+ * .st-stack) before it scrolls on with the page, instead of letting go the moment the last card lands
+ */
+.v4-story .st-stack-hold {
+  height: 45svh;
+  pointer-events: none;
+}
+/* Without the script (or with reduced motion) the stage is no box at all: the cards stick one by one as above */
+.v4-story .st-stage {
+  display: contents;
+}
+/*
+ * Pinned (.is-pinned, set by initStack in story.v5.ts): the stage sticks to the screen for the whole of the
+ * stack, which the script makes tall enough for every card's slide and pause, and the cards sit in it at their
+ * resting places, moved in from below by the script at about half the scroll's speed. The stage starts at the
+ * top of the screen, so the stack starts higher by the header's height to keep the first card where it was.
+ */
+.v4-story .st-stack.is-pinned {
+  display: block;
+  margin-top: -2.5rem;
+}
+.v4-story .st-stack.is-pinned .st-stage {
+  position: sticky;
+  top: 0;
+  display: block;
+  height: 100svh;
+}
+.v4-story .st-stack.is-pinned .st-card {
+  position: absolute;
+  inset-inline: 0;
+}
+.v4-story .st-stack.is-pinned .st-stack-hold {
+  display: none;
+}
+.v4-story .st-card-shade {
+  position: absolute;
+  inset: -1px;
+  z-index: 5;
+  border-radius: inherit;
+  background: rgb(5 12 24);
+  opacity: 0;
+  pointer-events: none;
+}
+.v4-story .st-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+.v4-story .st-card-tag {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--st-slate);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.v4-story .st-card-num {
+  border-radius: 999px;
+  background: var(--st-accent-tint);
+  padding: 0.2rem 0.6rem;
+  color: var(--st-accent);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0;
+}
+.v4-story .st-card-num span {
+  opacity: 0.55;
+}
+.v4-story .st-card-head,
+.v4-story .st-card .st-caption {
+  flex: none;
+}
+.v4-story .st-card .st-body {
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  margin-top: 1.1rem;
+}
+/*
+ * The phone mockup: always laid out at one real phone's size (18 × 37rem, an iPhone's proportions), so the
+ * lock screen, the call and the messages look the same everywhere; then the whole phone is zoomed to the room
+ * the card has (--phone-zoom, set by fitPhones in story.v5.ts). Text, bubbles and frame scale together, so
+ * nothing is squeezed or cut on a short screen.
+ */
+.v4-story .st-card .st-phone {
+  position: relative;
+  width: 18rem;
+  max-width: none;
+  height: calc(var(--phone-h, 37) * 1rem);
+  border-radius: 3rem;
+  background: linear-gradient(145deg, #2a2f37, #07090c 40%, #07090c 70%, #252a31);
+  padding: 0.55rem;
+  zoom: var(--phone-zoom, 1);
+  box-shadow:
+    inset 0 0 0 1.5px rgb(255 255 255 / 0.14),
+    inset 0 0 0 3px #05070a,
+    0 0 0 1px color-mix(in srgb, var(--st-line) 70%, transparent),
+    0 40px 70px -40px rgb(5 15 30 / 0.7);
+}
+/* The side buttons: action and volume on the left, power on the right */
+.v4-story .st-card .st-phone::before,
+.v4-story .st-card .st-phone::after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  background: #1c2027;
+}
+.v4-story .st-card .st-phone::before {
+  top: 6.5rem;
+  left: -3px;
+  height: 1.6rem;
+  border-radius: 2px 0 0 2px;
+  /* the action button, then volume up and down below it */
+  box-shadow:
+    0 2.6rem 0 0 #1c2027,
+    0 5.6rem 0 0 #1c2027;
+}
+.v4-story .st-card .st-phone::after {
+  top: 9rem;
+  right: -3px;
+  height: 4.2rem;
+  border-radius: 0 2px 2px 0;
+}
+.v4-story .st-card .st-glass {
+  height: 100%;
+  border-radius: 2.5rem;
+}
+.v4-story .st-card .st-island {
+  height: 1.55rem;
+  width: 5.8rem;
+}
+/* Beside the phone, the list of calls keeps to the room there is (the newest rows sit at its foot) */
+.v4-story .st-card .st-log {
+  min-height: 0;
+  overflow: hidden;
+}
+/*
+ * Wide screens: three columns, the site, the calls, the phone, so the calls get the card's full height
+ * instead of what's left under the site. The site card stands up again (its flat layout needs the width).
+ */
+@media (min-width: 1024px) {
+  .v4-story .st-card .st-body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) max-content;
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "site log phone";
+    gap: 1.5rem;
+  }
+  .v4-story .st-card .st-site {
+    align-self: start;
+  }
+  .v4-story .st-card .st-log {
+    align-self: stretch;
+  }
+}
+/* Short laptop screens: the list of calls tightens up too, so all four calls fit beside the phone */
+@media (min-width: 1024px) and (max-height: 780px) {
+  .v4-story .st-card {
+    --peek: 0.55rem;
+    --top: 5rem;
+  }
+  .v4-story .st-card .st-log {
+    padding-block: 0.6rem 0.5rem;
+  }
+  .v4-story .st-card .st-row {
+    padding-block: 0.4rem;
+  }
+  .v4-story .st-card .st-row-sub {
+    font-size: 0.78rem;
+    line-height: 1.3;
+  }
+  .v4-story .st-card .st-stats dd {
+    font-size: 1.5rem;
+  }
+  .v4-story .st-card .st-loop {
+    padding-block: 0.4rem;
+    font-size: 0.78rem;
+  }
+}
+/* The site card spins in on v3's single stage; six cards spinning would be noise */
+.v4-story .st-card .st-site {
+  animation: none;
+}
+@media (max-width: 1023px) {
+  .v4-story .st-card .st-body {
+    grid-template-areas: "site" "phone";
+    gap: 0.85rem;
+  }
+  .v4-story .st-card :is(.st-log, .st-site-main, .st-stats, .st-bar, .st-legend) {
+    display: none;
+  }
+  .v4-story .st-card .st-site {
+    border-radius: 999px;
+  }
+}
+@media (max-width: 639px) {
+  .v4-story .st-stack {
+    gap: 1.75rem;
+    margin-top: 2.5rem;
+  }
+  .v4-story .st-card {
+    --peek: 0.6rem;
+    --top: 5rem;
+    /* the booking bar pinned to the foot of the screen on phones */
+    --bottom: calc(5rem + env(safe-area-inset-bottom));
+    min-height: 24rem;
+    border-radius: 1.4rem;
+    padding: 1rem 1rem 1.1rem;
+  }
+  .v4-story .st-card-head {
+    margin-bottom: 0.6rem;
+  }
+  .v4-story .st-card .st-line {
+    flex-direction: row;
+    gap: 0.6rem;
+  }
+  .v4-story .st-card .st-line-text {
+    font-size: 1rem;
+  }
+}
+
 /* ---------- Under the story: what the night cost, and the next step ---------- */
 .v4-payoff {
   display: grid;
@@ -260,7 +531,10 @@
 
 /*
  * ---------- Where are you today ----------
- * Night-blue cards (.surface-ink) in both themes, so the diagrams and the type are drawn light on dark.
+ * The cards rest light (the page's own card in dark mode) and turn night blue when you point at one or tab
+ * into it: a night-blue layer (.surface-ink's colours) fades in under the content, and the text and the
+ * diagrams swap to their light-on-dark colours with it. Every colour comes from the --sg-* set below, so the
+ * swap is one switch of variables and each fill, stroke and colour eases on its own.
  */
 .v4-stages {
   display: grid;
@@ -268,14 +542,148 @@
   margin-top: 3rem;
 }
 .v4-stage {
+  /* At rest, light theme: dark on light */
+  --sg-title: var(--color-neutral-950);
+  --sg-body: var(--color-neutral-600);
+  --sg-num: var(--color-brand-600);
+  --sg-worry: rgb(190 18 60);
+  --sg-rule: var(--color-neutral-200);
+  --sg-panel: var(--color-neutral-50);
+  --sg-panel-line: var(--color-neutral-200);
+  --sg-line: var(--color-neutral-300);
+  --sg-ink: var(--color-neutral-700);
+  --sg-surface: #fff;
+  --sg-text: var(--color-neutral-800);
+  --sg-muted: var(--color-neutral-500);
+  --sg-track: var(--color-neutral-100);
+  --sg-used: var(--color-neutral-300);
+  --sg-brand: var(--color-brand-600);
+  --sg-brand-fill: var(--color-brand-600);
+  --sg-tint: var(--color-brand-50);
+  --sg-brand-text: var(--color-brand-700);
+  --sg-bad: rgb(225 29 72);
+  --sg-bad-fill: rgb(244 63 94);
+  --sg-bad-tint: rgb(255 228 230);
+  --sg-bad-text: rgb(190 18 60);
+  position: relative;
   display: flex;
   flex-direction: column;
+  isolation: isolate;
+  border: 1px solid var(--color-neutral-200);
   border-radius: 1.4rem;
+  background: #fff;
   padding: 1.35rem 1.25rem;
-  transition: transform 0.2s ease;
+  color: var(--sg-body);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    color 0.4s ease;
 }
-.v4-stage:hover {
-  transform: translateY(-3px);
+.dark .v4-stage {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+}
+/* Lit: on hover or focus, and at rest in dark mode (the card is dark already), light on dark */
+.v4-stage:is(:hover, :focus-within),
+.dark .v4-stage {
+  --sg-title: #fff;
+  --sg-body: var(--color-ink-text);
+  --sg-num: var(--color-brand-300);
+  --sg-worry: rgb(253 164 175);
+  --sg-rule: rgb(255 255 255 / 0.12);
+  --sg-panel: rgb(255 255 255 / 0.05);
+  --sg-panel-line: rgb(255 255 255 / 0.1);
+  --sg-line: rgb(255 255 255 / 0.25);
+  --sg-ink: rgb(255 255 255 / 0.85);
+  --sg-surface: var(--color-ink-800);
+  --sg-text: rgb(255 255 255 / 0.85);
+  --sg-muted: rgb(255 255 255 / 0.55);
+  --sg-track: rgb(255 255 255 / 0.1);
+  --sg-used: rgb(255 255 255 / 0.22);
+  --sg-brand: var(--color-brand-300);
+  --sg-brand-fill: var(--color-brand-500);
+  --sg-tint: rgb(255 255 255 / 0.1);
+  --sg-brand-text: var(--color-brand-200);
+  --sg-bad: rgb(253 164 175);
+  --sg-bad-fill: rgb(251 113 133);
+  --sg-bad-tint: rgb(244 63 94 / 0.16);
+  --sg-bad-text: rgb(254 205 211);
+}
+.dark .v4-stage {
+  --sg-body: var(--color-neutral-300);
+  --sg-surface: var(--color-neutral-900);
+}
+.dark .v4-stage:is(:hover, :focus-within) {
+  --sg-body: var(--color-ink-text);
+  --sg-surface: var(--color-ink-800);
+}
+/*
+ * The night-blue layer under the content. It fills the card as a circle growing from where the pointer came
+ * in (--mx, --my, set by stages.v5.ts; from the middle of the foot when tabbed into), and drains back to where
+ * it left. The text and diagram colours follow a beat later, as the fill reaches them.
+ */
+.v4-stage::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border-radius: inherit;
+  background-color: var(--color-ink-900);
+  background-image:
+    radial-gradient(
+      120% 140% at 0% 0%,
+      color-mix(in srgb, var(--color-brand-400) 30%, transparent) 0%,
+      transparent 55%
+    ),
+    linear-gradient(160deg, var(--color-ink-800) 0%, var(--color-ink-900) 60%, var(--color-ink-950) 100%);
+  clip-path: circle(0% at var(--mx, 50%) var(--my, 100%));
+  transition: clip-path var(--fill-out, 0.8s) cubic-bezier(0.45, 0, 0.25, 1);
+}
+/* A soft glow that follows the pointer over the filled card (--gx, --gy from stages.v5.ts) */
+.v4-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 15rem at var(--gx, 50%) var(--gy, 50%),
+    color-mix(in srgb, var(--color-brand-400) 26%, transparent),
+    transparent 70%
+  );
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.v4-stage:hover::after {
+  opacity: 1;
+  transition: opacity 0.6s ease 0.35s;
+}
+/* Lifted, and tilted a few degrees toward the pointer (--tx, --ty from stages.v5.ts) */
+.v4-stage:is(:hover, :focus-within) {
+  border-color: transparent;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    0 28px 56px -30px color-mix(in srgb, var(--color-ink-900) 75%, transparent);
+  transform: perspective(900px) rotateX(var(--ty, 0deg)) rotateY(var(--tx, 0deg)) translateY(-4px);
+}
+.v4-stage:is(:hover, :focus-within)::before {
+  /* 150%: big enough to cover the card from any corner */
+  clip-path: circle(150% at var(--mx, 50%) var(--my, 100%));
+  transition-duration: var(--fill-in, 1.1s);
+}
+/*
+ * Everything that changes colour with the card eases with it, each part when the fill's edge passes it: --d
+ * is set per part by stages.v5.ts from its distance to where the pointer came in (or, draining, left)
+ */
+.v4-stage :is(.v4-stage-art, .v4-stage-n, .v4-stage-title, .v4-stage-worry, .v4-stage-answer),
+.v4-stage :is(.v4-stage-answer b, .v4-stage-art svg *) {
+  transition-property: color, fill, stroke, background-color, border-color;
+  transition-duration: 0.35s;
+  transition-timing-function: ease;
+  transition-delay: var(--d, 0.2s);
 }
 /* Each stage's diagram (stage-art.v5.ts) on a faint panel at the top of its card, the same size on every card */
 .v4-stage-art {
@@ -284,9 +692,9 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 1.1rem;
-  border: 1px solid rgb(255 255 255 / 0.1);
+  border: 1px solid var(--sg-panel-line);
   border-radius: 1rem;
-  background: rgb(255 255 255 / 0.05);
+  background: var(--sg-panel);
 }
 .v4-stage-art svg {
   height: 7rem;
@@ -294,61 +702,61 @@
   max-width: 100%;
   overflow: visible;
 }
-/* The diagrams' colours, light on the dark card: structure, labels, the fix (brand) and the problem (rose) */
+/* The diagrams' colours: structure, labels, the fix (brand) and the problem (rose), from the card's set */
 .v4-dg-line {
-  stroke: rgb(255 255 255 / 0.25);
+  stroke: var(--sg-line);
 }
 .v4-dg-ink {
-  stroke: rgb(255 255 255 / 0.85);
+  stroke: var(--sg-ink);
 }
 .v4-dg-surface {
-  fill: var(--color-ink-800);
+  fill: var(--sg-surface);
 }
 .v4-dg-text {
-  fill: rgb(255 255 255 / 0.85);
+  fill: var(--sg-text);
 }
 .v4-dg-muted {
-  fill: rgb(255 255 255 / 0.55);
+  fill: var(--sg-muted);
 }
 .v4-dg-track {
-  fill: rgb(255 255 255 / 0.1);
+  fill: var(--sg-track);
 }
 .v4-dg-used {
-  fill: rgb(255 255 255 / 0.22);
+  fill: var(--sg-used);
 }
 .v4-dg-brand {
-  stroke: var(--color-brand-300);
+  stroke: var(--sg-brand);
 }
 .v4-dg-brand-fill {
-  fill: var(--color-brand-500);
+  fill: var(--sg-brand-fill);
 }
 .v4-dg-tint {
-  fill: rgb(255 255 255 / 0.1);
+  fill: var(--sg-tint);
 }
 .v4-dg-brand-text {
-  fill: var(--color-brand-200);
+  fill: var(--sg-brand-text);
 }
 .v4-dg-bad {
-  stroke: rgb(253 164 175);
+  stroke: var(--sg-bad);
 }
 .v4-dg-bad-fill {
-  fill: rgb(251 113 133);
+  fill: var(--sg-bad-fill);
 }
 .v4-dg-bad-tint {
-  fill: rgb(244 63 94 / 0.16);
+  fill: var(--sg-bad-tint);
 }
 .v4-dg-bad-text {
-  fill: rgb(254 205 211);
+  fill: var(--sg-bad-text);
 }
 .v4-stage-n {
-  color: var(--color-brand-300);
+  color: var(--sg-num);
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.72rem;
   font-weight: 700;
 }
 .v4-stage-title {
   margin-top: 0.6rem;
-  color: #fff;
+  color: var(--sg-title);
   font-size: 1.05rem;
   font-weight: 650;
   line-height: 1.3;
@@ -356,14 +764,14 @@
 }
 .v4-stage-worry {
   margin: 0.75rem 0 1.1rem;
-  color: rgb(253 164 175);
+  color: var(--sg-worry);
   font-size: 0.9rem;
   font-style: italic;
   line-height: 1.5;
 }
 .v4-stage-answer {
   margin-top: auto;
-  border-top: 1px solid rgb(255 255 255 / 0.12);
+  border-top: 1px solid var(--sg-rule);
   padding-top: 1rem;
   font-size: 0.9rem;
   line-height: 1.55;
@@ -371,7 +779,7 @@
 .v4-stage-answer b {
   display: block;
   margin-bottom: 0.25rem;
-  color: var(--color-brand-300);
+  color: var(--sg-num);
   font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1029,12 +1437,20 @@
 #app > footer {
   border-top-color: transparent;
   background-color: var(--color-ink-950);
-  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 22%, transparent) 0%, transparent 55%);
+  background-image: radial-gradient(
+    90% 120% at 0% 0%,
+    color-mix(in srgb, var(--color-brand-500) 22%, transparent) 0%,
+    transparent 55%
+  );
   color: var(--color-ink-text);
 }
 .dark #app > footer {
   background-color: #050504;
-  background-image: radial-gradient(90% 120% at 0% 0%, color-mix(in srgb, var(--color-brand-500) 10%, transparent) 0%, transparent 55%);
+  background-image: radial-gradient(
+    90% 120% at 0% 0%,
+    color-mix(in srgb, var(--color-brand-500) 10%, transparent) 0%,
+    transparent 55%
+  );
   color: var(--color-neutral-400);
 }
 #app > footer .text-neutral-950 {
@@ -1246,8 +1662,12 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .v4-rp-bar,
-  .v4-stage {
-    transition: none;
+  .v4-stage,
+  .v4-stage::before,
+  .v4-stage::after,
+  .v4-stage *,
+  .v4-stage-art svg * {
+    transition: none !important;
   }
 }
 

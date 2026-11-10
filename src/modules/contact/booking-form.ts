@@ -14,11 +14,12 @@ function validate(step: HTMLElement): boolean {
     const invalid = !f.checkValidity()
     f.setAttribute('aria-invalid', String(invalid))
     // Radio groups and custom native-backed controls show errors on their visible wrapper.
-    const target = f.type === 'radio' ? f.closest('fieldset') : f.closest<HTMLElement>('[data-custom-select]') ?? f
+    const target = f.type === 'radio' ? f.closest('fieldset') : (f.closest<HTMLElement>('[data-custom-select]') ?? f)
     target?.classList.toggle(f.type === 'radio' ? 'is-invalid' : '!border-rose-400', invalid)
     if (invalid && !first) {
       first = f
-      firstFocus = f.closest<HTMLElement>('[data-custom-select]')?.querySelector<HTMLElement>('[data-role-trigger]') ?? f
+      firstFocus =
+        f.closest<HTMLElement>('[data-custom-select]')?.querySelector<HTMLElement>('[data-role-trigger]') ?? f
     }
   })
   firstFocus?.focus()
@@ -67,7 +68,8 @@ function initRoleSelect(form: HTMLFormElement): void {
     menu.hidden = !open
     trigger.setAttribute('aria-expanded', String(open))
     chevron.classList.toggle('rotate-180', open)
-    if (open && focusOption) (options.find((option) => option.dataset.roleOption === select.value) ?? options[0])?.focus()
+    if (open && focusOption)
+      (options.find((option) => option.dataset.roleOption === select.value) ?? options[0])?.focus()
   }
   const choose = (value: string) => {
     select.value = value

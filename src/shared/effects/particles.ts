@@ -486,8 +486,19 @@ export function mountParticles(container: HTMLElement, initial: ParticlesOptions
   const state = { clock: 0, spin: 0, travel: 0, offsetX: 0, offsetY: 0, reveal: settings.intro && !reduce ? 0 : 1 }
   const bursts: Burst[] = []
   const packedBursts = new Float32Array(MAX_BURSTS * 4)
-  const cloud = { key: '', count: 0, positions: new Float32Array(0), randoms: new Float32Array(0), colors: new Float32Array(0) }
-  const screen = { x: new Float32Array(0), y: new Float32Array(0), ahead: new Float32Array(0), alpha: new Float32Array(0) }
+  const cloud = {
+    key: '',
+    count: 0,
+    positions: new Float32Array(0),
+    randoms: new Float32Array(0),
+    colors: new Float32Array(0),
+  }
+  const screen = {
+    x: new Float32Array(0),
+    y: new Float32Array(0),
+    ahead: new Float32Array(0),
+    alpha: new Float32Array(0),
+  }
   let raf = 0
   let last = 0
   let visible = true

@@ -47,10 +47,18 @@ const appCard = () => `
       <div class="pc-app" data-app>
         <div class="flex items-center justify-between gap-3">
           <span class="pc-url">yourapp.com/checkout</span>
-          <span class="pc-app-chip">${byPhase([['ready calling', '● Down'], ['fixing', 'Engineer on it'], ['done', '● Fixed']])}</span>
+          <span class="pc-app-chip">${byPhase([
+            ['ready calling', '● Down'],
+            ['fixing', 'Engineer on it'],
+            ['done', '● Fixed'],
+          ])}</span>
         </div>
         <p class="pc-app-name">Checkout</p>
-        <p class="pc-app-status">${byPhase([['ready calling', 'Error 504 · customers can’t pay'], ['fixing', 'An engineer is fixing it'], ['done', 'Fast again · customers can pay']])}</p>
+        <p class="pc-app-status">${byPhase([
+          ['ready calling', 'Error 504 · customers can’t pay'],
+          ['fixing', 'An engineer is fixing it'],
+          ['done', 'Fast again · customers can pay'],
+        ])}</p>
         <div class="pc-app-time">
           <p class="pc-small">Down for</p>
           <p class="pc-app-down" data-down>0 min</p>
@@ -123,7 +131,10 @@ const stage = () => `
         <p class="pc-summary" aria-hidden="true">${byPhase([
           ['ready calling', `${clockTime(downAt)} · Checkout is down. Who do you call?`],
           ['fixing', 'One call, answered. An engineer is fixing it now.'],
-          ['done', `${lost} minutes on three calls that went nowhere. One call to VavenCloud: fixed ${fixMinutes} minutes later, with a written report in your portal.`],
+          [
+            'done',
+            `${lost} minutes on three calls that went nowhere. One call to VavenCloud: fixed ${fixMinutes} minutes later, with a written report in your portal.`,
+          ],
         ])}</p>
         <div class="pc-controls">
           <span class="pc-clock" aria-hidden="true">Tonight <b data-clock>${clockTime(downAt)}</b></span>

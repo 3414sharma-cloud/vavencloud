@@ -260,10 +260,36 @@ void main() {
 }`
 
 const UNIFORMS = [
-  'uResolution', 'uTime', 'uClock', 'uAmplitude', 'uWaveScale', 'uWaveRatio', 'uSwell', 'uTurbulence',
-  'uHeight', 'uTilt', 'uZoom', 'uLook', 'uFogDepth', 'uBrightness', 'uOpacity', 'uGrain', 'uHorizon',
-  'uWave', 'uCrest', 'uBackground', 'uOpaque', 'uLight', 'uSun', 'uRelief', 'uSheen', 'uSteps',
-  'uStride', 'uIntro', 'uSwells', 'uSwellWidth',
+  'uResolution',
+  'uTime',
+  'uClock',
+  'uAmplitude',
+  'uWaveScale',
+  'uWaveRatio',
+  'uSwell',
+  'uTurbulence',
+  'uHeight',
+  'uTilt',
+  'uZoom',
+  'uLook',
+  'uFogDepth',
+  'uBrightness',
+  'uOpacity',
+  'uGrain',
+  'uHorizon',
+  'uWave',
+  'uCrest',
+  'uBackground',
+  'uOpaque',
+  'uLight',
+  'uSun',
+  'uRelief',
+  'uSheen',
+  'uSteps',
+  'uStride',
+  'uIntro',
+  'uSwells',
+  'uSwellWidth',
 ] as const
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
@@ -498,12 +524,7 @@ export function mountGradientWaves(
     const elevation = 0.52
     const angle = s.lightAngle + state.steer[0] * s.mouseStrength * 2
     const altitude = elevation - state.steer[1] * s.mouseStrength * 0.7
-    gl.uniform3f(
-      u.uSun,
-      Math.cos(altitude) * Math.cos(angle),
-      Math.cos(altitude) * Math.sin(angle),
-      Math.sin(altitude),
-    )
+    gl.uniform3f(u.uSun, Math.cos(altitude) * Math.cos(angle), Math.cos(altitude) * Math.sin(angle), Math.sin(altitude))
     gl.uniform1f(u.uRelief, s.relief)
     gl.uniform1f(u.uSheen, s.sheen)
     gl.uniform1f(u.uSteps, s.steps)

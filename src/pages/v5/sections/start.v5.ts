@@ -18,7 +18,8 @@ export function startV5(): Section {
       ${sectionHeading({
         id: 'start-title',
         title: 'From first call to fully covered <em>in about two weeks.</em>',
-        description: 'Switching shouldn’t feel risky. We find the problems first, fix the urgent ones, and only then take responsibility.',
+        description:
+          'Switching shouldn’t feel risky. We find the problems first, fix the urgent ones, and only then take responsibility.',
       })}
     </div>
     <ol class="v4-steps">

@@ -38,7 +38,12 @@ const choice = (name: string, value: string, required: boolean, first: boolean) 
     ${value}
   </label>`
 
-const choices = (name: string, legend: string, options: string[], { required = true, hint = '', cols = 'sm:grid-cols-2' } = {}) => `
+const choices = (
+  name: string,
+  legend: string,
+  options: string[],
+  { required = true, hint = '', cols = 'sm:grid-cols-2' } = {},
+) => `
   <fieldset class="sm:col-span-2" ${hint ? `aria-describedby="${name}-help"` : ''}>
     <legend class="text-sm font-medium text-neutral-800 dark:text-neutral-200">${legend} ${required ? req : '<span class="font-normal text-neutral-500">(optional)</span>'}</legend>
     <div class="mt-2 grid gap-2 ${cols}">${options.map((o, i) => choice(name, o, required, i === 0)).join('')}</div>
@@ -81,7 +86,8 @@ const step1 = `
           <div id="bk-role-options" class="absolute z-20 mt-2 w-full overflow-hidden rounded-2xl border border-neutral-200 bg-white p-1.5 shadow-[0_18px_36px_-18px_rgb(0_0_0/0.28)] dark:border-neutral-700 dark:bg-neutral-900" data-role-options role="listbox" aria-label="Your role" hidden>
             ${['Founder or CEO', 'CTO', 'Head of engineering', 'Other']
               .map(
-                (role) => `<button type="button" role="option" aria-selected="false" data-role-option="${role}" class="flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-medium text-neutral-700 transition-colors hover:bg-brand-50 hover:text-brand-800 focus-visible:bg-brand-50 focus-visible:text-brand-800 focus-visible:outline-none dark:text-neutral-300 dark:hover:bg-brand-950/60 dark:hover:text-brand-200 dark:focus-visible:bg-brand-950/60 dark:focus-visible:text-brand-200">${role}<span class="hidden text-brand-600 dark:text-brand-300" data-role-check>${icon('check', 'h-4 w-4')}</span></button>`,
+                (role) =>
+                  `<button type="button" role="option" aria-selected="false" data-role-option="${role}" class="flex w-full items-center justify-between rounded-xl px-3.5 py-3 text-left text-sm font-medium text-neutral-700 transition-colors hover:bg-brand-50 hover:text-brand-800 focus-visible:bg-brand-50 focus-visible:text-brand-800 focus-visible:outline-none dark:text-neutral-300 dark:hover:bg-brand-950/60 dark:hover:text-brand-200 dark:focus-visible:bg-brand-950/60 dark:focus-visible:text-brand-200">${role}<span class="hidden text-brand-600 dark:text-brand-300" data-role-check>${icon('check', 'h-4 w-4')}</span></button>`,
               )
               .join('')}
           </div>
@@ -150,7 +156,9 @@ const confirmation = `
   </div>`
 
 /** `title`: the closing line above the form, for a page that ends on its own (an <em> goes on its own line) */
-export function contactSection({ title = 'Stop running servers. <em>Start running your business.</em>' }: { title?: string } = {}): Section {
+export function contactSection({
+  title = 'Stop running servers. <em>Start running your business.</em>',
+}: { title?: string } = {}): Section {
   return {
     html: `
 <section id="book" class="band-linen border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800" aria-labelledby="book-title">

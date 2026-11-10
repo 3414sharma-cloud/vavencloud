@@ -13,7 +13,8 @@ export function faqSection({ items = defaultFaqs }: { items?: Faq[] } = {}): Sec
     <div class="heading-wide mx-auto max-w-6xl text-center">
       ${sectionHeading({
         title: 'Questions founders ask <em>before they hand over production.</em>',
-        description: 'Something else on your mind? Ask it in your free review. You’ll get a straight answer from an engineer.',
+        description:
+          'Something else on your mind? Ask it in your free review. You’ll get a straight answer from an engineer.',
       })}
       <a href="${routes.book}" class="btn-secondary mt-8">Book a free review</a>
     </div>

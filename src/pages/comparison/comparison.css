@@ -1,0 +1,705 @@
+/*
+ * The comparison page (comparison.page.ts), on top of v5's look (v2.css, v5.css). Hero, two tabs, a row of
+ * controls, the bars, the comparison table (a card per row on a phone), the notes and the closing call to action.
+ */
+
+/* ---------- Hero ---------- */
+.cp-hero {
+  padding-block: 9rem 4rem;
+}
+.cp-kicker {
+  color: var(--color-brand-700);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.dark .cp-kicker {
+  color: var(--color-brand-300);
+}
+.cp-title {
+  max-width: 62rem;
+  margin-top: 1.25rem;
+  color: var(--color-neutral-950);
+  font-size: clamp(2.4rem, 6.4vw, 5rem);
+  font-weight: 650;
+  line-height: 1;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+.cp-title em {
+  display: block;
+  color: var(--color-brand-600);
+  font-style: normal;
+}
+.dark .cp-title {
+  color: #fff;
+}
+.dark .cp-title em {
+  color: var(--color-brand-400);
+}
+.cp-lead {
+  max-width: 44rem;
+  margin-top: 1.5rem;
+  color: var(--color-neutral-600);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  line-height: 1.6;
+}
+.dark .cp-lead {
+  color: var(--color-neutral-400);
+}
+@media (min-width: 900px) {
+  .cp-hero {
+    padding-block: 11rem 5rem;
+  }
+}
+
+/* ---------- Tabs ---------- */
+.cp-tabs {
+  display: inline-flex;
+  max-width: 100%;
+  gap: 0.25rem;
+  margin-top: 2.5rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+  padding: 0.3rem;
+}
+.dark .cp-tabs {
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-900);
+}
+.cp-tab {
+  border-radius: 999px;
+  padding: 0.65rem 1.3rem;
+  color: var(--color-neutral-600);
+  font-size: 0.95rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+.cp-tab:hover {
+  color: var(--color-neutral-950);
+}
+.cp-tab[aria-selected="true"] {
+  background: #fff;
+  color: var(--color-neutral-950);
+  box-shadow: 0 6px 16px -8px rgb(5 15 30 / 0.35);
+}
+.dark .cp-tab:hover {
+  color: #fff;
+}
+.dark .cp-tab[aria-selected="true"] {
+  background: var(--color-neutral-700);
+  color: #fff;
+}
+.cp-tab:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+@media (max-width: 479px) {
+  .cp-tabs {
+    display: flex;
+  }
+  .cp-tab {
+    flex: 1;
+    padding-inline: 0.5rem;
+    font-size: 0.88rem;
+  }
+}
+.cp-panel {
+  margin-top: 2rem;
+  animation: cp-in 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cp-panel[hidden] {
+  display: none;
+}
+@keyframes cp-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ---------- Controls ---------- */
+.cp-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.cp-panel-lead {
+  max-width: 34rem;
+  color: var(--color-neutral-600);
+  line-height: 1.55;
+}
+.dark .cp-panel-lead {
+  color: var(--color-neutral-400);
+}
+.cp-kinds {
+  display: inline-flex;
+  gap: 0.2rem;
+  border: 1px solid var(--color-neutral-200);
+  border-radius: 999px;
+  padding: 0.2rem;
+}
+.dark .cp-kinds {
+  border-color: var(--color-neutral-700);
+}
+.cp-kind {
+  border-radius: 999px;
+  padding: 0.45rem 0.95rem;
+  color: var(--color-neutral-600);
+  font-size: 0.84rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.cp-kind[aria-pressed="true"] {
+  background: var(--color-brand-600);
+  color: #fff;
+}
+.cp-kind:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+.cp-kind-note {
+  margin-top: 0.9rem;
+  color: var(--color-neutral-500);
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.cp-select {
+  min-width: 0;
+  appearance: none;
+  border: 1px solid var(--color-neutral-300);
+  border-radius: 0.8rem;
+  background: #fff
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+    no-repeat right 0.65rem center;
+  padding: 0.6rem 2.2rem 0.6rem 0.9rem;
+  color: var(--color-neutral-950);
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+.dark .cp-select {
+  border-color: var(--color-neutral-700);
+  background-color: var(--color-neutral-900);
+  color: #fff;
+}
+.cp-select:hover {
+  border-color: var(--color-brand-500);
+}
+.cp-select:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+.cp-spend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-neutral-600);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* ---------- The bars ---------- */
+.cp-summary {
+  margin-top: 1.75rem;
+}
+.cp-headline {
+  color: var(--color-neutral-800);
+  font-size: clamp(1.1rem, 2vw, 1.4rem);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+.cp-headline b {
+  color: var(--color-brand-700);
+  font-weight: 700;
+}
+.dark .cp-headline {
+  color: var(--color-neutral-200);
+}
+.dark .cp-headline b {
+  color: var(--color-brand-300);
+}
+.cp-bars {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+@media (min-width: 720px) {
+  .cp-bars {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+.cp-bar-label {
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cp-bar--us .cp-bar-label {
+  color: var(--color-brand-700);
+}
+.dark .cp-bar--us .cp-bar-label {
+  color: var(--color-brand-300);
+}
+.cp-bar-value {
+  margin-top: 0.2rem;
+  color: var(--color-neutral-950);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.dark .cp-bar-value {
+  color: #fff;
+}
+.cp-bar-value span {
+  color: var(--color-neutral-500);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.cp-bar-track {
+  display: block;
+  height: 0.5rem;
+  margin-top: 0.7rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-neutral-200);
+}
+.dark .cp-bar-track {
+  background: var(--color-neutral-800);
+}
+.cp-bar-track i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-neutral-400);
+  transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cp-bar--us .cp-bar-track i {
+  background: linear-gradient(90deg, var(--color-brand-500), var(--color-brand-600));
+}
+
+/* ---------- The table ---------- */
+.cp-table-wrap {
+  margin-top: 1.75rem;
+  padding: 0;
+}
+.cp-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+.cp-table th,
+.cp-table td {
+  vertical-align: top;
+  padding: 1rem 1.1rem;
+  border-top: 1px solid var(--color-neutral-200);
+}
+.dark .cp-table th,
+.dark .cp-table td {
+  border-color: var(--color-neutral-800);
+}
+.cp-table thead th {
+  border-top: 0;
+  padding-block: 1.1rem;
+}
+.cp-corner {
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cp-head {
+  color: var(--color-neutral-950);
+  font-size: 1rem;
+  font-weight: 650;
+}
+.cp-head svg {
+  display: inline-block;
+  margin-right: 0.45rem;
+  vertical-align: -0.2em;
+}
+.dark .cp-head {
+  color: #fff;
+}
+.cp-vc {
+  color: var(--color-brand-700);
+  font-weight: 700;
+}
+.dark .cp-vc {
+  color: var(--color-brand-300);
+}
+/* VavenCloud's column: a soft brand tint down the whole table */
+.cp-table .cp-us {
+  background: color-mix(in srgb, var(--color-brand-500) 7%, transparent);
+}
+.cp-table tbody th,
+.cp-table tfoot th {
+  color: var(--color-neutral-800);
+  font-size: 0.93rem;
+  font-weight: 650;
+}
+.dark .cp-table tbody th,
+.dark .cp-table tfoot th {
+  color: var(--color-neutral-200);
+}
+.cp-table td {
+  color: var(--color-neutral-600);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+.dark .cp-table td {
+  color: var(--color-neutral-400);
+}
+.cp-price,
+.cp-plan,
+.cp-sub {
+  display: block;
+}
+.cp-price {
+  color: var(--color-neutral-950);
+  font-size: 1.15rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.dark .cp-price {
+  color: #fff;
+}
+.cp-price small {
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+.cp-sub {
+  margin-top: 0.15rem;
+  color: var(--color-neutral-500);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+.cp-plan {
+  margin-bottom: 0.15rem;
+  color: var(--color-neutral-800);
+  font-size: 0.82rem;
+  font-weight: 650;
+}
+.dark .cp-plan {
+  color: var(--color-neutral-200);
+}
+.cp-save {
+  color: rgb(4 120 87);
+}
+.cp-price.cp-save,
+.cp-price.cp-more {
+  white-space: nowrap;
+}
+.dark .cp-save {
+  color: rgb(110 231 183);
+}
+.cp-more {
+  color: var(--color-neutral-600);
+}
+.cp-chip {
+  display: inline-block;
+  margin-top: 0.5rem;
+  border-radius: 999px;
+  background: var(--color-neutral-100);
+  padding: 0.15rem 0.6rem;
+  color: var(--color-neutral-600);
+  font-size: 0.72rem;
+  font-weight: 650;
+}
+.dark .cp-chip {
+  background: var(--color-neutral-800);
+  color: var(--color-neutral-300);
+}
+.cp-chip--good {
+  background: rgb(209 250 229);
+  color: rgb(4 120 87);
+}
+.dark .cp-chip--good {
+  background: rgb(16 185 129 / 0.16);
+  color: rgb(110 231 183);
+}
+.cp-table tfoot th,
+.cp-table tfoot td {
+  border-top-width: 2px;
+  background-color: color-mix(in srgb, var(--color-neutral-500) 6%, transparent);
+}
+.cp-table tfoot .cp-us {
+  background-color: color-mix(in srgb, var(--color-brand-500) 11%, transparent);
+}
+.cp-table tfoot .cp-price {
+  font-size: 1.3rem;
+}
+.cp-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+.cp-table tbody tr:hover > * {
+  background-color: color-mix(in srgb, var(--color-brand-500) 4%, transparent);
+}
+
+/* The size and number pickers in a row's first cell */
+.cp-config {
+  min-width: 15rem;
+}
+.cp-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.cp-controls .cp-select:first-of-type {
+  flex: 1 1 auto;
+}
+.cp-select--qty {
+  flex: none;
+}
+.cp-remove {
+  display: inline-flex;
+  height: 2.1rem;
+  width: 2.1rem;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.cp-remove:hover {
+  background: rgb(255 228 230);
+  color: rgb(190 18 60);
+}
+.cp-remove[hidden] {
+  display: none;
+}
+.cp-remove:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+}
+.cp-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  border: 1px dashed var(--color-neutral-400);
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  color: var(--color-neutral-700);
+  font-size: 0.9rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+.dark .cp-add {
+  color: var(--color-neutral-300);
+}
+.cp-add:hover:not(:disabled) {
+  border-color: var(--color-brand-500);
+  color: var(--color-brand-700);
+}
+.cp-add:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+.cp-add:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+.cp-hire {
+  max-width: 46rem;
+  margin-top: 1.25rem;
+  color: var(--color-neutral-600);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.dark .cp-hire {
+  color: var(--color-neutral-400);
+}
+.cp-hire b {
+  color: var(--color-neutral-900);
+}
+.dark .cp-hire b {
+  color: #fff;
+}
+.cp-table--managed td,
+.cp-table--managed th {
+  width: 24%;
+}
+.cp-table--managed th[scope="row"],
+.cp-table--managed .cp-corner {
+  width: 28%;
+}
+
+/* On a phone each row is a card: the pickers first, then each cloud's price under its own name */
+@media (max-width: 859px) {
+  .cp-table,
+  .cp-table tbody,
+  .cp-table tfoot,
+  .cp-table tr,
+  .cp-table th,
+  .cp-table td {
+    display: block;
+  }
+  .cp-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .cp-table tr {
+    border-top: 1px solid var(--color-neutral-200);
+    padding: 0.5rem 0 0.75rem;
+  }
+  .dark .cp-table tr {
+    border-color: var(--color-neutral-800);
+  }
+  .cp-table tr:first-child {
+    border-top: 0;
+  }
+  .cp-table th,
+  .cp-table td,
+  .cp-table tfoot th,
+  .cp-table tfoot td {
+    border-top: 0;
+    padding: 0.45rem 1.1rem;
+  }
+  .cp-config {
+    min-width: 0;
+  }
+  .cp-table td {
+    display: grid;
+    grid-template-columns: 6.2rem minmax(0, 1fr);
+    gap: 0 0.75rem;
+    align-items: start;
+  }
+  .cp-table td::before {
+    content: attr(data-label);
+    grid-row: 1 / span 4;
+    padding-top: 0.15rem;
+    color: var(--color-neutral-500);
+    font-size: 0.74rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .cp-table td > * {
+    grid-column: 2;
+  }
+  .cp-table--managed td,
+  .cp-table--managed th,
+  .cp-table--managed th[scope="row"],
+  .cp-table--managed .cp-corner {
+    width: auto;
+  }
+  /* The size picker takes the room the number picker and the remove button leave */
+  .cp-controls .cp-select {
+    padding-inline: 0.7rem 1.9rem;
+    font-size: 0.88rem;
+  }
+}
+
+/* ---------- Notes and call to action ---------- */
+.cp-notes {
+  max-width: 52rem;
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--color-neutral-200);
+  padding-top: 2rem;
+}
+.dark .cp-notes {
+  border-color: var(--color-neutral-800);
+}
+.cp-notes-title {
+  color: var(--color-neutral-950);
+  font-size: 1.05rem;
+  font-weight: 650;
+}
+.dark .cp-notes-title {
+  color: #fff;
+}
+.cp-notes ul {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  color: var(--color-neutral-600);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+.dark .cp-notes ul {
+  color: var(--color-neutral-400);
+}
+.cp-notes b {
+  color: var(--color-neutral-900);
+}
+.dark .cp-notes b {
+  color: var(--color-neutral-200);
+}
+.cp-notes a {
+  color: var(--color-brand-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.dark .cp-notes a {
+  color: var(--color-brand-300);
+}
+.cp-cta {
+  display: grid;
+  gap: 1.5rem;
+  border-radius: 1.75rem;
+  padding: 2.25rem 1.75rem;
+}
+@media (min-width: 900px) {
+  .cp-cta {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 3rem;
+    padding: 3rem 3.25rem;
+  }
+}
+.cp-cta-title {
+  color: #fff;
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  font-weight: 650;
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+}
+.cp-cta-text {
+  max-width: 36rem;
+  margin-top: 0.9rem;
+  line-height: 1.6;
+}
+.cp-cta .btn-primary {
+  justify-self: start;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cp-panel,
+  .cp-bar-track i,
+  .cp-tab,
+  .cp-table tbody tr {
+    animation: none;
+    transition: none;
+  }
+}

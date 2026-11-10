@@ -35,7 +35,8 @@ const stampTone: Record<Side, string> = {
 /** How long a side has been down at minute `m` (VavenCloud's stops at 02:41) */
 const downtime = (s: Side, m: number) => {
   const { start, fixed, end } = night
-  if (s === 'vaven' && m >= fixed) return `<p class="ow-down"><span class="ow-dot bg-emerald-400" aria-hidden="true"></span>Fixed in <b>${fixed - start} min</b></p>`
+  if (s === 'vaven' && m >= fixed)
+    return `<p class="ow-down"><span class="ow-dot bg-emerald-400" aria-hidden="true"></span>Fixed in <b>${fixed - start} min</b></p>`
   const down = m === start ? '<b>just now</b>' : `<b>${m - start} min</b>${m >= end ? ' and counting' : ''}`
   return `<p class="ow-down"><span class="ow-dot ow-dot--live bg-rose-500" aria-hidden="true"></span>Down ${down}</p>`
 }

@@ -6,12 +6,48 @@ import type { IconName } from '@/shared/ui/icons.ts'
  */
 
 /** 24/7 DevOps support: one incident in the client portal, owned from alert to report */
-export const incident: { who: string; icon: IconName; time: string; text: string; tone: 'alert' | 'engineer' | 'done' | 'report' }[] = [
-  { who: 'Monitoring', icon: 'activity', time: '02:14', text: 'Checkout response time above 4 s. On-call engineer paged.', tone: 'alert' },
-  { who: 'On-call engineer', icon: 'support', time: '02:19', text: 'I’m on it. Looking at the database and the last deployment.', tone: 'engineer' },
-  { who: 'On-call engineer', icon: 'support', time: '02:31', text: 'Found it: a missing index on the orders table. Fixing now.', tone: 'engineer' },
-  { who: 'Resolved', icon: 'check', time: '02:41', text: 'Fixed and verified. Checkout is back to 182 ms.', tone: 'done' },
-  { who: 'Report sent', icon: 'mail', time: '09:00', text: 'What happened, why, and what we changed so it doesn’t happen again.', tone: 'report' },
+export const incident: {
+  who: string
+  icon: IconName
+  time: string
+  text: string
+  tone: 'alert' | 'engineer' | 'done' | 'report'
+}[] = [
+  {
+    who: 'Monitoring',
+    icon: 'activity',
+    time: '02:14',
+    text: 'Checkout response time above 4 s. On-call engineer paged.',
+    tone: 'alert',
+  },
+  {
+    who: 'On-call engineer',
+    icon: 'support',
+    time: '02:19',
+    text: 'I’m on it. Looking at the database and the last deployment.',
+    tone: 'engineer',
+  },
+  {
+    who: 'On-call engineer',
+    icon: 'support',
+    time: '02:31',
+    text: 'Found it: a missing index on the orders table. Fixing now.',
+    tone: 'engineer',
+  },
+  {
+    who: 'Resolved',
+    icon: 'check',
+    time: '02:41',
+    text: 'Fixed and verified. Checkout is back to 182 ms.',
+    tone: 'done',
+  },
+  {
+    who: 'Report sent',
+    icon: 'mail',
+    time: '09:00',
+    text: 'What happened, why, and what we changed so it doesn’t happen again.',
+    tone: 'report',
+  },
 ]
 
 /** Managed cloud: the client's own account (it stays theirs), with what our engineers keep healthy in it */

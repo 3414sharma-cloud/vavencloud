@@ -215,7 +215,10 @@ const loadBalancer: PlanCategory = {
     { feature: 'vCPU', values: ['1', '2', '3'] },
     { feature: 'RAM', values: ['1 GB', '2 GB', '3 GB'] },
     { feature: 'SSD', values: ['5 GB', '10 GB', '15 GB'] },
-    { feature: 'Architecture', values: ['Single Load Balancer VM', 'Active + Standby Pair', '2 Directors + 1 HAProxy Nodes'] },
+    {
+      feature: 'Architecture',
+      values: ['Single Load Balancer VM', 'Active + Standby Pair', '2 Directors + 1 HAProxy Nodes'],
+    },
     { feature: 'Nodes', values: ['—', '—', 'Min 1, Max 10'] },
   ],
 }
@@ -290,7 +293,14 @@ export const businessEmail: PlanCategory = {
       discount: 'Save 50%',
       price: 'Pricing under review',
       comingSoon: true,
-      features: ['1 Mailbox', 'Webmail Access', 'Basic Spam Filter', 'Mobile Compatibility', 'SSL/TLS', 'Email Forwarding'],
+      features: [
+        '1 Mailbox',
+        'Webmail Access',
+        'Basic Spam Filter',
+        'Mobile Compatibility',
+        'SSL/TLS',
+        'Email Forwarding',
+      ],
     },
     {
       name: 'Team Email',
@@ -307,7 +317,14 @@ export const businessEmail: PlanCategory = {
       price: 'Pricing under review',
       popular: true,
       comingSoon: true,
-      features: ['10 Mailboxes', 'Advanced Spam Protection', 'Custom Domain', 'Shared Calendars', 'SSL + DKIM + SPF', 'Priority Support'],
+      features: [
+        '10 Mailboxes',
+        'Advanced Spam Protection',
+        'Custom Domain',
+        'Shared Calendars',
+        'SSL + DKIM + SPF',
+        'Priority Support',
+      ],
     },
     {
       name: 'Enterprise Email',
@@ -315,7 +332,14 @@ export const businessEmail: PlanCategory = {
       discount: 'Save 50%',
       price: 'Pricing under review',
       comingSoon: true,
-      features: ['Unlimited Mailboxes', 'Custom Policies', 'Advanced Security', 'Admin Console', 'SLA Support', 'Priority Onboarding'],
+      features: [
+        'Unlimited Mailboxes',
+        'Custom Policies',
+        'Advanced Security',
+        'Admin Console',
+        'SLA Support',
+        'Priority Onboarding',
+      ],
     },
   ],
   comparison: [
@@ -330,7 +354,11 @@ export const businessEmail: PlanCategory = {
 
 export const planGroups: PlanGroup[] = [
   { id: 'web-hosting', label: 'Web Hosting', categories: [webHosting] },
-  { id: 'cloud-services', label: 'Cloud Services', categories: [compute, databases, loadBalancer, networking, backups] },
+  {
+    id: 'cloud-services',
+    label: 'Cloud Services',
+    categories: [compute, databases, loadBalancer, networking, backups],
+  },
 ]
 
 /** "Every plan includes" – shown with the shared features section on the pricing page. */
@@ -338,17 +366,20 @@ export const planIncludes: Feature[] = [
   {
     icon: 'grid',
     title: 'Easy-to-Use Control Panel',
-    description: 'Manage domains, hosting, databases, email, backups and SSL certificates from one control panel, a few clicks each.',
+    description:
+      'Manage domains, hosting, databases, email, backups and SSL certificates from one control panel, a few clicks each.',
   },
   {
     icon: 'shield',
     title: 'Advanced Security Protection',
-    description: 'Firewall security, malware detection, DDoS protection, automatic security updates and round-the-clock monitoring.',
+    description:
+      'Firewall security, malware detection, DDoS protection, automatic security updates and round-the-clock monitoring.',
   },
   {
     icon: 'support',
     title: '24/7 Technical Support',
-    description: 'Hosting specialists on hand day and night for migrations, server issues, website performance and technical help.',
+    description:
+      'Hosting specialists on hand day and night for migrations, server issues, website performance and technical help.',
   },
   {
     icon: 'zap',
@@ -358,7 +389,8 @@ export const planIncludes: Feature[] = [
   {
     icon: 'lock',
     title: 'Free SSL Certificate',
-    description: 'Free SSL certificates and regular backups keep your data secure and recoverable whenever you need it.',
+    description:
+      'Free SSL certificates and regular backups keep your data secure and recoverable whenever you need it.',
   },
   {
     icon: 'activity',
