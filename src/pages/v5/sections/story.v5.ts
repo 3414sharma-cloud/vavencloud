@@ -5,7 +5,6 @@ import { initTagline, problemHeading } from '@/pages/v2/sections/problem-heading
 import type { CallerId, Line, Scene, SiteState } from '@/pages/v3/v3.data.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
-import { onScrollFrame } from '@/shared/lib/smooth-scroll.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { logoMark } from '@/shared/ui/logo.ts'
 import { callers, loopNote, payoff, scenes, site } from '../v5.data.ts'
@@ -25,13 +24,13 @@ import { callers, loopNote, payoff, scenes, site } from '../v5.data.ts'
  * [data-from] element whose time has come and whose data-to hasn't, and data-scene and data-site on the
  * stage; story.v3.css does the rest, so playing, pausing, jumping and replaying are all just "show t".
  *
- * v5: instead of one stage that changes in place, every scene is its own card (sceneCard), and the cards stack
- * over one another as you scroll (sticky, v5.css). Each card renders the same markup but only plays its own
- * slice of the timeline, then holds on how that scene ended, so the stack reads as the night, step by step.
- * Each card plays by itself once it's scrolled to, with no button and no pausing, through to how its scene
- * ended, and stays there. (v3's index and play button below are v3's; the cards have neither.) The picture is hidden
- * from screen readers; a list tells the same story. With reduced motion nothing plays by itself: the end
- * shows, and the index shows the end of each scene.
+ * v5: the whole night in one card, one screen tall (initNight): a six-step timeline, the caption, and the site,
+ * the calls and the phone. It plays through by itself, scene after scene, once it's on screen, and stays on how
+ * it ended; clicking a timeline step plays from that scene. No play button, no pausing, and no extra scrolling:
+ * the page scrolls past it like any other section. (It replaced a stack of six cards, which took about eleven
+ * screens of scrolling, and a pinned version that still took more than a screen.) The picture is hidden from
+ * screen readers; a list tells the same story. With reduced motion nothing plays: the end shows, and the
+ * timeline shows the end of each scene.
  */
 
 /** How long "them" is seen typing before each message */
@@ -121,7 +120,6 @@ const screens = [...new Set(timeline.map((s) => s.screen))].map((id) => {
 /** Shown from `from` until `to` (or for good) */
 const when = (from: number, to?: number) =>
   `data-from="${Math.round(from)}"${to === undefined ? '' : ` data-to="${Math.round(to)}"`}`
-const pad = (n: number) => String(n).padStart(2, '0')
 const fill = (text: string, t: number) => text.replace('{time}', timeAt(t))
 
 const mark = (size: number) => logoMark(size, 'st-mark')
@@ -301,27 +299,26 @@ const phone = () => `
 
 /* ---------- The index of scenes, and the story for screen readers ---------- */
 
-/** The last moment a scene's card shows: the end of its scene (just before the next scene's screen takes over) */
+/** The last moment a scene shows: the end of its scene (just before the next scene's screen takes over) */
 const endOf = (s: Timed) => (s === lastScene ? END : s.start + s.ms - 1)
 
 /**
- * One scene as its own card: its number and name, its narration, then the site, the calls and the phone as they
- * stand in that scene. The cards stick one over another as you scroll; each plays its own scene when it arrives
- * and then holds on how that scene ended.
+ * The night's timeline across the top of the card: one step per scene, with the time it starts and its name. The
+ * line over the current step fills as the scene plays; the steps before it are full. Clicking a step goes
+ * to that scene.
  */
-const sceneCard = (s: Timed, i: number) => `
-      <article class="st st-card" style="--i:${i}" data-story data-start="${s.start}" data-end="${endOf(s)}" data-scene="${s.id}" data-site="ok">
-        <span class="st-card-shade" aria-hidden="true"></span>
-        <div class="st-card-head">
-          <p class="st-card-tag" aria-hidden="true"><span class="st-card-num">${pad(i + 1)}<span>/${pad(timeline.length)}</span></span>${s.tab}</p>
-        </div>
-        ${narration()}
-        <div class="st-body" aria-hidden="true">
-          ${siteCard()}
-          ${callList()}
-          ${phone()}
-        </div>
-      </article>`
+const timelineRail = () => `
+        <div class="st-scenes" role="group" aria-label="The night, scene by scene">
+          ${timeline
+            .map(
+              (s, i) => `
+          <button type="button" class="st-scene" data-goto="${i}" aria-label="Scene ${i + 1}: ${s.tab}">
+            <span class="st-scene-bar" aria-hidden="true"><i></i></span>
+            <span class="st-scene-name" aria-hidden="true"><span class="st-scene-num">${timeAt(s.start)}</span><span class="st-scene-label">${s.tab}</span></span>
+          </button>`,
+            )
+            .join('')}
+        </div>`
 
 const said = (l: Line, s: Timed) => {
   if ('you' in l) return `You: “${l.you}”`
@@ -363,29 +360,42 @@ const html = () => `
 <section id="problem" class="v2-section v4-story" aria-labelledby="problem-title">
   <div class="container-page">
     <div class="v4-problem-head">${problemHeading()}</div>
-    <div class="st-stack" data-scroll-skip data-no-reveal>
+    <div class="st-pin">
       <div class="st-stage">
-        ${timeline.map(sceneCard).join('')}
+        <article class="st st-card" data-story data-scene="${timeline[0].id}" data-site="ok">${timelineRail()}
+          ${narration()}
+          <div class="st-body" aria-hidden="true">
+            ${siteCard()}
+            ${callList()}
+            ${phone()}
+          </div>
+        </article>
       </div>
-      <div class="st-stack-hold" aria-hidden="true"></div>
     </div>
     ${transcript()}
     ${payoffBand()}
   </div>
 </section>`
 
-/* ---------- Playing it ---------- */
+/* ---------- Playing it: one card, the whole night, by itself ---------- */
 
-function initStory(root: HTMLElement): void {
-  /** This card's part of the night: from the start of its scene to how it ended */
-  const from = Number(root.dataset.start)
-  const stop = Number(root.dataset.end)
+/**
+ * The night plays through once, scene after scene, by itself, as soon as the card comes into view, and stays on
+ * how it ended. Nothing is pinned and nothing needs scrolling: the card is one screen tall and the page scrolls
+ * past it as usual. The timeline across the top shows where the night is and, when you click a step, plays it from
+ * that scene on. With reduced motion nothing plays: the card shows how the night ended, and a step shows how its
+ * scene ended.
+ */
+function initNight(pin: HTMLElement): void {
+  const root = qs('.st-card', pin)
   const timed = qsa('[data-from]', root).map((el) => ({
     el,
     from: Number(el.dataset.from),
     to: el.dataset.to === undefined ? Infinity : Number(el.dataset.to),
     on: false,
   }))
+  const steps = qsa<HTMLButtonElement>('[data-goto]', root)
+  const bars = steps.map((b) => qs('.st-scene-bar i', b))
   const clocks = qsa('[data-clock]', root)
   const out = {
     down: qs('[data-down]', root),
@@ -396,8 +406,12 @@ function initStory(root: HTMLElement): void {
     barFix: qs('[data-bar-fix]', root),
   }
   const total = upMinute - crashMinute
+  const last = timeline.length - 1
 
-  let t = from
+  let t = 0
+  let scene = -1
+  let frame = 0
+  let lastTick = 0
   const shown = { site: '', minute: -1 }
 
   const render = () => {
@@ -433,135 +447,80 @@ function initStory(root: HTMLElement): void {
     root.classList.remove('is-jumping')
   }
 
-  let started = false
-  let last = 0
+  /** Which scene a moment is in */
+  const sceneAt = (ms: number) =>
+    Math.max(
+      timeline.findLastIndex((s) => ms >= s.start),
+      0,
+    )
+
+  /** The timeline: the current step marked, the ones before it full, the ones after it empty */
+  const paintTimeline = (k: number) => {
+    steps.forEach((b, i) => b.setAttribute('aria-current', String(i === k)))
+    bars.forEach((bar, i) => (bar.style.transform = `scaleX(${i < k ? 1 : 0})`))
+  }
+
+  /** The night moves on to scene `k` */
+  const enter = (k: number) => {
+    scene = k
+    root.dataset.scene = timeline[k].id
+    paintTimeline(k)
+    root.classList.remove('is-swap')
+    void root.offsetWidth
+    root.classList.add('is-swap') // the site, the calls and the phone settle in again (v5.css)
+  }
 
   const tick = (now: number) => {
     // A frame's timestamp can be a little earlier than the moment it started: never run backwards
-    t = Math.min(t + Math.max(now - last, 0), stop)
-    last = now
+    t = Math.min(t + Math.max(now - lastTick, 0), END)
+    lastTick = now
     render()
-    if (t < stop) requestAnimationFrame(tick)
+    const k = sceneAt(t)
+    if (k !== scene) enter(k)
+    const s = timeline[scene]
+    bars[scene].style.transform = `scaleX(${Math.min((t - s.start) / s.ms, 1)})`
+    if (t < END) frame = requestAnimationFrame(tick)
   }
 
-  /** Plays the card's scene once, through to its end; nothing pauses it */
-  const play = () => {
-    if (started) return
-    started = true
+  /** Play the night from a moment on, through to the end */
+  const play = (from: number) => {
+    cancelAnimationFrame(frame)
     root.classList.remove('is-paused')
-    last = performance.now()
-    requestAnimationFrame(tick)
+    jump(from)
+    enter(sceneAt(from))
+    lastTick = performance.now()
+    frame = requestAnimationFrame(tick)
   }
 
-  // With reduced motion each card simply shows how its scene ended
+  // With reduced motion: nothing plays. The card shows how the night ended, and a step shows how its scene ended
   if (prefersReducedMotion()) {
-    jump(stop)
+    const showEnd = (k: number) => {
+      scene = k
+      root.dataset.scene = timeline[k].id
+      paintTimeline(k)
+      jump(endOf(timeline[k]))
+      bars[k].style.transform = 'scaleX(1)'
+    }
+    steps.forEach((b, i) => b.addEventListener('click', () => showEnd(i)))
+    showEnd(last)
     return
   }
 
-  // Waiting below the screen: the loops (ringing, typing) hold still until the card arrives
-  jump(from)
-  root.classList.add('is-paused')
-  // Plays the first time the card reaches the middle of the screen, and keeps playing to the end of its scene
+  jump(0)
+  paintTimeline(0)
+  root.classList.add('is-paused') // the ringing and typing wait until the night starts
+  steps.forEach((b, i) => b.addEventListener('click', () => play(timeline[i].start)))
+
+  // The night starts the first time the card is well on screen
   const seen = new IntersectionObserver(
     ([e]) => {
       if (!e.isIntersecting) return
-      play()
       seen.disconnect()
+      play(0)
     },
     { rootMargin: '-30% 0px -30% 0px' },
   )
   seen.observe(root)
-}
-
-/* ---------- The stack: pinned, each card glides up over the last, slower than the scroll ---------- */
-
-/** How the stack paces itself, in screen heights of scrolling */
-const PACE = {
-  /** a card's slide from below the screen to its place: about half the scroll's speed */
-  slide: 1.6,
-  /** the pause on each card once it has landed, before the next one starts */
-  pause: 0.45,
-  /** the hold once the last card has landed, before the stack moves on with the page */
-  hold: 0.5,
-}
-
-/**
- * The stage (.st-stage) is pinned to the screen for the whole stack, which is made tall enough for each card's
- * slide and pause (PACE). Each card after the first slides up from below the screen to its resting place,
- * easing in and out, at about half the speed of the scroll; then the stack rests for a moment before the next.
- * As a card lands it grows from 92% to full size; the cards it covers sink back (3.5% for each card on top,
- * from their top edge so their peeking edges stay put) and their shade darkens. After the last card the stack
- * holds and eases back by 5% before it scrolls on with the page.
- *
- * Kept cheap, since it runs every frame: it runs in the smooth scroll's own frame (onScrollFrame), so nothing
- * lags the scroll; it does nothing unless the scroll or the window has changed and the stack is near the
- * screen; sizes are read once (and when the page's size changes); and it writes each card's transform and its
- * shade's opacity directly, only when they change. With reduced motion none of this runs: the cards simply
- * stick one after another as you scroll (v5.css).
- */
-function initStack(stack: HTMLElement): void {
-  const cards = qsa('.st-card', stack)
-  if (cards.length < 2 || prefersReducedMotion()) return
-  stack.classList.add('is-pinned')
-  const shades = cards.map((c) => qs('.st-card-shade', c))
-  const shown = cards.map(() => ({ transform: '', shade: '', hidden: false }))
-  const last = cards.length - 1
-  let rests: number[] = [] // each card's resting top, from the top of the screen
-  let stackTop = 0
-  let vh = 0
-  let lastY = NaN
-  let dirty = true
-
-  /** Read once, and again whenever the page's size changes: never in the middle of a frame */
-  const measure = () => {
-    vh = window.innerHeight
-    rests = cards.map((c) => parseFloat(getComputedStyle(c).top))
-    // Tall enough for every slide and pause, the hold, and the screen the stage itself fills
-    stack.style.height = `${Math.round(vh * (last * (PACE.slide + PACE.pause) + PACE.hold + 1))}px`
-    stackTop = stack.getBoundingClientRect().top + window.scrollY
-  }
-
-  const smooth = (x: number) => x * x * (3 - 2 * x) // ease in and out
-
-  const update = () => {
-    const y = window.scrollY
-    if (y === lastY && !dirty) return
-    lastY = y
-    if (dirty) measure()
-    dirty = false
-    const s = (y - stackTop) / vh // how far into the pinned stack, in screen heights
-    if (s < -2 || s > last * (PACE.slide + PACE.pause) + PACE.hold + 2) return
-
-    // How far each card has come in: 0 waiting below the screen, 1 at its place (the first one is there already)
-    const step = PACE.slide + PACE.pause
-    const came = cards.map((_, i) =>
-      i === 0 ? 1 : Math.min(Math.max((s - (i - 1) * step - PACE.pause) / PACE.slide, 0), 1),
-    )
-    const held = Math.min(Math.max((s - last * step) / PACE.hold, 0), 1)
-    const settle = 1 - 0.05 * smooth(held)
-
-    let covering = 0 // how much the cards after this one cover it, adding up from the front
-    for (let i = last; i >= 0; i--) {
-      const e = came[i]
-      const glide = smooth(e)
-      const below = (1 - glide) * (vh - rests[i] + 24) // from just under the screen's foot to its place
-      const arrive = 1 - (1 - e) * (1 - e)
-      const scale = (0.92 + 0.08 * arrive) * (1 - 0.035 * covering) * settle
-      const transform = `translate3d(0, ${below.toFixed(1)}px, 0) scale(${scale.toFixed(4)})`
-      const shade = (Math.min(covering, 2) * 0.07).toFixed(3)
-      const hidden = e === 0 // still waiting below the screen: not drawn at all
-      if (transform !== shown[i].transform) cards[i].style.transform = shown[i].transform = transform
-      if (shade !== shown[i].shade) shades[i].style.opacity = shown[i].shade = shade
-      if (hidden !== shown[i].hidden) cards[i].style.visibility = (shown[i].hidden = hidden) ? 'hidden' : ''
-      covering += glide
-    }
-  }
-
-  // The page's size changing (the window, fonts or images loading above) moves the stack: measure again
-  new ResizeObserver(() => (dirty = true)).observe(document.body)
-  onScrollFrame(update)
-  update()
 }
 
 /* ---------- The phone mockup: laid out at one real size, zoomed to the room in its card ---------- */
@@ -605,9 +564,8 @@ export function storyV5(): Section {
   return {
     html: html(),
     init: () => {
-      qsa('#problem [data-story]').forEach(initStory)
-      fitPhones(qs('#problem .st-stack'))
-      initStack(qs('#problem .st-stack'))
+      fitPhones(qs('#problem .st-pin'))
+      initNight(qs('#problem .st-pin'))
       initTagline()
     },
   }
