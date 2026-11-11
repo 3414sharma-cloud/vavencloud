@@ -14,7 +14,6 @@ export const footerColumns: FooterColumn[] = [
   {
     title: 'Hosting',
     links: [
-      { label: 'Pricing', href: `${vc}/pricing`, external: true },
       { label: 'Web Hosting', href: `${vc}/web-hosting`, external: true },
       { label: 'Cloud Services', href: `${vc}/cloud-services`, external: true },
       { label: 'Email Solutions', href: `${vc}/email-solutions`, external: true },

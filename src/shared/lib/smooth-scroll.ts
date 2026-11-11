@@ -39,6 +39,9 @@ export function initSmoothScroll(): void {
     lerp: 0.09, // how quickly the page catches up with the wheel: lower is silkier, higher is snappier
     wheelMultiplier: 1,
     smoothWheel: true,
+    // A box that scrolls on its own (the chat on v5) takes the wheel while it can still move that way; once it
+    // reaches its end the page carries on, smoothly, instead of the wheel getting stuck on the box
+    allowNestedScroll: true,
   })
 
   const frame = (time: number) => {

@@ -526,7 +526,7 @@ function initNight(pin: HTMLElement): void {
 /* ---------- The phone mockup: laid out at one real size, zoomed to the room in its card ---------- */
 
 /** The phone's own size in rem (v5.css, .st-card .st-phone): 18 wide, 37 tall, or as short as 30 when room is short */
-const PHONE = { w: 18, h: 37, minH: 30 }
+const PHONE = { w: 16, h: 30, minH: 26 }
 
 /**
  * Sizes each card's phone to the room its card has: the body's height beside the site and the calls on wide
@@ -539,14 +539,19 @@ function fitPhones(stack: HTMLElement): void {
   const fit = (body: HTMLElement) => {
     const phone = qs('.st-phone', body)
     const siteEl = qs('.st-site', body)
-    const log = qs('.st-log', body)
     const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
-    const stacked = log.offsetHeight === 0 // below 1024px: just the browser bar above the phone
+    const stacked = matchMedia('(max-width: 1023px)').matches // below 1024px: one column, the card grows to fit
     const gap = parseFloat(getComputedStyle(body).rowGap) || 0
     const roomH = body.clientHeight - (stacked ? siteEl.offsetHeight + gap : 0)
     const roomW = stacked ? body.clientWidth : body.clientWidth * 0.34
+    if (stacked) {
+      // The card is as tall as its content here, so the phone is sized to the width (up to 130%), at its full height
+      phone.style.setProperty('--phone-h', String(PHONE.h))
+      phone.style.setProperty('--phone-zoom', Math.min((roomW * 0.94) / (PHONE.w * rem), 1.3).toFixed(4))
+      return
+    }
     // As big as the width allows, then as tall as fits at that size, then smaller only if even 30rem won't fit
-    let zoom = Math.min(roomW / (PHONE.w * rem), 1.15)
+    let zoom = Math.min(roomW / (PHONE.w * rem), 1)
     const h = Math.min(Math.max(roomH / zoom / rem, PHONE.minH), PHONE.h)
     zoom = Math.max(Math.min(zoom, roomH / (h * rem)), 0.4)
     phone.style.setProperty('--phone-h', h.toFixed(3))

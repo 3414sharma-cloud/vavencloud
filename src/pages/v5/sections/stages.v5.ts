@@ -1,6 +1,5 @@
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
-import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { stages } from '../v5.data.ts'
 import { stageArt } from './stage-art.v5.ts'
@@ -35,13 +34,11 @@ export function stagesV5(): Section {
         description: 'Founders come to us at five different moments. Find yours.',
       })}
     </div>
-  </div>
-  <div class="v4-stage-marquee">
-    <div class="v4-stage-track">
-      <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true)).join('')}
-      </ol>
-      <ol class="v4-stage-group" aria-hidden="true">${stages.map((s, i) => card(s, i, false)).join('')}
-      </ol>
+    <div class="v4-stage-marquee">
+      <div class="v4-stage-track">
+        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true)).join('')}
+        </ol>
+      </div>
     </div>
   </div>
 </section>`,
@@ -129,15 +126,15 @@ const MAX_SPEED = 4
  * cards, scrolled by hand (v5.css).
  */
 function initMarquee(): void {
-  if (prefersReducedMotion()) return
   const root = qs('#stages .v4-stage-marquee')
   const track = qs('.v4-stage-track', root)
   const group = qs('.v4-stage-group', track)
   root.classList.add('is-js') // v5.css: the script moves the track now, not the CSS animation
 
-  let offset = 0 // how far the row has slid left, wrapping at one set's width
+  let offset = 0 // how far the row has slid left, between 0 (card 01 first) and the last card's end
+  let dir = 1 // which way it drifts on its own: 1 leftwards (towards 05), -1 back towards 01
   let velocity = AUTO_SPEED
-  let groupWidth = group.offsetWidth
+  let maxOffset = Math.max(group.offsetWidth - root.clientWidth, 0)
   let hovering = false
   let focused = false
   let dragging = false
@@ -146,7 +143,7 @@ function initMarquee(): void {
   let last = 0
 
   const apply = () => {
-    offset = ((offset % groupWidth) + groupWidth) % groupWidth
+    offset = Math.min(Math.max(offset, 0), maxOffset)
     track.style.transform = `translate3d(${-offset}px, 0, 0)`
   }
 
@@ -156,10 +153,20 @@ function initMarquee(): void {
     if (!dragging) {
       // Head for the pace it should have: its own, or standing still. Faster than that (or the other way) is
       // slowing down, which is friction; slower is speeding up.
-      const target = hovering || focused || now < holdUntil ? 0 : AUTO_SPEED
+      const target = hovering || focused || now < holdUntil ? 0 : dir * AUTO_SPEED
       const slowing = Math.abs(velocity) > Math.abs(target) || velocity * target < 0
       velocity += (target - velocity) * (1 - Math.exp(-dt / (slowing ? FRICTION : PICKUP)))
       offset += velocity * dt
+      // At either end it turns round after a short rest and drifts back the other way
+      if (offset >= maxOffset && dir > 0) {
+        dir = -1
+        velocity = 0
+        holdUntil = now + 900
+      } else if (offset <= 0 && dir < 0) {
+        dir = 1
+        velocity = 0
+        holdUntil = now + 900
+      }
     }
     apply()
     frame = requestAnimationFrame(tick)
@@ -258,7 +265,10 @@ function initMarquee(): void {
     { passive: false },
   )
 
-  new ResizeObserver(() => (groupWidth = group.offsetWidth || groupWidth)).observe(group)
+  // Re-measured when the window resizes or the cards change width (web fonts arriving, for one)
+  const measure = new ResizeObserver(() => (maxOffset = Math.max(group.offsetWidth - root.clientWidth, 0)))
+  measure.observe(root)
+  measure.observe(group)
   // Only runs while it's on screen
   new IntersectionObserver(([e]) => (e.isIntersecting ? run() : halt())).observe(root)
 }

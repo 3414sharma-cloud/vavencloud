@@ -11,17 +11,13 @@ import {
   HOURS,
   aws,
   awsBusiness,
-  awsEnterprise,
   azure,
-  azureProfessionalDirect,
   azureStandard,
-  hireAnnual,
   managedFacts,
   match,
   monthly,
   pricesCheckedOn,
   sizes,
-  spendOptions,
   vavenManaged,
   type Kind,
 } from './comparison.data.ts'
@@ -30,8 +26,8 @@ import {
  * The comparison page (/comparison/): AWS, Azure and VavenCloud side by side, in two tabs.
  *  1. Cloud servers: a row per server where you pick its size (vCPU and RAM) and how many; each cloud's monthly
  *     price and what you save with VavenCloud update as you change it, with the total underneath.
- *  2. Managed service: what each one charges to have someone on call at your monthly cloud bill, and what that
- *     covers. The numbers are in comparison.data.ts.
+ *  2. Managed service: what each one's entry plan charges to have someone on call, and what that covers.
+ *     The numbers are in comparison.data.ts.
  */
 
 const usd = (n: number, decimals = 2) =>
@@ -71,13 +67,10 @@ interface Row {
   qty: number
 }
 
-/** Where it starts: two small servers, a medium and a large */
-const startRows = (): Row[] => [
-  { size: 1, qty: 2 },
-  { size: 2, qty: 1 },
-  { size: 3, qty: 1 },
-]
-const MAX_ROWS = 8
+/** Where it starts: one of each size */
+const startRows = (): Row[] => sizes.map((_, i) => ({ size: i, qty: 1 }))
+/** Always compared against each cloud's steady-performance servers */
+const KIND: Kind = 'steady'
 
 const sizeOptions = (selected: number) =>
   sizes
@@ -104,7 +97,7 @@ function priced(row: Row, kind: Kind) {
   }
 }
 
-/** What you save by choosing VavenCloud over the cheaper of the two, as a cell */
+/** What you save by choosing VavenCloud over the one it's measured against (Azure), as a cell */
 function saving(cheaper: number, vaven: number, cheaperName: string) {
   const diff = cheaper - vaven
   if (Math.abs(diff) < 0.005) return `<span class="cp-price">Same</span><span class="cp-sub">as ${cheaperName}</span>`
@@ -113,21 +106,26 @@ function saving(cheaper: number, vaven: number, cheaperName: string) {
     : `<span class="cp-price cp-more">+${usd(-diff)}</span><span class="cp-sub">${Math.round((-diff / cheaper) * 100)}% more than ${cheaperName}</span>`
 }
 
-const cheaperOf = (a: number, z: number) => (a <= z ? { value: a, name: 'AWS' } : { value: z, name: 'Azure' })
+/** The saving is measured against Azure */
+const cheaperOf = (_a: number, z: number) => ({ value: z, name: 'Azure' })
+
+/** " (no 6 vCPU size on AWS)" when the nearest machine is bigger than the size asked for */
+const noSize = (m: { vcpu: number }, wanted: number, cloud: string) =>
+  m.vcpu > wanted ? ` (no ${wanted} vCPU size on ${cloud})` : ''
 
 function rowCells(row: Row, kind: Kind) {
   const p = priced(row, kind)
   const per = (n: number, unit: number) => (n > 1 ? `${n} × ${usd(unit)} · ` : '')
   const cheap = cheaperOf(p.aws, p.azure)
   return {
-    aws: `<span class="cp-price">${usd(p.aws)}</span><span class="cp-sub">${per(row.qty, monthly(p.a))}${p.a.name} · ${p.a.vcpu} vCPU · ${p.a.ram} GB</span>`,
-    azure: `<span class="cp-price">${usd(p.azure)}</span><span class="cp-sub">${per(row.qty, monthly(p.z))}${p.z.name} · ${p.z.vcpu} vCPU · ${p.z.ram} GB</span>`,
+    aws: `<span class="cp-price">${usd(p.aws)}</span><span class="cp-sub">${per(row.qty, monthly(p.a))}${p.a.name} · ${p.a.vcpu} vCPU · ${p.a.ram} GB${noSize(p.a, p.size.vcpu, 'AWS')}</span>`,
+    azure: `<span class="cp-price">${usd(p.azure)}</span><span class="cp-sub">${per(row.qty, monthly(p.z))}${p.z.name} · ${p.z.vcpu} vCPU · ${p.z.ram} GB${noSize(p.z, p.size.vcpu, 'Azure')}</span>`,
     vaven: `<span class="cp-price">${usd(p.vaven)}</span><span class="cp-sub">${per(row.qty, p.size.monthly)}${p.size.name} · ${p.size.vcpu} vCPU · ${p.size.ram} GB · ${p.size.disk}</span>`,
     save: saving(cheap.value, p.vaven, cheap.name),
   }
 }
 
-const serverRow = (row: Row, i: number, kind: Kind, removable: boolean) => {
+const serverRow = (row: Row, i: number, kind: Kind) => {
   const c = rowCells(row, kind)
   return `
           <tr data-row="${i}">
@@ -137,7 +135,6 @@ const serverRow = (row: Row, i: number, kind: Kind, removable: boolean) => {
                 <select class="cp-select" id="cp-size-${i}" data-size>${sizeOptions(row.size)}</select>
                 <label class="sr-only" for="cp-qty-${i}">Server ${i + 1}: how many</label>
                 <select class="cp-select cp-select--qty" id="cp-qty-${i}" data-qty>${qtyOptions(row.qty)}</select>
-                <button type="button" class="cp-remove" data-remove aria-label="Remove server ${i + 1}"${removable ? '' : ' hidden'}>${icon('x', 'h-4 w-4')}</button>
               </div>
             </th>
             <td data-label="AWS" data-cell="aws">${c.aws}</td>
@@ -172,7 +169,7 @@ const serversTable = (rows: Row[], kind: Kind) => {
               <th scope="col" class="cp-head">You save</th>
             </tr>
           </thead>
-          <tbody data-rows>${rows.map((r, i) => serverRow(r, i, kind, rows.length > 1)).join('')}
+          <tbody data-rows>${rows.map((r, i) => serverRow(r, i, kind)).join('')}
           </tbody>
           <tfoot>
             <tr data-total>
@@ -184,7 +181,8 @@ const serversTable = (rows: Row[], kind: Kind) => {
             </tr>
           </tfoot>
         </table>
-      </div>`
+      </div>
+      <p class="cp-kind-note">VavenCloud includes SSD storage in every plan. AWS and Azure charge separately for it.</p>`
 }
 
 /** The big numbers above the table: what each cloud costs for these servers, as bars, and the saving a year */
@@ -200,7 +198,7 @@ const summary = (rows: Row[], kind: Kind) => {
         </div>`
   const headline =
     diff > 0.005
-      ? `With VavenCloud you’d pay <b>${usd0(diff)} less every month</b> than on ${t.cheap.name}, <b>${usd0(diff * 12)} a year</b>.`
+      ? `With VavenCloud you’d pay <b>${usd(diff)} less every month</b> than on ${t.cheap.name}, <b>${usd(diff * 12)} a year</b>.`
       : diff < -0.005
         ? `For these servers ${t.cheap.name} comes out ${usd0(-diff)} a month cheaper on price alone. VavenCloud adds the people who run them.`
         : `For these servers the price is the same as ${t.cheap.name}.`
@@ -218,26 +216,15 @@ const summary = (rows: Row[], kind: Kind) => {
 const serversPanel = () => `
     <div class="cp-panel-head">
       <p class="cp-panel-lead">Pick a size for each server and how many you run. Prices are per month, on demand.</p>
-      <div class="cp-kinds" role="group" aria-label="Compare against">
-        <button type="button" class="cp-kind" data-kind="steady" aria-pressed="true">Steady performance</button>
-        <button type="button" class="cp-kind" data-kind="burst" aria-pressed="false">Burstable (cheapest)</button>
-      </div>
     </div>
-    <p class="cp-kind-note" data-kind-note>Compared with each cloud’s compute-optimised and general-purpose servers: full performance all the time, what a production server usually needs.</p>
-    <div data-summary-slot>${summary(startRows(), 'steady')}</div>
-    <div data-table-slot>${serversTable(startRows(), 'steady')}</div>
-    <button type="button" class="cp-add" data-add>${icon('plus', 'h-4 w-4')}Add a server</button>`
-
-const kindNotes: Record<Kind, string> = {
-  steady:
-    'Compared with each cloud’s compute-optimised and general-purpose servers: full performance all the time, what a production server usually needs.',
-  burst:
-    'Compared with each cloud’s cheapest family (AWS T3, Azure B-series): fine for light or spiky workloads, but they slow down under sustained load.',
-}
+    <p class="cp-kind-note">Compared with each cloud’s compute-optimised and general-purpose servers: full performance all the time, what a production server usually needs.</p>
+    <div data-summary-slot>${summary(startRows(), KIND)}</div>
+    <div data-table-slot>${serversTable(startRows(), KIND)}</div>`
 
 /* ---------- Tab 2: managed service ---------- */
 
-const MANAGED_DEFAULT = 2_500
+/** AWS's fee is a share of your AWS bill: shown at this bill */
+const MANAGED_BILL = 2_500
 
 const plan = (name: string, price: number, how: string, other?: number) =>
   `<span class="cp-plan">${name}</span><span class="cp-price">${usd0(price)}<small> a month</small></span><span class="cp-sub">${how}</span>${other === undefined ? '' : diffChip(price, other)}`
@@ -251,42 +238,25 @@ const diffChip = (price: number, vavenPrice: number) => {
     : `<span class="cp-chip">VavenCloud ${usd0(-d)} more</span>`
 }
 
-function managedPrices(spend: number) {
-  const entry = { aws: awsBusiness(spend), azure: azureStandard, vaven: vavenManaged.managed }
-  const premium = { aws: awsEnterprise(spend), azure: azureProfessionalDirect, vaven: vavenManaged.partner }
+function managedPrices() {
+  const entry = { aws: awsBusiness(MANAGED_BILL), azure: azureStandard, vaven: vavenManaged.managed }
   return {
-    entry: {
-      aws: plan(
-        'Business Support+',
-        entry.aws,
-        entry.aws <= 29 ? 'The $29 minimum' : '9% of your bill, minimum $29',
-        entry.vaven,
-      ),
-      azure: plan('Standard', entry.azure, 'A flat monthly fee', entry.vaven),
-      vaven: plan('Managed', entry.vaven, 'From, fixed monthly fee'),
-    },
-    premium: {
-      aws: plan(
-        'Enterprise Support',
-        premium.aws,
-        premium.aws <= 5_000 ? 'The $5,000 minimum' : '10% of your bill, minimum $5,000',
-        premium.vaven,
-      ),
-      azure: plan('Professional Direct', premium.azure, 'A flat monthly fee', premium.vaven),
-      vaven: plan('Partner', premium.vaven, 'From, with a named lead engineer'),
-    },
+    aws: plan(
+      'Business Support+',
+      entry.aws,
+      `9% of your AWS bill (on ${usd0(MANAGED_BILL)} a month), minimum $29`,
+      entry.vaven,
+    ),
+    azure: plan('Standard', entry.azure, 'A flat monthly fee', entry.vaven),
+    vaven: plan('Managed', entry.vaven, 'From, fixed monthly fee'),
   }
 }
 
 const managedPanel = () => {
-  const p = managedPrices(MANAGED_DEFAULT)
+  const p = managedPrices()
   return `
     <div class="cp-panel-head">
       <p class="cp-panel-lead">What each one charges to have someone on call, and what that actually covers.</p>
-      <label class="cp-spend">
-        <span>Your monthly cloud bill</span>
-        <select class="cp-select" data-spend>${spendOptions.map((s) => `<option value="${s}"${s === MANAGED_DEFAULT ? ' selected' : ''}>${usd0(s)}</option>`).join('')}</select>
-      </label>
     </div>
     <div class="cp-table-wrap card">
       <table class="cp-table cp-table--managed">
@@ -299,17 +269,11 @@ const managedPanel = () => {
           </tr>
         </thead>
         <tbody>
-          <tr data-plan="entry">
-            <th scope="row">Entry plan, a month</th>
-            <td data-label="AWS" data-cell="aws">${p.entry.aws}</td>
-            <td data-label="Azure" data-cell="azure">${p.entry.azure}</td>
-            <td data-label="VavenCloud" class="cp-us" data-cell="vaven">${p.entry.vaven}</td>
-          </tr>
-          <tr data-plan="premium">
-            <th scope="row">Top plan, a month</th>
-            <td data-label="AWS" data-cell="aws">${p.premium.aws}</td>
-            <td data-label="Azure" data-cell="azure">${p.premium.azure}</td>
-            <td data-label="VavenCloud" class="cp-us" data-cell="vaven">${p.premium.vaven}</td>
+          <tr>
+            <th scope="row">Plan, a month</th>
+            <td data-label="AWS">${p.aws}</td>
+            <td data-label="Azure">${p.azure}</td>
+            <td data-label="VavenCloud" class="cp-us">${p.vaven}</td>
           </tr>
           ${managedFacts
             .map(
@@ -324,8 +288,7 @@ const managedPanel = () => {
             .join('')}
         </tbody>
       </table>
-    </div>
-    <p class="cp-hire"><b>For reference:</b> hiring one senior DevOps engineer in the US costs around ${usd0(hireAnnual)} a year, about ${usd0(hireAnnual / 12)} a month, and they still can’t fix your code at 3am on their own.</p>`
+    </div>`
 }
 
 /* ---------- The page ---------- */
@@ -352,9 +315,10 @@ const tool = (): Section => ({
     <div class="cp-notes">
       <h2 class="cp-notes-title">How we compared</h2>
       <ul>
-        <li><b>Servers.</b> AWS EC2 in US East (N. Virginia) and Azure virtual machines in East US, Linux, on demand, ${HOURS} hours a month. For each size we price the cheapest machine with at least that many vCPUs and that much RAM. AWS and Azure prices are for the server only: disk, bandwidth and backups cost extra there. VavenCloud’s price includes the SSD shown.</li>
-        <li><b>Managed service.</b> AWS Business Support+ and Enterprise Support, and Azure Standard and Professional Direct, at their published prices. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
-        <li><b>VavenCloud.</b> Server prices are from <a href="https://vavencloud.com/pricing" target="_blank" rel="noopener">our price list<span class="sr-only"> (opens in a new tab)</span></a>. Managed plans are a fixed monthly fee agreed after a free review; the figures shown are starting points.</li>
+        <li><b>Servers.</b> AWS prices are taken from the AWS console for EC2 in US East (Ohio). Azure prices are from Microsoft’s public pricing page for virtual machines in Central US. Both are Linux, on demand, ${HOURS} hours a month. For each size we price the cheapest machine with at least that many vCPUs and that much RAM. AWS and Azure prices are for the server only: disk, bandwidth and backups cost extra there. VavenCloud’s price includes the SSD shown.</li>
+        <li><b>List prices.</b> These are AWS’s and Azure’s list prices. What you actually pay can vary by account, for example with discounts, reservations or credits.</li>
+        <li><b>Managed service.</b> AWS Business Support+ and Azure Standard, at their published prices. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
+        <li><b>VavenCloud.</b> Server prices are our current monthly plans, with the SSD storage shown included. Managed plans are a fixed monthly fee agreed after a free review; the figures shown are starting points.</li>
         <li><b>Checked ${pricesCheckedOn}.</b> Cloud prices change, so check the calculators before you decide: <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://azure.microsoft.com/en-us/pricing/calculator/" target="_blank" rel="noopener">Azure<span class="sr-only"> (opens in a new tab)</span></a>.</li>
       </ul>
     </div>
@@ -419,7 +383,7 @@ function initTool(root: HTMLElement): void {
   /* Cloud servers: change a row's size or number and only its prices and the totals change */
   const servers = qs('[data-panel="servers"]', root)
   const rows = startRows()
-  let kind: Kind = 'steady'
+  const kind = KIND
 
   const refreshRow = (tr: HTMLElement, i: number) => {
     const c = rowCells(rows[i], kind)
@@ -446,13 +410,6 @@ function initTool(root: HTMLElement): void {
       qs<HTMLElement>('.cp-bar-track i', bar).style.width = qs<HTMLElement>('.cp-bar-track i', from).style.width
     })
   }
-  /** Adding or removing a server rebuilds the rows (the selects start from the state) */
-  const rebuild = () => {
-    qs('[data-rows]', servers).innerHTML = rows.map((r, i) => serverRow(r, i, kind, rows.length > 1)).join('')
-    qs<HTMLButtonElement>('[data-add]', servers).disabled = rows.length >= MAX_ROWS
-    refresh()
-  }
-
   servers.addEventListener('change', (e) => {
     const el = e.target as HTMLSelectElement
     const tr = el.closest<HTMLElement>('[data-row]')
@@ -461,40 +418,6 @@ function initTool(root: HTMLElement): void {
     if (el.matches('[data-size]')) rows[i].size = Number(el.value)
     if (el.matches('[data-qty]')) rows[i].qty = Number(el.value)
     refresh()
-  })
-  servers.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement
-    const remove = target.closest<HTMLElement>('[data-remove]')
-    if (remove) {
-      rows.splice(Number(remove.closest<HTMLElement>('[data-row]')!.dataset.row), 1)
-      rebuild()
-      return
-    }
-    if (target.closest('[data-add]') && rows.length < MAX_ROWS) {
-      rows.push({ size: 1, qty: 1 })
-      rebuild()
-      qsa<HTMLSelectElement>('[data-size]', servers).at(-1)?.focus()
-      return
-    }
-    const k = target.closest<HTMLButtonElement>('[data-kind]')
-    if (k) {
-      kind = k.dataset.kind as Kind
-      qsa('[data-kind]', servers).forEach((b) => b.setAttribute('aria-pressed', String(b === k)))
-      qs('[data-kind-note]', servers).textContent = kindNotes[kind]
-      refresh()
-    }
-  })
-
-  /* Managed service: the price rows follow your monthly cloud bill */
-  const managed = qs('[data-panel="managed"]', root)
-  qs<HTMLSelectElement>('[data-spend]', managed).addEventListener('change', (e) => {
-    const p = managedPrices(Number((e.target as HTMLSelectElement).value))
-    ;(['entry', 'premium'] as const).forEach((tier) => {
-      const tr = qs(`[data-plan="${tier}"]`, managed)
-      qs('[data-cell="aws"]', tr).innerHTML = p[tier].aws
-      qs('[data-cell="azure"]', tr).innerHTML = p[tier].azure
-      qs('[data-cell="vaven"]', tr).innerHTML = p[tier].vaven
-    })
   })
 }
 

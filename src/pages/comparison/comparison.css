@@ -528,22 +528,6 @@
   outline: 2px solid var(--color-brand-500);
   outline-offset: 2px;
 }
-.cp-hire {
-  max-width: 46rem;
-  margin-top: 1.25rem;
-  color: var(--color-neutral-600);
-  font-size: 0.95rem;
-  line-height: 1.6;
-}
-.dark .cp-hire {
-  color: var(--color-neutral-400);
-}
-.cp-hire b {
-  color: var(--color-neutral-900);
-}
-.dark .cp-hire b {
-  color: #fff;
-}
 .cp-table--managed td,
 .cp-table--managed th {
   width: 24%;

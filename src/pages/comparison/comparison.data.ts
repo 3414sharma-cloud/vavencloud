@@ -6,12 +6,13 @@ import { planGroups } from '@/modules/pricing/pricing.data.ts'
  *
  *  - VavenCloud's server prices are read from the price list itself (modules/pricing/pricing.data.ts), so the
  *    page can't drift from it.
- *  - AWS and Azure are public list prices, checked on `pricesCheckedOn`: Azure from its retail price API
- *    (prices.azure.com, East US, Linux, pay-as-you-go), AWS from its EC2 price list (US East N. Virginia, Linux,
- *    on-demand), and the support plans from AWS's and Azure's own pricing pages. Refresh them now and then.
- *  - TODO before launch: the VavenCloud managed-service fees below are PLACEHOLDERS. Plans are "a fixed monthly
- *    fee, agreed after your free review" (docs/messaging.md says no prices on the page), so there is no public
- *    number yet. Put the real "from" prices in `vavenManaged`, or decide not to show any.
+ *  - AWS and Azure are list prices, checked on `pricesCheckedOn`. AWS: taken directly from the AWS console
+ *    (EC2, US East – Ohio, Linux, on demand). Azure: from Microsoft's public pricing page (Central US, Linux,
+ *    pay-as-you-go), since there is no Azure login to check against. The actual price can vary by account.
+ *    TODO: confirm the exact Azure prices with Azure login access when available. The support plans are from
+ *    AWS's and Azure's own pricing pages. Refresh all of them now and then.
+ *  - VavenCloud's managed plan starts from $49 a month (`vavenManaged`); the final fixed fee is agreed after the
+ *    free review.
  */
 
 export const pricesCheckedOn = '10 Nov 2026'
@@ -39,6 +40,7 @@ export interface Machine {
  */
 export const aws: Record<Kind, Machine[]> = {
   steady: [
+    { name: 't2.small', vcpu: 1, ram: 2, hourly: 16.79 / HOURS },
     { name: 'c6i.large', vcpu: 2, ram: 4, hourly: 0.085 },
     { name: 'c6i.xlarge', vcpu: 4, ram: 8, hourly: 0.17 },
     { name: 'c6i.2xlarge', vcpu: 8, ram: 16, hourly: 0.34 },
@@ -57,14 +59,13 @@ export const aws: Record<Kind, Machine[]> = {
 }
 
 export const azure: Record<Kind, Machine[]> = {
+  // Monthly list prices (÷ HOURS), as agreed for the comparison table
   steady: [
-    { name: 'F2s v2', vcpu: 2, ram: 4, hourly: 0.0846 },
-    { name: 'F4s v2', vcpu: 4, ram: 8, hourly: 0.169 },
-    { name: 'F8s v2', vcpu: 8, ram: 16, hourly: 0.338 },
-    { name: 'D2s v5', vcpu: 2, ram: 8, hourly: 0.096 },
-    { name: 'D4s v5', vcpu: 4, ram: 16, hourly: 0.192 },
-    { name: 'D8s v5', vcpu: 8, ram: 32, hourly: 0.384 },
-    { name: 'D16s v5', vcpu: 16, ram: 64, hourly: 0.768 },
+    { name: 'F1als v7', vcpu: 1, ram: 2, hourly: 44.17 / HOURS },
+    { name: 'D2ls v5', vcpu: 2, ram: 4, hourly: 70.15 / HOURS },
+    { name: 'D4ls v5', vcpu: 4, ram: 8, hourly: 140.16 / HOURS },
+    { name: 'D8ls v5', vcpu: 8, ram: 16, hourly: 280.32 / HOURS },
+    { name: 'D8s v5', vcpu: 8, ram: 32, hourly: 316.82 / HOURS },
   ],
   burst: [
     { name: 'B1ms', vcpu: 1, ram: 2, hourly: 0.0207 },
@@ -147,14 +148,11 @@ export const awsEnterprise = (spend: number) =>
 export const azureStandard = 100
 export const azureProfessionalDirect = 1_000
 
-/** PLACEHOLDER fixed monthly fees: see the TODO at the top of this file */
-export const vavenManaged = { managed: 499, partner: 1_499 }
+/** VavenCloud's managed plan: "from" price a month (Partner is no longer shown on the page) */
+export const vavenManaged = { managed: 49, partner: 1_499 }
 
 /** The monthly cloud bills you can choose from */
 export const spendOptions = [500, 1_000, 2_500, 5_000, 10_000, 25_000]
-
-/** From the content doc: what hiring one senior DevOps engineer in the US costs, a year */
-export const hireAnnual = 140_000
 
 export interface Facts {
   label: string
@@ -167,9 +165,9 @@ export interface Facts {
 export const managedFacts: Facts[] = [
   {
     label: 'Answer to a critical outage',
-    aws: 'Within 30 minutes on Business Support+, 15 on Enterprise',
-    azure: 'Within 1 hour on both Standard and Professional Direct',
-    vaven: 'Within 1 hour on Managed, 30 minutes on Partner',
+    aws: 'Within 30 minutes on Business Support+',
+    azure: 'Within 1 hour on Standard',
+    vaven: 'Within 1 hour on Managed',
   },
   {
     label: 'Who fixes it',

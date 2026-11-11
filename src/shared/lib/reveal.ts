@@ -73,14 +73,20 @@ export function initReveal(root: ParentNode = document): void {
   let ticking = false
   const sweep = () => {
     ticking = false
-    pending.forEach((el) => {
-      if (el.classList.contains('is-visible')) pending.delete(el)
-      else if (el.getBoundingClientRect().top < window.innerHeight) {
-        el.classList.add('is-visible')
-        settle(el)
-        observer.unobserve(el)
+    // All the reads first, then all the writes, so the layout is worked out once a frame, not once per element
+    const fold = window.innerHeight
+    const show = [...pending].filter((el) => {
+      if (el.classList.contains('is-visible')) {
         pending.delete(el)
+        return false
       }
+      return el.getBoundingClientRect().top < fold
+    })
+    show.forEach((el) => {
+      el.classList.add('is-visible')
+      settle(el)
+      observer.unobserve(el)
+      pending.delete(el)
     })
     if (!pending.size) window.removeEventListener('scroll', onScroll)
   }
