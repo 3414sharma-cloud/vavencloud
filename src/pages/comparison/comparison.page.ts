@@ -4,8 +4,9 @@ import { createPage } from '@/app/create-page.ts'
 import { routes } from '@/app/routes.ts'
 import type { Section } from '@/app/types.ts'
 import { brandLogos } from '@/modules/track-record/brand-logos.ts'
-import { qs, qsa } from '@/shared/lib/dom.ts'
-import { icon } from '@/shared/ui/icons.ts'
+import { qsa } from '@/shared/lib/dom.ts'
+import { icon, type IconName } from '@/shared/ui/icons.ts'
+import { logoMark } from '@/shared/ui/logo.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import {
   HOURS,
@@ -13,7 +14,6 @@ import {
   awsBusiness,
   azure,
   azureStandard,
-  managedFacts,
   match,
   monthly,
   pricesCheckedOn,
@@ -24,10 +24,11 @@ import {
 
 /*
  * The comparison page (/comparison/): AWS, Azure and VavenCloud side by side, in two tabs.
- *  1. Cloud servers: a row per server where you pick its size (vCPU and RAM) and how many; each cloud's monthly
- *     price and what you save with VavenCloud update as you change it, with the total underneath.
- *  2. Managed service: what each one's entry plan charges to have someone on call, and what that covers.
- *     The numbers are in comparison.data.ts.
+ * One after the other, no tabs:
+ *  1. The servers: five fixed sizes, one of each; each cloud's monthly price and what you save with
+ *     VavenCloud, with the total underneath.
+ *  2. Someone to run them (#managed): each cloud's support plan beside VavenCloud's Managed plan, what it
+ *     covers, and the month all in (the servers in part 1 plus the plan). The numbers are in comparison.data.ts.
  */
 
 const usd = (n: number, decimals = 2) =>
@@ -55,7 +56,7 @@ const hero = (): Section => ({
   <div class="container-page">
     <p class="cp-kicker">Price comparison</p>
     <h1 id="comparison-title" class="cp-title">AWS, Azure or VavenCloud: <em>what you’d actually pay.</em></h1>
-    <p class="cp-lead">Choose your servers and see each cloud’s monthly price side by side. Then see what it costs to have someone on call to run them.</p>
+    <p class="cp-lead">See what the same servers cost each month on AWS, Azure and VavenCloud, side by side. Then see what it costs to have someone on call to run them.</p>
   </div>
 </section>`,
 })
@@ -71,16 +72,6 @@ interface Row {
 const startRows = (): Row[] => sizes.map((_, i) => ({ size: i, qty: 1 }))
 /** Always compared against each cloud's steady-performance servers */
 const KIND: Kind = 'steady'
-
-const sizeOptions = (selected: number) =>
-  sizes
-    .map((s, i) => `<option value="${i}"${i === selected ? ' selected' : ''}>${s.vcpu} vCPU · ${s.ram} GB</option>`)
-    .join('')
-const qtyOptions = (selected: number) =>
-  Array.from(
-    { length: 10 },
-    (_, i) => `<option value="${i + 1}"${i + 1 === selected ? ' selected' : ''}>× ${i + 1}</option>`,
-  ).join('')
 
 /** One row's prices (monthly, for its quantity) on each cloud */
 function priced(row: Row, kind: Kind) {
@@ -130,12 +121,7 @@ const serverRow = (row: Row, i: number, kind: Kind) => {
   return `
           <tr data-row="${i}">
             <th scope="row" class="cp-config">
-              <div class="cp-controls">
-                <label class="sr-only" for="cp-size-${i}">Server ${i + 1}: size</label>
-                <select class="cp-select" id="cp-size-${i}" data-size>${sizeOptions(row.size)}</select>
-                <label class="sr-only" for="cp-qty-${i}">Server ${i + 1}: how many</label>
-                <select class="cp-select cp-select--qty" id="cp-qty-${i}" data-qty>${qtyOptions(row.qty)}</select>
-              </div>
+              <span class="cp-fixed">${sizes[row.size].vcpu} vCPU · ${sizes[row.size].ram} GB<span class="cp-fixed-qty">× ${row.qty}</span></span>
             </th>
             <td data-label="AWS" data-cell="aws">${c.aws}</td>
             <td data-label="Azure" data-cell="azure">${c.azure}</td>
@@ -214,119 +200,178 @@ const summary = (rows: Row[], kind: Kind) => {
 }
 
 const serversPanel = () => `
-    <div class="cp-panel-head">
-      <p class="cp-panel-lead">Pick a size for each server and how many you run. Prices are per month, on demand.</p>
-    </div>
-    <p class="cp-kind-note">Compared with each cloud’s compute-optimised and general-purpose servers: full performance all the time, what a production server usually needs.</p>
+    <p class="cp-kind-note">Prices are per month, on demand. Compared with each cloud’s compute-optimised and general-purpose servers: full performance all the time, what a production server usually needs.</p>
     <div data-summary-slot>${summary(startRows(), KIND)}</div>
     <div data-table-slot>${serversTable(startRows(), KIND)}</div>`
 
-/* ---------- Tab 2: managed service ---------- */
+/* ---------- Part 2: someone to run them ---------- */
 
-/** AWS's fee is a share of your AWS bill: shown at this bill */
-const MANAGED_BILL = 2_500
-
-const plan = (name: string, price: number, how: string, other?: number) =>
-  `<span class="cp-plan">${name}</span><span class="cp-price">${usd0(price)}<small> a month</small></span><span class="cp-sub">${how}</span>${other === undefined ? '' : diffChip(price, other)}`
-
-/** How far this plan is from VavenCloud's, as a small tag under the price */
-const diffChip = (price: number, vavenPrice: number) => {
-  const d = Math.round(price - vavenPrice)
-  if (d === 0) return ''
-  return d > 0
-    ? `<span class="cp-chip cp-chip--good">VavenCloud ${usd0(d)} less</span>`
-    : `<span class="cp-chip">VavenCloud ${usd0(-d)} more</span>`
+/* Part 2: explore who owns each task on each provider. */
+type Cover = 'yes' | 'half' | 'you'
+type Who = 'aws' | 'azure' | 'vaven'
+interface Layer {
+  icon: IconName
+  name: string
+  cover: Record<Who, [Cover, string]>
 }
 
-function managedPrices() {
-  const entry = { aws: awsBusiness(MANAGED_BILL), azure: azureStandard, vaven: vavenManaged.managed }
-  return {
-    aws: plan(
-      'Business Support+',
-      entry.aws,
-      `9% of your AWS bill (on ${usd0(MANAGED_BILL)} a month), minimum $29`,
-      entry.vaven,
-    ),
-    azure: plan('Standard', entry.azure, 'A flat monthly fee', entry.vaven),
-    vaven: plan('Managed', entry.vaven, 'From, fixed monthly fee'),
-  }
+/** Bottom (what everything sits on) to top (your own code) */
+const layers: Layer[] = [
+  {
+    icon: 'server',
+    name: 'Servers',
+    cover: {
+      aws: ['yes', 'AWS keeps the hardware on'],
+      azure: ['yes', 'Azure keeps the hardware on'],
+      vaven: ['yes', 'On your cloud or ours'],
+    },
+  },
+  {
+    icon: 'activity',
+    name: 'Watching for problems',
+    cover: {
+      aws: ['you', 'You set it up and watch it'],
+      azure: ['you', 'You set it up and watch it'],
+      vaven: ['yes', 'Watched by us, 24/7'],
+    },
+  },
+  {
+    icon: 'zap',
+    name: 'Help when something breaks',
+    cover: {
+      aws: ['half', 'Advice within 30 min, you fix it'],
+      azure: ['half', 'Advice within 1 hour, you fix it'],
+      vaven: ['yes', 'Our engineer fixes it'],
+    },
+  },
+  {
+    icon: 'rocket',
+    name: 'Putting updates live',
+    cover: {
+      aws: ['you', 'Your team runs them'],
+      azure: ['you', 'Your team runs them'],
+      vaven: ['yes', 'We handle your updates'],
+    },
+  },
+  {
+    icon: 'code',
+    name: 'Fixes in your code',
+    cover: {
+      aws: ['you', 'Not covered'],
+      azure: ['you', 'Not covered'],
+      vaven: ['yes', 'Within your plan’s hours'],
+    },
+  },
+]
+
+const studioProviders: { who: Who; name: string; logo: string; plan: string }[] = [
+  { who: 'aws', name: 'AWS', logo: provider('AWS'), plan: 'Business Support+' },
+  { who: 'azure', name: 'Azure', logo: provider('Azure'), plan: 'Standard support' },
+  { who: 'vaven', name: 'VavenCloud', logo: logoMark(24, 'studio-mark') + vaven, plan: 'Managed / starting price' },
+]
+
+const studioPrices = () => {
+  const servers = totals(startRows(), KIND)
+  const fee = { aws: awsBusiness(servers.aws), azure: azureStandard, vaven: vavenManaged.managed }
+  return { servers, fee }
 }
 
-const managedPanel = () => {
-  const p = managedPrices()
+const studioView = (task: number, selected: Who, period: number) => {
+  const layer = layers[task]
+  const [state, note] = layer.cover[selected]
+  const cloud = studioProviders.find(p => p.who === selected)!
+  const { servers, fee } = studioPrices()
+  const owner = state === 'yes' ? cloud.name : 'Your team'
   return `
-    <div class="cp-panel-head">
-      <p class="cp-panel-lead">What each one charges to have someone on call, and what that actually covers.</p>
+    <div class="cx-scene" data-state="${state}">
+      <div class="cx-scene-label"><span>FOLLOW THE WORK</span><span>0${task + 1} / 05</span></div>
+      <div class="cx-network">
+        <svg class="cx-wires" viewBox="0 0 600 260" preserveAspectRatio="none" aria-hidden="true"><path class="cx-wire-base" d="M90 130 H230 Q250 130 250 110 V75 Q250 55 275 55 H480 M250 110 V185 Q250 205 275 205 H480"/><path class="cx-wire-active" d="${state === 'yes' ? 'M90 130 H230 Q250 130 250 110 V75 Q250 55 275 55 H480' : 'M90 130 H230 Q250 130 250 150 V185 Q250 205 275 205 H480'}"/></svg>
+        <div class="cx-source"><span class="cx-node-icon">${icon(layer.icon, 'h-6 w-6')}</span><strong>${layer.name}</strong><small>The work that needs doing</small></div>
+        <div class="cx-destination cx-destination--cloud ${state === 'yes' ? 'is-active' : ''}"><span class="cx-node-icon">${icon('server', 'h-6 w-6')}</span><strong>${cloud.name}</strong><small>${state === 'yes' ? 'Handles this for you' : state === 'half' ? 'Gives you advice' : 'Not in this plan'}</small></div>
+        <div class="cx-destination cx-destination--team ${state !== 'yes' ? 'is-active' : ''}"><span class="cx-node-icon">${icon('users', 'h-6 w-6')}</span><strong>Your team</strong><small>${state === 'yes' ? 'Can focus on your product' : 'Handles the work'}</small></div>
+      </div>
+      <div class="cx-answer"><span class="cx-answer-symbol">${icon(state === 'yes' ? 'check' : 'arrow-right', 'h-5 w-5')}</span><div><h5>${owner} takes it from here.</h5><p>${note}</p></div><span class="cx-answer-tag">${state === 'yes' ? 'Handled for you' : state === 'half' ? 'Advice + your team' : 'Your responsibility'}</span></div>
     </div>
-    <div class="cp-table-wrap card">
-      <table class="cp-table cp-table--managed">
-        <thead>
-          <tr>
-            <th scope="col" class="cp-corner"></th>
-            <th scope="col" class="cp-head">${provider('AWS')}</th>
-            <th scope="col" class="cp-head">${provider('Azure')}</th>
-            <th scope="col" class="cp-head cp-us">${vaven}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">Plan, a month</th>
-            <td data-label="AWS">${p.aws}</td>
-            <td data-label="Azure">${p.azure}</td>
-            <td data-label="VavenCloud" class="cp-us">${p.vaven}</td>
-          </tr>
-          ${managedFacts
-            .map(
-              (f) => `
-          <tr>
-            <th scope="row">${f.label}</th>
-            <td data-label="AWS">${f.aws}</td>
-            <td data-label="Azure">${f.azure}</td>
-            <td data-label="VavenCloud" class="cp-us">${f.vaven}</td>
-          </tr>`,
-            )
-            .join('')}
-        </tbody>
-      </table>
-    </div>`
+    <div class="cx-price-strip"><div><span>${cloud.plan}</span><strong>${usd((servers[selected] + fee[selected]) * period)}<small> / ${period === 1 ? 'month' : 'year'}</small></strong></div><p>${usd(servers[selected] * period)} servers <b>+</b> ${usd(fee[selected] * period)} ${selected === 'vaven' ? 'management' : 'support'}</p></div>`
+}
+
+const managedPanel = () => `
+  <div class="cx-studio">
+    <header class="cx-intro"><div><span class="cx-eyebrow">THE OWNERSHIP EXPLORER</span><h4>Same task.<br><em>Different hands.</em></h4></div><p>Pick a task. Choose a cloud.<br>Follow the line to see who does the work.</p><span class="cx-intro-art" aria-hidden="true">?</span></header>
+    <div class="cx-workspace">
+      <nav class="cx-tasks" aria-label="Choose a task to compare"><span class="cx-control-label">01 / PICK A TASK</span>${layers.map((l, i) => `<button type="button" data-cx-task="${i}" aria-pressed="${i === 1}" aria-controls="cx-result"><span class="cx-task-number">0${i + 1}</span>${icon(l.icon, 'h-4 w-4')}<span>${l.name}</span>${icon('arrow-right', 'h-4 w-4')}</button>`).join('')}<p>Explore all five tasks to see what stays with you.</p></nav>
+      <div class="cx-main"><div class="cx-toolbar"><div><span class="cx-control-label">02 / CHOOSE YOUR CLOUD</span><div class="cx-providers" role="group" aria-label="Cloud provider">${studioProviders.map(p => `<button type="button" data-cx-provider="${p.who}" aria-pressed="${p.who === 'vaven'}" aria-controls="cx-result">${p.logo}</button>`).join('')}</div></div><div class="cx-period" role="group" aria-label="Price period"><button type="button" data-cx-period="1" aria-pressed="true">Month</button><button type="button" data-cx-period="12" aria-pressed="false">Year</button></div></div>
+      <div id="cx-result" aria-live="polite" aria-atomic="true">${studioView(1, 'vaven', 1)}</div></div>
+    </div>
+    <footer class="cx-footer"><span>${icon('check', 'h-4 w-4')}Same five servers in every comparison</span><p>AWS and Azure storage, bandwidth and backups cost extra. VavenCloud includes the SSD shown above; management is a starting price agreed after a free review.</p></footer>
+  </div>`
+
+function initStudio(): void {
+  const studio = document.querySelector<HTMLElement>('.cx-studio')
+  const result = studio?.querySelector<HTMLElement>('#cx-result')
+  if (!studio || !result) return
+  let task = 1
+  let selected: Who = 'vaven'
+  let period = 1
+  const refresh = () => { result.innerHTML = studioView(task, selected, period) }
+  qsa('[data-cx-task]', studio).forEach(button => button.addEventListener('click', () => {
+    task = Number(button.dataset.cxTask)
+    qsa('[data-cx-task]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
+    refresh()
+  }))
+  qsa('[data-cx-provider]', studio).forEach(button => button.addEventListener('click', () => {
+    selected = button.dataset.cxProvider as Who
+    qsa('[data-cx-provider]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
+    refresh()
+  }))
+  qsa('[data-cx-period]', studio).forEach(button => button.addEventListener('click', () => {
+    period = Number(button.dataset.cxPeriod)
+    qsa('[data-cx-period]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
+    refresh()
+  }))
 }
 
 /* ---------- The page ---------- */
 
+/** The heading of each part: a number, a title and a line under it */
+const partHead = (n: number, id: string, title: string, lead: string) => `
+    <div class="cp-part-head">
+      <span class="cp-part-n" aria-hidden="true">${n}</span>
+      <div>
+        <h3 id="${id}" class="cp-part-title">${title}</h3>
+        <p class="cp-part-lead">${lead}</p>
+      </div>
+    </div>`
+
 const tool = (): Section => ({
+  init: () => initStudio(),
   html: `
 <section id="compare" class="v2-section" aria-labelledby="compare-title">
   <div class="container-page">
     <div class="max-w-4xl">
       ${sectionHeading({
         id: 'compare-title',
-        title: 'Same servers. <em>Same cover. Side by side.</em>',
-        description: 'Change anything below and the prices update.',
+        title: 'Compare the cost. <em>See who does the work.</em>',
+        description: 'First the servers, then the people who run them, on AWS, Azure and VavenCloud.',
       })}
     </div>
-    <div class="cp-tabs" role="tablist" aria-label="What to compare">
-      <button type="button" role="tab" id="cp-tab-servers" class="cp-tab" aria-selected="true" aria-controls="cp-panel-servers" data-tab="servers">Cloud servers</button>
-      <button type="button" role="tab" id="cp-tab-managed" class="cp-tab" aria-selected="false" aria-controls="cp-panel-managed" data-tab="managed" tabindex="-1">Managed service</button>
-    </div>
-    <div role="tabpanel" id="cp-panel-servers" class="cp-panel" aria-labelledby="cp-tab-servers" data-panel="servers">${serversPanel()}
-    </div>
-    <div role="tabpanel" id="cp-panel-managed" class="cp-panel" aria-labelledby="cp-tab-managed" data-panel="managed" hidden>${managedPanel()}
-    </div>
+    <section class="cp-part" aria-labelledby="cp-servers-title">${partHead(1, 'cp-servers-title', 'The servers', 'Five common sizes, one of each. What the same servers cost a month on each cloud.')}${serversPanel()}
+    </section>
+    <section id="managed" class="cp-part" aria-labelledby="cp-managed-title">${partHead(2, 'cp-managed-title', 'See who takes care of it', 'An interactive look at the work behind your monthly cost.')}${managedPanel()}
+    </section>
     <div class="cp-notes">
       <h2 class="cp-notes-title">How we compared</h2>
       <ul>
         <li><b>Servers.</b> AWS prices are taken from the AWS console for EC2 in US East (Ohio). Azure prices are from Microsoft’s public pricing page for virtual machines in Central US. Both are Linux, on demand, ${HOURS} hours a month. For each size we price the cheapest machine with at least that many vCPUs and that much RAM. AWS and Azure prices are for the server only: disk, bandwidth and backups cost extra there. VavenCloud’s price includes the SSD shown.</li>
         <li><b>List prices.</b> These are AWS’s and Azure’s list prices. What you actually pay can vary by account, for example with discounts, reservations or credits.</li>
-        <li><b>Managed service.</b> AWS Business Support+ and Azure Standard, at their published prices. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
+        <li><b>Managed service.</b> AWS Business Support+ and Azure Standard, at their published prices. AWS charges a share of your AWS bill, so its fee is worked out on the AWS server total above. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
         <li><b>VavenCloud.</b> Server prices are our current monthly plans, with the SSD storage shown included. Managed plans are a fixed monthly fee agreed after a free review; the figures shown are starting points.</li>
         <li><b>Checked ${pricesCheckedOn}.</b> Cloud prices change, so check the calculators before you decide: <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://azure.microsoft.com/en-us/pricing/calculator/" target="_blank" rel="noopener">Azure<span class="sr-only"> (opens in a new tab)</span></a>.</li>
       </ul>
     </div>
   </div>
 </section>`,
-  init() {
-    initTool(qs('#compare'))
-  },
 })
 
 const cta = (): Section => ({
@@ -343,83 +388,6 @@ const cta = (): Section => ({
   </div>
 </section>`,
 })
-
-/* ---------- Making it work ---------- */
-
-function initTool(root: HTMLElement): void {
-  /* Tabs: arrow keys move between them, and #managed in the address opens the second */
-  const tabs = qsa<HTMLButtonElement>('[data-tab]', root)
-  const panels = qsa('[data-panel]', root)
-  const select = (name: string, focus = false) => {
-    tabs.forEach((t) => {
-      const on = t.dataset.tab === name
-      t.setAttribute('aria-selected', String(on))
-      t.tabIndex = on ? 0 : -1
-      if (on && focus) t.focus()
-    })
-    panels.forEach((p) => (p.hidden = p.dataset.panel !== name))
-    history.replaceState(null, '', name === 'managed' ? '#managed' : window.location.pathname)
-  }
-  tabs.forEach((t, i) => {
-    t.addEventListener('click', () => select(t.dataset.tab!))
-    t.addEventListener('keydown', (e) => {
-      const to =
-        e.key === 'ArrowRight'
-          ? i + 1
-          : e.key === 'ArrowLeft'
-            ? i - 1
-            : e.key === 'Home'
-              ? 0
-              : e.key === 'End'
-                ? tabs.length - 1
-                : -1
-      if (to < 0) return
-      e.preventDefault()
-      select(tabs[(to + tabs.length) % tabs.length].dataset.tab!, true)
-    })
-  })
-  if (window.location.hash === '#managed') select('managed')
-
-  /* Cloud servers: change a row's size or number and only its prices and the totals change */
-  const servers = qs('[data-panel="servers"]', root)
-  const rows = startRows()
-  const kind = KIND
-
-  const refreshRow = (tr: HTMLElement, i: number) => {
-    const c = rowCells(rows[i], kind)
-    qs('[data-cell="aws"]', tr).innerHTML = c.aws
-    qs('[data-cell="azure"]', tr).innerHTML = c.azure
-    qs('[data-cell="vaven"]', tr).innerHTML = c.vaven
-    qs('[data-cell="save"]', tr).innerHTML = c.save
-  }
-  const refresh = () => {
-    qsa('[data-row]', servers).forEach((tr, i) => refreshRow(tr, i))
-    const t = totals(rows, kind)
-    qs('[data-total="aws"]', servers).innerHTML = `<span class="cp-price">${usd(t.aws)}</span>`
-    qs('[data-total="azure"]', servers).innerHTML = `<span class="cp-price">${usd(t.azure)}</span>`
-    qs('[data-total="vaven"]', servers).innerHTML = `<span class="cp-price">${usd(t.vaven)}</span>`
-    qs('[data-total="save"]', servers).innerHTML = saving(t.cheap.value, t.vaven, t.cheap.name)
-    // The bars grow and shrink in place (they animate), the words change with them
-    const next = document.createElement('div')
-    next.innerHTML = summary(rows, kind)
-    const now = qs('[data-summary]', servers)
-    qs('.cp-headline', now).innerHTML = qs('.cp-headline', next).innerHTML
-    qsa('.cp-bar', now).forEach((bar, i) => {
-      const from = qsa('.cp-bar', next)[i]
-      qs('.cp-bar-value', bar).innerHTML = qs('.cp-bar-value', from).innerHTML
-      qs<HTMLElement>('.cp-bar-track i', bar).style.width = qs<HTMLElement>('.cp-bar-track i', from).style.width
-    })
-  }
-  servers.addEventListener('change', (e) => {
-    const el = e.target as HTMLSelectElement
-    const tr = el.closest<HTMLElement>('[data-row]')
-    if (!tr) return
-    const i = Number(tr.dataset.row)
-    if (el.matches('[data-size]')) rows[i].size = Number(el.value)
-    if (el.matches('[data-qty]')) rows[i].qty = Number(el.value)
-    refresh()
-  })
-}
 
 createPage({
   nav: v5Nav,

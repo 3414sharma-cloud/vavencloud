@@ -247,7 +247,8 @@ function initCalls(): void {
     const from = minute
     const t0 = performance.now()
     const step = (now: number) => {
-      const k = Math.min((now - t0) / ms, 1)
+      // A frame can be stamped a little before t0: never run the clock backwards
+      const k = Math.min(Math.max((now - t0) / ms, 0), 1)
       showMinute(from + (to - from) * k)
       if (k < 1) frame = requestAnimationFrame(step)
     }

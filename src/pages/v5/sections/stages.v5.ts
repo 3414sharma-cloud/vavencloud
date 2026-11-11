@@ -134,7 +134,12 @@ function initMarquee(): void {
   let offset = 0 // how far the row has slid left, between 0 (card 01 first) and the last card's end
   let dir = 1 // which way it drifts on its own: 1 leftwards (towards 05), -1 back towards 01
   let velocity = AUTO_SPEED
-  let maxOffset = Math.max(group.offsetWidth - root.clientWidth, 0)
+  /** How far the row can slide: until card 05's end reaches the inner edge (inside the room kept for the pop) */
+  const room = () => {
+    const s = getComputedStyle(root)
+    return root.clientWidth - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight)
+  }
+  let maxOffset = Math.max(group.offsetWidth - room(), 0)
   let hovering = false
   let focused = false
   let dragging = false
@@ -266,7 +271,7 @@ function initMarquee(): void {
   )
 
   // Re-measured when the window resizes or the cards change width (web fonts arriving, for one)
-  const measure = new ResizeObserver(() => (maxOffset = Math.max(group.offsetWidth - root.clientWidth, 0)))
+  const measure = new ResizeObserver(() => (maxOffset = Math.max(group.offsetWidth - room(), 0)))
   measure.observe(root)
   measure.observe(group)
   // Only runs while it's on screen

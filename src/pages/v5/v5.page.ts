@@ -14,7 +14,7 @@ import { plansV5 } from './sections/plans.v5.ts'
 import { reportV5 } from './sections/report.v5.ts'
 import { stagesV5 } from './sections/stages.v5.ts'
 import { startV5 } from './sections/start.v5.ts'
-import { chatV5 } from './sections/chat.v5.ts'
+import { storyV4 } from '@/pages/v4/sections/story.v4.ts'
 import { trackRecordV5 } from './sections/track-record.v5.ts'
 import { chapters } from './v5.data.ts'
 
@@ -33,7 +33,7 @@ createPage({
   sections: [
     heroV5(), // one call fixes it, on your cloud or ours
     trackRecordV5(),
-    chatV5(), // that's exactly my night, and one call would have fixed it
+    storyV4(), // v4's story: that's exactly my night, and one call would have fixed it
     ownV5(), // and they'd own every layer of it
     stagesV5(), // wherever I am right now
     reportV5(), // here's what I'd actually get the next morning
