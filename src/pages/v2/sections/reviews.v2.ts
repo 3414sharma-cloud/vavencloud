@@ -4,7 +4,10 @@ import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
-import { testimonials, type Testimonial } from '../v2.data.ts'
+import { testimonials as v2Testimonials, type Testimonial } from '../v2.data.ts'
+
+/** The reviews on show: v2's by default; a page can pass its own (v5 passes the clients' reviews with photos) */
+let testimonials: Testimonial[] = v2Testimonials
 
 /*
  * Chapter 3, client stories: only the clients' own words, on a light mist band, in one row of cards that
@@ -32,9 +35,15 @@ const quote = (t: Testimonial) => {
   return `<blockquote class="tm-quote">${text}</blockquote>`
 }
 
+const topic = (t: Testimonial) => (t.topic ? `<span class="tm-topic">${t.topic}</span>` : '')
+
 const who = (t: Testimonial) => `
           <p class="tm-who">
-            <span class="tm-avatar" aria-hidden="true">${initials(t.name)}</span>
+            ${
+              t.photo
+                ? `<img class="tm-avatar tm-avatar--photo" src="${t.photo}" alt="" width="96" height="96" loading="lazy" draggable="false" />`
+                : `<span class="tm-avatar" aria-hidden="true">${initials(t.name)}</span>`
+            }
             <span><span class="tm-name">${t.name}</span><span class="tm-client">VavenCloud client</span></span>
           </p>`
 
@@ -42,7 +51,7 @@ const writtenCard = (t: Testimonial) => `
         <li class="tm-card" data-tm-card>
           <div class="flex items-start justify-between gap-4">
             ${quoteMark}
-            <span class="tm-topic">${t.topic}</span>
+            ${topic(t)}
           </div>
           ${quote(t)}
           ${who(t)}
@@ -70,7 +79,7 @@ const videoCard = (t: Testimonial, i: number) => `
           </div>
           <div class="mt-5 flex flex-wrap items-center justify-between gap-2">
             <span class="tm-badge">${icon('play', 'h-2.5 w-2.5', true)}Video review</span>
-            <span class="tm-topic">${t.topic}</span>
+            ${topic(t)}
           </div>
           ${quote(t)}
           ${who(t)}
@@ -220,6 +229,7 @@ function initTestimonials(): void {
   cards.forEach((c) => io.observe(c))
 }
 
-export function reviewsV2(): Section {
+export function reviewsV2(list: Testimonial[] = v2Testimonials): Section {
+  testimonials = list
   return { html: html(), init: initTestimonials }
 }

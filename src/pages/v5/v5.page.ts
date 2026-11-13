@@ -16,7 +16,7 @@ import { stagesV5 } from './sections/stages.v5.ts'
 import { startV5 } from './sections/start.v5.ts'
 import { storyV4 } from '@/pages/v4/sections/story.v4.ts'
 import { trackRecordV5 } from './sections/track-record.v5.ts'
-import { chapters } from './v5.data.ts'
+import { chapters, clientReviews } from './v5.data.ts'
 
 /*
  * v5 of the landing page (/v5/): a copy of v4 with every eyebrow tag removed (the small pills above the hero
@@ -39,7 +39,7 @@ createPage({
     reportV5(), // here's what I'd actually get the next morning
     compareV5(), // against the other ways of doing it
     behindV5(), // who these people are
-    reviewsV2(), // people like me trust them: in their own words
+    reviewsV2(clientReviews), // people like me trust them: in their own words, with their photos
     startV5(), // switching isn't a risk
     plansV5(), // what I'd sign up for, and it's safe
     faqSection(), // but what about…?

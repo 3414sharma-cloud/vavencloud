@@ -1,4 +1,6 @@
 import { routes } from '@/app/routes.ts'
+import { reviews } from '@/modules/reviews/reviews.data.ts'
+import type { Testimonial } from '@/pages/v2/v2.data.ts'
 import type { HeroSlide } from '@/pages/home/sections/hero.data.ts'
 import type { Caller, CallerId, Scene, SiteState } from '@/pages/v3/v3.data.ts'
 import type { IconName } from '@/shared/ui/icons.ts'
@@ -575,3 +577,47 @@ export const scope = {
     'we tell you first, give you a fixed quote and wait for your approval. Nothing is billed without it.',
   ],
 }
+
+/* ---------- Client stories: the clients' own words ---------- */
+
+/**
+ * The reviews on vavencloud.com, word for word, in the site's order and with the site's photos (in
+ * /public/clients). Real clients only (docs/messaging.md); no sample cards. `highlight` is underlined on the card.
+ */
+const reviewPhotos: Record<string, string> = {
+  'Jon God Gilly': '/clients/jon-god-gilly.png',
+  'Mohammed Imtiaz Ali': '/clients/mohammed-imtiaz-ali.png',
+  'Kyle Bagley': '/clients/kyle-bagley.png',
+}
+const reviewHighlights: Record<string, string> = {
+  'Jon God Gilly': 'A true partner in our app journey.',
+  'Mohammed Imtiaz Ali': 'their support team is always available',
+  'Kyle Bagley': 'a trusted long-term partner',
+}
+const siteOrder = Object.keys(reviewPhotos)
+
+const written: Testimonial[] = [...reviews]
+  .sort((a, b) => siteOrder.indexOf(a.name) - siteOrder.indexOf(b.name))
+  .map((r) => ({ ...r, highlight: reviewHighlights[r.name], photo: reviewPhotos[r.name] }))
+
+/**
+ * Video reviews on VavenSoft's YouTube channel. Each card shows the video's thumbnail and loads the player only
+ * when played. TODO: add each client's full name, a `topic`, and a `quote` (a line they say, word for word).
+ */
+const videos: Testimonial[] = [
+  {
+    name: 'Corey',
+    video: { id: 'TRMI9awI9G8', title: 'Customer Success Stories | VavenSoft Reviews That Inspire Confidence' },
+  },
+  {
+    name: 'Muhammad',
+    video: { id: 'lFOMw1Bi4i8', title: 'Hear from Our Happy Clients | Why They Chose VavenSoft' },
+  },
+  {
+    name: 'Mark',
+    video: { id: '93wrYKUcJsU', title: 'Trusted by Businesses Worldwide | VavenSoft Client Testimonials' },
+  },
+]
+
+/** Written and video reviews in turn, so a video shows without scrolling */
+export const clientReviews: Testimonial[] = written.flatMap((w, i) => (videos[i] ? [w, videos[i]] : [w]))

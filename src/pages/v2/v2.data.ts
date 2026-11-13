@@ -99,11 +99,14 @@ export const fixSteps = [
  */
 export interface Testimonial {
   name: string
-  topic: string
+  /** What the review is about; optional (a video card can go without one) */
+  topic?: string
   quote?: string
   highlight?: string
   video?: { id: string; title: string }
   sample?: boolean
+  /** The client's photo in /public (e.g. '/clients/first-last.png'). Without one, the card shows their initials */
+  photo?: string
 }
 
 const highlights: Record<string, string> = {

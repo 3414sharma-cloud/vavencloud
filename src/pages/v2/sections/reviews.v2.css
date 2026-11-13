@@ -188,6 +188,23 @@
   font-weight: 700;
   letter-spacing: 0.02em;
 }
+/* A client's photo in place of the initials: same circle, a hairline ring so a light photo keeps its edge */
+.tm-avatar--photo {
+  display: block;
+  object-fit: cover;
+  background: var(--color-neutral-100);
+  box-shadow:
+    0 0 0 2px #fff,
+    0 0 0 3px var(--color-neutral-200),
+    0 10px 22px -12px var(--color-neutral-900);
+}
+.dark .tm-avatar--photo {
+  background: var(--color-neutral-800);
+  box-shadow:
+    0 0 0 2px var(--color-neutral-900),
+    0 0 0 3px var(--color-neutral-700),
+    0 10px 22px -12px #000;
+}
 .tm-name {
   display: block;
   color: var(--color-neutral-950);
