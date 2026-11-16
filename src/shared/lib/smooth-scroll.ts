@@ -51,6 +51,8 @@ export function initSmoothScroll(): void {
   }
   requestAnimationFrame(frame)
 
+  cancelGlideOnScrollbarDrag()
+
   // In-page links glide to their target, stopping below the sticky header
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
@@ -69,6 +71,29 @@ export function initSmoothScroll(): void {
     lenis?.scrollTo(hash === '#top' ? 0 : target, { duration: 1.4 })
     history.pushState(null, '', hash)
     window.dispatchEvent(new HashChangeEvent('hashchange'))
+  })
+}
+
+/**
+ * Grabbing the page's scrollbar mid-glide: the glide is cancelled on press, and again on every scroll while
+ * dragging, so Lenis never pulls the page back against the drag. Not lenis.stop(): that adds .lenis-stopped,
+ * whose `overflow: clip` (base.css) removes the scrollbar from under the cursor.
+ */
+function cancelGlideOnScrollbarDrag(): void {
+  const cancel = () => lenis?.scrollTo(lenis.scroll, { immediate: true, force: true })
+  const root = document.documentElement
+  const onScrollbar = (e: PointerEvent) => e.clientX >= root.clientWidth || e.clientY >= root.clientHeight
+
+  const release = () => {
+    window.removeEventListener('pointerup', release)
+    window.removeEventListener('scroll', cancel)
+  }
+
+  window.addEventListener('pointerdown', (e) => {
+    if (!onScrollbar(e)) return
+    cancel()
+    window.addEventListener('pointerup', release)
+    window.addEventListener('scroll', cancel, { passive: true })
   })
 }
 

@@ -2385,3 +2385,246 @@
 .ch-thread::-webkit-scrollbar {
   display: none;
 }
+
+/*
+ * ---------- The strip under the hero: a curved sheet ----------
+ * The logo strip (track-record.v5.ts) slides up over the hero's foot with rounded top corners and a soft
+ * shadow above it, so the page reads as a sheet laid over the hero.
+ */
+#top.hero + #track-record {
+  position: relative;
+  z-index: 2;
+  margin-top: -2.5rem;
+  border-top: 1px solid rgb(40 32 20 / 0.06);
+  border-radius: 2.5rem 2.5rem 0 0;
+  background: var(--color-paper);
+  box-shadow: 0 -18px 40px -28px rgb(40 32 20 / 0.28);
+}
+.dark #top.hero + #track-record {
+  border-top-color: rgb(255 255 255 / 0.06);
+  background: var(--color-neutral-950);
+  box-shadow: 0 -18px 40px -28px rgb(0 0 0 / 0.7);
+}
+#top.hero:has(+ #track-record) {
+  border-bottom: 0;
+}
+@media (max-width: 640px) {
+  #top.hero + #track-record {
+    margin-top: -1.75rem;
+    border-radius: 1.75rem 1.75rem 0 0;
+  }
+}
+
+/* =====================================================================================================
+ * ---------- The hero, enhanced (hero.v5.ts): same copy, slides and layout ----------
+ * Scoped to html.v5, so the other pages that load this sheet are untouched.
+ *  1. Fits a phone's first screen: less room above, a smaller title, the slide names in view.
+ *  2. (Removed: footage in the hero.)
+ *  3. "On call now · 14:20 your time" under the slides: the visitor's own time, ticking.
+ *  4. Headline: weight 540 instead of 620, the second line in Instrument Serif italic.
+ *  5. Buttons: the arrow in a disc that nudges on hover, a press on click; the link's underline grows.
+ *  6. A soft light follows the mouse (desktop mice only, off with reduced motion).
+ * ===================================================================================================== */
+
+/* 4. Headline */
+.v5 #top.hero .hero-title {
+  font-weight: 540;
+  letter-spacing: -0.05em;
+}
+.v5 #top.hero .hero-title em {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.12em;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+
+/* 3. On call now */
+.v5 #top .v5-oncall {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2.5rem 0 0;
+  color: var(--color-neutral-500);
+  font-size: 0.8125rem;
+  letter-spacing: 0.005em;
+}
+.v5 #top .v5-oncall time {
+  color: var(--color-neutral-800);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.v5.dark #top .v5-oncall time {
+  color: #fff;
+}
+.v5 #top .v5-oncall-sep {
+  opacity: 0.5;
+}
+.v5 #top .v5-pulse {
+  position: relative;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 999px;
+  background: #10b981;
+}
+.v5 #top .v5-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: v5-ping 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+@keyframes v5-ping {
+  from {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+.v5 #top .hero-nav {
+  margin-top: 1.75rem;
+}
+
+/* 5. Buttons */
+.v5 #top .hero-actions .btn-primary {
+  gap: 0.75rem;
+  padding-right: 0.5rem !important;
+}
+.v5 #top .hero-actions .btn-primary svg {
+  box-sizing: content-box;
+  padding: 0.5rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.18);
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s ease;
+}
+.v5 #top .hero-actions .btn-primary:hover svg {
+  background: rgb(255 255 255 / 0.28);
+}
+.v5 #top .hero-actions .btn-primary:active {
+  transform: scale(0.97);
+}
+.v5 #top .hero-link {
+  padding-bottom: 0.2rem;
+  text-decoration: none;
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(color-mix(in srgb, currentColor 22%, transparent), color-mix(in srgb, currentColor 22%, transparent));
+  background-position:
+    0 100%,
+    0 100%;
+  background-size:
+    0% 1px,
+    100% 1px;
+  background-repeat: no-repeat;
+  transition: background-size 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v5 #top .hero-link:hover {
+  background-size:
+    100% 1px,
+    100% 1px;
+}
+
+/* 6. The light under the mouse */
+.v5 #top .v5-spot {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    28rem circle at var(--sx, 50%) var(--sy, 40%),
+    color-mix(in srgb, var(--color-brand-200) 38%, transparent),
+    transparent 70%
+  );
+  transition: opacity 0.6s ease;
+}
+.v5.dark #top .v5-spot {
+  background: radial-gradient(
+    28rem circle at var(--sx, 50%) var(--sy, 40%),
+    color-mix(in srgb, var(--color-brand-500) 14%, transparent),
+    transparent 70%
+  );
+}
+.v5 #top.is-lit .v5-spot {
+  opacity: 1;
+}
+
+/* 1. Short screens and phones: the whole hero, slide names included, on the first screen */
+.v5 #top.hero > .container-page {
+  padding-top: clamp(7rem, 17vh, 10rem);
+}
+@media (max-width: 767px) {
+  .v5 #top.hero > .container-page {
+    padding-top: 6.25rem;
+    padding-bottom: 3.5rem;
+  }
+  /* The slides' cell is as tall as the longest one: start at the top, so the gap falls below, not above */
+  .v5 #top .hero-slide {
+    align-self: start;
+  }
+  .v5 #top.hero .hero-title {
+    margin-top: 0.5rem;
+    font-size: clamp(2rem, 8.6vw, 2.5rem);
+  }
+  .v5 #top .hero-description {
+    margin-top: 1.125rem;
+    font-size: 1rem;
+  }
+  .v5 #top .hero-actions {
+    margin-top: 1.5rem;
+  }
+  .v5 #top .v5-oncall {
+    margin-top: 1.75rem;
+  }
+  .v5 #top .hero-nav {
+    margin-top: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v5 #top .v5-pulse::after {
+    animation: none;
+  }
+}
+
+/*
+ * ---------- Every heading in the hero's type (v5 and the pages that follow it) ----------
+ * As the hero (above): the title at weight 540 with tighter tracking, its second line (the <em>, or the
+ * problem heading's <strong> over its brush stroke) in Instrument Serif italic, in the same colours as before.
+ * On v5 (html.v5) and on the pages that lead back to it (data-landing="v5": about, team, comparison, the legal
+ * pages).
+ */
+:is(.v5, [data-landing='v5']) main .section-title {
+  font-weight: 540;
+  letter-spacing: -0.05em;
+}
+:is(.v5, [data-landing='v5']) main .section-title em,
+:is(.v5, [data-landing='v5']) main .v2-tagline strong {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.12em;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+/* Each page's own title (about, team, comparison, the legal pages): the same weight, and its accent in the serif */
+:is(.v5, [data-landing='v5']) main h1 {
+  font-weight: 540;
+  letter-spacing: -0.05em;
+}
+:is(.v5, [data-landing='v5']) main h1 em,
+[data-landing='v5'] #about-title > span {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.12em;
+  letter-spacing: -0.02em;
+}

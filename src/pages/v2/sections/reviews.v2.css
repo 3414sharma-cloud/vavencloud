@@ -40,6 +40,10 @@
   outline-offset: -2px;
   border-radius: 1.5rem;
 }
+/* The script moves it (reviews.v2.ts): the browser's snap would jump it, so it's off until the row lands on a card */
+.tm-track.is-gliding {
+  scroll-snap-type: none;
+}
 .tm-track.is-dragging {
   scroll-snap-type: none;
   cursor: grabbing;

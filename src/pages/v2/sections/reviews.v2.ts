@@ -137,17 +137,37 @@ function initRow(track: HTMLElement, cards: HTMLElement[]): void {
   new ResizeObserver(update).observe(track)
   update()
 
+  const glide = initGlide(track, cards)
+
   arrows.forEach((a) =>
     a.addEventListener('click', () => {
       const step = cards[0].offsetWidth + parseFloat(getComputedStyle(track).columnGap)
-      track.scrollBy({ left: Number(a.dataset.tmStep) * step, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+      glide.to(glide.nearest(glide.at() + Number(a.dataset.tmStep) * step))
     }),
   )
 
-  // Drag with the mouse (touch and trackpads scroll it natively)
-  let drag: { x: number; left: number; moved: boolean } | null = null
+  // A sideways wheel, Shift + the wheel, or a sideways trackpad swipe: glided in, then onto a card
+  track.addEventListener(
+    'wheel',
+    (e) => {
+      if (prefersReducedMotion()) return
+      const dx = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX
+      const dy = e.shiftKey ? 0 : e.deltaY
+      if (Math.abs(dx) <= Math.abs(dy)) return
+      e.preventDefault()
+      e.stopPropagation() // not the page's smooth scroll as well
+      const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? track.clientWidth : 1 // lines or pages, in pixels
+      glide.wheel(dx * unit)
+    },
+    { passive: false },
+  )
+
+  // Drag with the mouse (touch scrolls it natively); let go and it carries on at that speed, then settles on a card
+  let drag: { x: number; left: number; moved: boolean; samples: { t: number; x: number }[] } | null = null
   track.addEventListener('pointerdown', (e) => {
-    if (e.pointerType === 'mouse' && e.button === 0) drag = { x: e.clientX, left: track.scrollLeft, moved: false }
+    glide.stop()
+    if (e.pointerType === 'mouse' && e.button === 0)
+      drag = { x: e.clientX, left: track.scrollLeft, moved: false, samples: [{ t: e.timeStamp, x: e.clientX }] }
   })
   window.addEventListener('pointermove', (e) => {
     if (!drag) return
@@ -159,13 +179,23 @@ function initRow(track: HTMLElement, cards: HTMLElement[]): void {
     }
     window.getSelection()?.removeAllRanges()
     track.scrollLeft = drag.left - dx
+    drag.samples.push({ t: e.timeStamp, x: e.clientX })
+    drag.samples = drag.samples.filter((s) => e.timeStamp - s.t < 120)
   })
-  window.addEventListener('pointerup', () => {
+  window.addEventListener('pointerup', (e) => {
     const moved = drag?.moved
+    const samples = drag?.samples ?? []
     drag = null
     if (!moved) return
-    // Snap back onto a card, and don't let the click that ends a drag play a video
     track.classList.remove('is-dragging')
+    // The speed the pointer was moving at as it let go (the last 100ms; nothing if it had stopped first)
+    const recent = samples.filter((s) => e.timeStamp - s.t < 100)
+    const first = recent[0]
+    const end = recent[recent.length - 1]
+    const span = first && end ? end.t - first.t : 0
+    const fresh = end !== undefined && e.timeStamp - end.t < 60
+    glide.fling(span > 8 && fresh ? -(end.x - first.x) / span : 0)
+    // Don't let the click that ends a drag play a video
     const swallow = (e: Event) => {
       e.preventDefault()
       e.stopPropagation()
@@ -173,6 +203,123 @@ function initRow(track: HTMLElement, cards: HTMLElement[]): void {
     track.addEventListener('click', swallow, { capture: true, once: true })
     window.setTimeout(() => track.removeEventListener('click', swallow, { capture: true }), 0)
   })
+}
+
+/** A flick slows down by friction: ms for its speed to drop by about two thirds (higher glides farther) */
+const FRICTION = 325
+/** Easing onto a target (a card, or where the wheel has sent it): ms to cover about two thirds of the way */
+const EASE = 110
+/** The fastest it can be flicked, pixels a millisecond */
+const MAX_SPEED = 5
+
+/**
+ * Moves the row smoothly by script: a flick that slows down by friction, or an ease towards a target, and in both
+ * cases it ends by easing onto the nearest card. While it moves, the CSS snap is off (.is-gliding), since the
+ * browser's own snap would jump it; it lands exactly on a card, so turning the snap back on doesn't move it.
+ * With reduced motion every move is instant.
+ */
+function initGlide(track: HTMLElement, cards: HTMLElement[]) {
+  let pos = 0 // where the row is, unrounded (scrollLeft rounds)
+  let velocity = 0 // pixels a millisecond, while flung
+  let target: number | null = null
+  let lastWheel = 0
+  let frame = 0
+  let last = 0
+
+  const max = () => track.scrollWidth - track.clientWidth
+  const clamp = (x: number) => Math.min(Math.max(x, 0), max())
+  const at = () => (frame ? (target ?? pos) : track.scrollLeft)
+
+  /** The card start closest to x, as a scroll position (cards snap to their start, inside the padding) */
+  const nearest = (x: number) => {
+    const pad = parseFloat(getComputedStyle(track).scrollPaddingLeft) || 0
+    const origin = track.getBoundingClientRect().left - track.scrollLeft
+    let best = clamp(x)
+    let gap = Infinity
+    for (const c of cards) {
+      const snap = clamp(c.getBoundingClientRect().left - origin - pad)
+      if (Math.abs(snap - x) < gap) {
+        gap = Math.abs(snap - x)
+        best = snap
+      }
+    }
+    return best
+  }
+
+  const stop = () => {
+    cancelAnimationFrame(frame)
+    frame = 0
+    velocity = 0
+    target = null
+    track.classList.remove('is-gliding')
+  }
+
+  const tick = (now: number) => {
+    const dt = Math.min(now - last, 64)
+    last = now
+    if (velocity) {
+      pos = clamp(pos + velocity * dt)
+      velocity *= Math.exp(-dt / FRICTION)
+      // Slow enough, or at an end: settle onto the nearest card
+      if (Math.abs(velocity) < 0.15 || pos <= 0 || pos >= max()) {
+        velocity = 0
+        target = nearest(pos)
+      }
+    } else if (target !== null) {
+      pos += (target - pos) * (1 - Math.exp(-dt / EASE))
+      if (Math.abs(target - pos) < 0.5) {
+        pos = target
+        // The wheel sends it anywhere; once the wheel has gone quiet, finish on a card
+        const settled = nearest(pos)
+        if (Math.abs(settled - pos) > 0.5) {
+          if (now - lastWheel > 140) target = settled
+        } else {
+          track.scrollLeft = pos
+          stop()
+          return
+        }
+      }
+    }
+    track.scrollLeft = pos
+    frame = requestAnimationFrame(tick)
+  }
+
+  const run = () => {
+    track.classList.add('is-gliding')
+    if (frame) return
+    pos = track.scrollLeft
+    last = performance.now()
+    frame = requestAnimationFrame(tick)
+  }
+
+  return {
+    at,
+    nearest,
+    stop,
+    /** Ease to x */
+    to(x: number) {
+      if (prefersReducedMotion()) return void (track.scrollLeft = clamp(x))
+      run()
+      velocity = 0
+      target = clamp(x)
+    },
+    /** Carry on at this speed (pixels a millisecond, + further along), slowing down, then onto a card */
+    fling(speed: number) {
+      if (prefersReducedMotion()) return void (track.scrollLeft = nearest(track.scrollLeft))
+      run()
+      target = null
+      velocity = Math.max(Math.min(speed, MAX_SPEED), -MAX_SPEED)
+      if (!velocity) target = nearest(pos)
+    },
+    /** Move by dx, eased, adding to where it's already heading */
+    wheel(dx: number) {
+      const from = at()
+      run()
+      velocity = 0
+      lastWheel = performance.now()
+      target = clamp(from + dx)
+    },
+  }
 }
 
 /** A video review: swap the thumbnail for YouTube's player, already playing */

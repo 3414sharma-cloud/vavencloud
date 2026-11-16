@@ -112,6 +112,8 @@ const AUTO_SPEED = 0.029
  */
 const FRICTION = 900
 const PICKUP = 600
+/** How quickly a wheel step glides in, ms to cover about two thirds of it (lower is snappier) */
+const WHEEL_EASE = 90
 /** The fastest it can be flicked, pixels a millisecond */
 const MAX_SPEED = 4
 
@@ -146,6 +148,7 @@ function initMarquee(): void {
   let holdUntil = 0
   let frame = 0
   let last = 0
+  let wheelLeft = 0 // how much of the wheel's scrolling is still to glide in, pixels (+ leftwards)
 
   const apply = () => {
     offset = Math.min(Math.max(offset, 0), maxOffset)
@@ -155,7 +158,14 @@ function initMarquee(): void {
   const tick = (now: number) => {
     const dt = Math.min(now - last, 64)
     last = now
-    if (!dragging) {
+    if (wheelLeft) {
+      // A wheel step glides in, like the page's own smooth scroll, instead of jumping the whole step at once
+      const step = Math.abs(wheelLeft) < 0.5 ? wheelLeft : wheelLeft * (1 - Math.exp(-dt / WHEEL_EASE))
+      offset += step
+      wheelLeft -= step
+      // At either end there is nowhere left to go
+      if ((offset <= 0 && wheelLeft < 0) || (offset >= maxOffset && wheelLeft > 0)) wheelLeft = 0
+    } else if (!dragging) {
       // Head for the pace it should have: its own, or standing still. Faster than that (or the other way) is
       // slowing down, which is friction; slower is speeding up.
       const target = hovering || focused || now < holdUntil ? 0 : dir * AUTO_SPEED
@@ -204,6 +214,7 @@ function initMarquee(): void {
     if (!dragging && Math.abs(e.clientX - startX) > 5) {
       dragging = true
       velocity = 0
+      wheelLeft = 0
       root.classList.add('is-dragging')
       root.setPointerCapture(e.pointerId)
     }
@@ -258,13 +269,18 @@ function initMarquee(): void {
     if (!root.contains(e.relatedTarget as Node | null)) focused = false
   })
 
-  /* A sideways swipe on a trackpad, or a horizontal wheel */
+  /* A sideways swipe on a trackpad, a horizontal wheel, or Shift + the wheel; glided in by tick() */
   root.addEventListener(
     'wheel',
     (e) => {
-      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return
+      // Shift + wheel is sideways scrolling, though some browsers still report it as deltaY
+      const dx = e.shiftKey && !e.deltaX ? e.deltaY : e.deltaX
+      const dy = e.shiftKey ? 0 : e.deltaY
+      if (Math.abs(dx) <= Math.abs(dy)) return
       e.preventDefault()
-      offset += e.deltaX
+      e.stopPropagation() // not the page's smooth scroll as well
+      const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? root.clientWidth : 1 // lines or pages, in pixels
+      wheelLeft += dx * unit
       velocity = 0
     },
     { passive: false },

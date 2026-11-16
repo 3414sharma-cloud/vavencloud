@@ -25,6 +25,7 @@ const count = heroSlides.length
 
 const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 
+
 /** A title line split into words, so they can rise in one after another; `from` carries the count across lines */
 const words = (text: string, from: number) =>
   text
@@ -62,12 +63,15 @@ const html = () => `
 <section id="top" class="hero band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
   <div class="hero-glow" aria-hidden="true"><span></span><span></span></div>
   <div class="hero-noise" aria-hidden="true"></div>
+  <div class="v5-spot" aria-hidden="true"></div>
   <div class="container-page relative pt-32 pb-14 sm:pt-40 sm:pb-20">
     <div class="hero-inner">
       <div data-carousel aria-roledescription="carousel" aria-label="What we do">
         <div class="hero-slides" data-slides>
           ${heroSlides.map(slide).join('')}
         </div>
+
+        <p class="v5-oncall hero-enter" style="--i:5"><span class="v5-pulse" aria-hidden="true"></span>On call now<span class="v5-oncall-sep" aria-hidden="true">·</span><time data-clock>--:--</time><span>your time</span></p>
 
         <div class="hero-nav hero-enter" style="--i:6">
           <div role="tablist" aria-label="Choose a slide" class="hero-tabs">
@@ -174,9 +178,54 @@ function initSlider(root: HTMLElement): void {
   new IntersectionObserver(([e]) => hold('offscreen', !e.isIntersecting)).observe(root)
 }
 
+/** "On call now · 14:20 your time": the visitor's own time, ticking over on the minute */
+function initClock(hero: HTMLElement): void {
+  const el = qs<HTMLTimeElement>('[data-clock]', hero)
+  const format = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
+  const tick = () => {
+    const now = new Date()
+    el.textContent = format.format(now)
+    el.dateTime = now.toISOString()
+    window.setTimeout(tick, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 50)
+  }
+  tick()
+}
+
+/** A soft light that follows the mouse across the hero, eased (desktop mice only, not with reduced motion) */
+function initSpotlight(hero: HTMLElement): void {
+  if (prefersReducedMotion() || !matchMedia('(hover: hover) and (pointer: fine)').matches) return
+  const spot = qs('.v5-spot', hero)
+  let x = 0.5
+  let y = 0.4
+  let tx = x
+  let ty = y
+  let frame = 0
+  const step = () => {
+    x += (tx - x) * 0.1
+    y += (ty - y) * 0.1
+    spot.style.setProperty('--sx', `${(x * 100).toFixed(2)}%`)
+    spot.style.setProperty('--sy', `${(y * 100).toFixed(2)}%`)
+    frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.0005 ? requestAnimationFrame(step) : 0
+  }
+  hero.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return
+    const r = hero.getBoundingClientRect()
+    tx = (e.clientX - r.left) / r.width
+    ty = (e.clientY - r.top) / r.height
+    hero.classList.add('is-lit')
+    if (!frame) frame = requestAnimationFrame(step)
+  })
+  hero.addEventListener('pointerleave', () => hero.classList.remove('is-lit'))
+}
+
 export function heroV5(): Section {
   return {
     html: html(),
-    init: () => initSlider(qs('#top [data-carousel]')),
+    init: () => {
+      const hero = qs('#top')
+      initSlider(qs('[data-carousel]', hero))
+      initClock(hero)
+      initSpotlight(hero)
+    },
   }
 }
