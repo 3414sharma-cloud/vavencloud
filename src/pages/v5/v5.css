@@ -3138,3 +3138,25 @@ html.dark #stages .v4-stage-answer b {
     font-size: 1.85rem;
   }
 }
+
+/* The hero keeps its dark appearance independently of the page theme. */
+#top.hero.v5-hero-dark {
+  color-scheme: dark;
+  color: var(--color-neutral-300);
+  border-color: var(--color-neutral-800);
+  background-color: var(--color-neutral-950);
+  background-image:
+    radial-gradient(80% 80% at 50% 0%, color-mix(in srgb, var(--color-brand-800) 30%, transparent), transparent 68%),
+    linear-gradient(180deg, var(--color-neutral-950), color-mix(in oklab, var(--color-neutral-950) 84%, var(--color-brand-950)));
+}
+#top.v5-hero-dark .section-title { color: #fff; }
+#top.v5-hero-dark .section-title em { color: var(--color-brand-400); }
+#top.v5-hero-dark .section-lead { color: var(--color-neutral-400); }
+#top.v5-hero-dark .hero-link { color: #fff; }
+#app #top.v5-hero-dark .hero-tab { color: var(--color-neutral-400); }
+#app #top.v5-hero-dark .hero-tab:hover,
+#app #top.v5-hero-dark .hero-tab[aria-selected="true"],
+#app #top.v5-hero-dark .hero-tab[aria-selected="true"] .hero-tab-num { color: var(--color-brand-300); }
+#app #top.v5-hero-dark .hero-signal > svg .hero-signal-line { stroke: var(--color-neutral-700); }
+#app #top.v5-hero-dark .hero-signal-fill .hero-signal-line { stroke: var(--color-brand-400); }
+#top.v5-hero-dark .v5-spot { opacity: 0.4; }

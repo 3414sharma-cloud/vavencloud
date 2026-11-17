@@ -77,7 +77,7 @@ const tab = (s: HeroSlide, i: number) => `
             </button>`
 
 const html = () => `
-<section id="top" class="hero band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
+<section id="top" class="hero dark v5-hero-dark band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
   <div class="hero-glow" aria-hidden="true"><span></span><span></span></div>
   <div class="hero-noise" aria-hidden="true"></div>
   <div class="v5-spot" aria-hidden="true"></div>
