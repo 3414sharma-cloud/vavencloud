@@ -2395,10 +2395,10 @@
   position: relative;
   z-index: 2;
   margin-top: -2.5rem;
-  border-top: 1px solid rgb(40 32 20 / 0.06);
+  border-top: 1px solid rgb(24 24 27 / 0.06);
   border-radius: 2.5rem 2.5rem 0 0;
   background: var(--color-paper);
-  box-shadow: 0 -18px 40px -28px rgb(40 32 20 / 0.28);
+  box-shadow: 0 -18px 40px -28px rgb(24 24 27 / 0.28);
 }
 .dark #top.hero + #track-record {
   border-top-color: rgb(255 255 255 / 0.06);
@@ -2432,7 +2432,7 @@
   letter-spacing: -0.05em;
 }
 .v5 #top.hero .hero-title em {
-  font-family: 'Instrument Serif', Georgia, serif;
+  font-family: "Instrument Serif", Georgia, serif;
   font-style: italic;
   font-weight: 400;
   font-size: 1.12em;
@@ -2470,7 +2470,7 @@
   background: #10b981;
 }
 .v5 #top .v5-pulse::after {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
@@ -2516,7 +2516,10 @@
   text-decoration: none;
   background-image:
     linear-gradient(currentColor, currentColor),
-    linear-gradient(color-mix(in srgb, currentColor 22%, transparent), color-mix(in srgb, currentColor 22%, transparent));
+    linear-gradient(
+      color-mix(in srgb, currentColor 22%, transparent),
+      color-mix(in srgb, currentColor 22%, transparent)
+    );
   background-position:
     0 100%,
     0 100%;
@@ -2602,13 +2605,13 @@
  * On v5 (html.v5) and on the pages that lead back to it (data-landing="v5": about, team, comparison, the legal
  * pages).
  */
-:is(.v5, [data-landing='v5']) main .section-title {
+:is(.v5, [data-landing="v5"]) main .section-title {
   font-weight: 540;
   letter-spacing: -0.05em;
 }
-:is(.v5, [data-landing='v5']) main .section-title em,
-:is(.v5, [data-landing='v5']) main .v2-tagline strong {
-  font-family: 'Instrument Serif', Georgia, serif;
+:is(.v5, [data-landing="v5"]) main .section-title em,
+:is(.v5, [data-landing="v5"]) main .v2-tagline strong {
+  font-family: "Instrument Serif", Georgia, serif;
   font-style: italic;
   font-weight: 400;
   font-size: 1.12em;
@@ -2616,13 +2619,13 @@
   line-height: 0.95;
 }
 /* Each page's own title (about, team, comparison, the legal pages): the same weight, and its accent in the serif */
-:is(.v5, [data-landing='v5']) main h1 {
+:is(.v5, [data-landing="v5"]) main h1 {
   font-weight: 540;
   letter-spacing: -0.05em;
 }
-:is(.v5, [data-landing='v5']) main h1 em,
-[data-landing='v5'] #about-title > span {
-  font-family: 'Instrument Serif', Georgia, serif;
+:is(.v5, [data-landing="v5"]) main h1 em,
+[data-landing="v5"] #about-title > span {
+  font-family: "Instrument Serif", Georgia, serif;
   font-style: italic;
   font-weight: 400;
   font-size: 1.12em;

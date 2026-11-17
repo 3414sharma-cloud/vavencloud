@@ -5,6 +5,7 @@ import { routes } from '@/app/routes.ts'
 import type { Section } from '@/app/types.ts'
 import { brandLogos } from '@/modules/track-record/brand-logos.ts'
 import { qsa } from '@/shared/lib/dom.ts'
+import { prefersReducedMotion } from '@/shared/lib/motion.ts'
 import { icon, type IconName } from '@/shared/ui/icons.ts'
 import { logoMark } from '@/shared/ui/logo.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
@@ -28,7 +29,7 @@ import {
  *  1. The servers: five fixed sizes, one of each; each cloud's monthly price and what you save with
  *     VavenCloud, with the total underneath.
  *  2. Someone to run them (#managed): each cloud's support plan beside VavenCloud's Managed plan, what it
- *     covers, and the month all in (the servers in part 1 plus the plan). The numbers are in comparison.data.ts.
+ *     covers, and the monthly support or management fee. The numbers are in comparison.data.ts.
  */
 
 const usd = (n: number, decimals = 2) =>
@@ -273,63 +274,246 @@ const studioProviders: { who: Who; name: string; logo: string; plan: string }[] 
 const studioPrices = () => {
   const servers = totals(startRows(), KIND)
   const fee = { aws: awsBusiness(servers.aws), azure: azureStandard, vaven: vavenManaged.managed }
-  return { servers, fee }
+  return fee
 }
 
-const studioView = (task: number, selected: Who, period: number) => {
-  const layer = layers[task]
-  const [state, note] = layer.cover[selected]
-  const cloud = studioProviders.find(p => p.who === selected)!
-  const { servers, fee } = studioPrices()
-  const owner = state === 'yes' ? cloud.name : 'Your team'
-  return `
-    <div class="cx-scene" data-state="${state}">
-      <div class="cx-scene-label"><span>FOLLOW THE WORK</span><span>0${task + 1} / 05</span></div>
-      <div class="cx-network">
-        <svg class="cx-wires" viewBox="0 0 600 260" preserveAspectRatio="none" aria-hidden="true"><path class="cx-wire-base" d="M90 130 H230 Q250 130 250 110 V75 Q250 55 275 55 H480 M250 110 V185 Q250 205 275 205 H480"/><path class="cx-wire-active" d="${state === 'yes' ? 'M90 130 H230 Q250 130 250 110 V75 Q250 55 275 55 H480' : 'M90 130 H230 Q250 130 250 150 V185 Q250 205 275 205 H480'}"/></svg>
-        <div class="cx-source"><span class="cx-node-icon">${icon(layer.icon, 'h-6 w-6')}</span><strong>${layer.name}</strong><small>The work that needs doing</small></div>
-        <div class="cx-destination cx-destination--cloud ${state === 'yes' ? 'is-active' : ''}"><span class="cx-node-icon">${icon('server', 'h-6 w-6')}</span><strong>${cloud.name}</strong><small>${state === 'yes' ? 'Handles this for you' : state === 'half' ? 'Gives you advice' : 'Not in this plan'}</small></div>
-        <div class="cx-destination cx-destination--team ${state !== 'yes' ? 'is-active' : ''}"><span class="cx-node-icon">${icon('users', 'h-6 w-6')}</span><strong>Your team</strong><small>${state === 'yes' ? 'Can focus on your product' : 'Handles the work'}</small></div>
-      </div>
-      <div class="cx-answer"><span class="cx-answer-symbol">${icon(state === 'yes' ? 'check' : 'arrow-right', 'h-5 w-5')}</span><div><h5>${owner} takes it from here.</h5><p>${note}</p></div><span class="cx-answer-tag">${state === 'yes' ? 'Handled for you' : state === 'half' ? 'Advice + your team' : 'Your responsibility'}</span></div>
-    </div>
-    <div class="cx-price-strip"><div><span>${cloud.plan}</span><strong>${usd((servers[selected] + fee[selected]) * period)}<small> / ${period === 1 ? 'month' : 'year'}</small></strong></div><p>${usd(servers[selected] * period)} servers <b>+</b> ${usd(fee[selected] * period)} ${selected === 'vaven' ? 'management' : 'support'}</p></div>`
-}
+const kindLabel: Record<Cover, string> = { yes: 'Handled for you', half: 'Advice only, you fix it', you: 'You do it' }
 
 const managedPanel = () => `
-  <div class="cx-studio">
-    <header class="cx-intro"><div><span class="cx-eyebrow">THE OWNERSHIP EXPLORER</span><h4>Same task.<br><em>Different hands.</em></h4></div><p>Pick a task. Choose a cloud.<br>Follow the line to see who does the work.</p><span class="cx-intro-art" aria-hidden="true">?</span></header>
-    <div class="cx-workspace">
-      <nav class="cx-tasks" aria-label="Choose a task to compare"><span class="cx-control-label">01 / PICK A TASK</span>${layers.map((l, i) => `<button type="button" data-cx-task="${i}" aria-pressed="${i === 1}" aria-controls="cx-result"><span class="cx-task-number">0${i + 1}</span>${icon(l.icon, 'h-4 w-4')}<span>${l.name}</span>${icon('arrow-right', 'h-4 w-4')}</button>`).join('')}<p>Explore all five tasks to see what stays with you.</p></nav>
-      <div class="cx-main"><div class="cx-toolbar"><div><span class="cx-control-label">02 / CHOOSE YOUR CLOUD</span><div class="cx-providers" role="group" aria-label="Cloud provider">${studioProviders.map(p => `<button type="button" data-cx-provider="${p.who}" aria-pressed="${p.who === 'vaven'}" aria-controls="cx-result">${p.logo}</button>`).join('')}</div></div><div class="cx-period" role="group" aria-label="Price period"><button type="button" data-cx-period="1" aria-pressed="true">Month</button><button type="button" data-cx-period="12" aria-pressed="false">Year</button></div></div>
-      <div id="cx-result" aria-live="polite" aria-atomic="true">${studioView(1, 'vaven', 1)}</div></div>
+  <div class="cw-board" data-cw data-who="aws">
+    <div class="cw-top">
+      <div>
+        <span class="cw-eyebrow">FOLLOW THE WIRES</span>
+        <h4 class="cw-title">Every task is wired <em>to someone.</em></h4>
+        <p class="cw-lead">Pick a platform and watch where each job goes.</p>
+      </div>
+      <div class="cw-tabs" role="group" aria-label="Platform">${studioProviders.map((p) => `<button type="button" data-cw-who="${p.who}" aria-pressed="${p.who === 'aws'}">${p.logo}</button>`).join('')}</div>
     </div>
-    <footer class="cx-footer"><span>${icon('check', 'h-4 w-4')}Same five servers in every comparison</span><p>AWS and Azure storage, bandwidth and backups cost extra. VavenCloud includes the SSD shown above; management is a starting price agreed after a free review.</p></footer>
+    <div class="cw-diagram" tabindex="0" role="region" aria-label="Task ownership and monthly costs">
+    <div class="cw-stage" data-cw-stage>
+      <ul class="cw-tasks">${layers
+        .map(
+          (l, r) => `
+        <li class="cw-task" data-cw-task="${r}" data-state="${l.cover.aws[0]}">
+          <span class="cw-task-icon">${icon(l.icon, 'h-4 w-4')}</span>
+          <span class="cw-task-text"><strong>${l.name}</strong><small data-cw-note>${l.cover.aws[1]}</small></span>
+          <span class="cw-port" data-cw-port aria-hidden="true"></span>
+        </li>`,
+        )
+        .join('')}
+      </ul>
+      <svg class="cw-wires" data-cw-wires aria-hidden="true"></svg>
+      <div class="cw-dests">
+        <div class="cw-dest cw-dest--cloud" data-cw-cloud>
+          <span class="cw-port" data-cw-port aria-hidden="true"></span>
+          <span class="cw-dest-icon">${icon('cloud', 'h-5 w-5')}</span>
+          <strong data-cw-cloud-name>AWS</strong>
+          <small data-cw-cloud-count></small>
+        </div>
+        <div class="cw-dest cw-dest--team" data-cw-team>
+          <span class="cw-port" data-cw-port aria-hidden="true"></span>
+          <span class="cw-dest-icon">${icon('users', 'h-5 w-5')}</span>
+          <strong>Your team</strong>
+          <small data-cw-team-count></small>
+        </div>
+      </div>
+      <div class="cw-cost-card" data-cw-cost>
+        <span class="cw-port" data-cw-port aria-hidden="true"></span>
+        <div class="cw-price" data-cw-price></div>
+      </div>
+      <div class="cw-cost-card cw-team-cost-card" data-cw-team-cost>
+        <span class="cw-port" data-cw-port aria-hidden="true"></span>
+        <div class="cw-price" data-cw-team-price></div>
+      </div>
+    </div>
+    </div>
+    <div class="cw-team-assumptions">
+      <span>Estimate your team&#39;s time</span>
+      <label>Hours / month <input type="number" min="0" max="10000" step="1" value="20" data-cw-hours /></label>
+      <label>Hourly rate (USD) <input type="number" min="0" max="10000" step="1" value="50" data-cw-rate /></label>
+      <p>Illustrative inputs, not a market quote. Adjust to your team&#39;s workload and rate; this is not a 24/7 staffing estimate.</p>
+    </div>
+    <p class="sr-only" aria-live="polite" data-cw-sr></p>
+    <div class="cw-legend" aria-hidden="true">
+      <span data-kind="yes"><i></i>Handled for you</span>
+      <span data-kind="half"><i></i>Advice only, you fix it</span>
+      <span data-kind="you"><i></i>You do it</span>
+    </div>
+    <footer class="cw-footer"><span>${icon('check', 'h-4 w-4')}Monthly support and management fees</span><p>Server costs are shown separately above. AWS support is calculated from that AWS server bill; VavenCloud management is a starting price agreed after a free review.</p></footer>
   </div>`
 
-function initStudio(): void {
-  const studio = document.querySelector<HTMLElement>('.cx-studio')
-  const result = studio?.querySelector<HTMLElement>('#cx-result')
-  if (!studio || !result) return
-  let task = 1
-  let selected: Who = 'vaven'
-  let period = 1
-  const refresh = () => { result.innerHTML = studioView(task, selected, period) }
-  qsa('[data-cx-task]', studio).forEach(button => button.addEventListener('click', () => {
-    task = Number(button.dataset.cxTask)
-    qsa('[data-cx-task]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
-    refresh()
-  }))
-  qsa('[data-cx-provider]', studio).forEach(button => button.addEventListener('click', () => {
-    selected = button.dataset.cxProvider as Who
-    qsa('[data-cx-provider]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
-    refresh()
-  }))
-  qsa('[data-cx-period]', studio).forEach(button => button.addEventListener('click', () => {
-    period = Number(button.dataset.cxPeriod)
-    qsa('[data-cx-period]', studio).forEach(option => option.setAttribute('aria-pressed', String(option === button)))
-    refresh()
-  }))
+/**
+ * Wires run from each task to whoever does it: the platform, or your team. "Advice only" tasks get a
+ * dashed wire to the platform and a solid one to your team. Wires are drawn from the real positions of
+ * the ports, so they follow the layout at any width. Switching platform re-draws them with a draw-in
+ * animation and packets flowing along each wire. Until someone clicks, the platforms cycle by themselves
+ * while the board is on screen. Reduced motion: no draw-in, no packets, no cycling.
+ */
+function initManaged(): void {
+  const board = document.querySelector<HTMLElement>('[data-cw]')
+  const stage = board?.querySelector<HTMLElement>('[data-cw-stage]')
+  const svg = board?.querySelector<SVGSVGElement>('[data-cw-wires]')
+  if (!board || !stage || !svg) return
+
+  const motion = !prefersReducedMotion()
+  const tasks = qsa('[data-cw-task]', board)
+  const cloud = board.querySelector<HTMLElement>('[data-cw-cloud]')!
+  const team = board.querySelector<HTMLElement>('[data-cw-team]')!
+  const cost = board.querySelector<HTMLElement>('[data-cw-cost]')!
+  const tabs = qsa('[data-cw-who]', board)
+  const order: Who[] = ['aws', 'azure', 'vaven']
+  const teamCost = board.querySelector<HTMLElement>('[data-cw-team-cost]')!
+  const hoursInput = board.querySelector<HTMLInputElement>('[data-cw-hours]')!
+  const rateInput = board.querySelector<HTMLInputElement>('[data-cw-rate]')!
+  let who: Who = 'aws'
+  let cycle = 0
+  let userPicked = false
+  let visible = false
+
+  const port = (el: Element, box: DOMRect) => {
+    const r = el.querySelector('[data-cw-port]')!.getBoundingClientRect()
+    return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top }
+  }
+
+  const draw = (animate: boolean) => {
+    const box = stage.getBoundingClientRect()
+    svg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`)
+    const to = { cloud: port(cloud, box), team: port(team, box) }
+    svg.innerHTML = layers
+      .map((l, r) => {
+        const state = l.cover[who][0]
+        const from = port(tasks[r], box)
+        const lines: [keyof typeof to, string][] =
+          state === 'yes'
+            ? [['cloud', 'yes']]
+            : state === 'half'
+              ? [
+                  ['cloud', 'advice'],
+                  ['team', 'half'],
+                ]
+              : [['team', 'you']]
+        return lines
+          .map(([end, kind]) => {
+            const b = to[end]
+            const mx = from.x + (b.x - from.x) * 0.5
+            const d = `M${from.x} ${from.y} C${mx} ${from.y} ${mx} ${b.y} ${b.x} ${b.y}`
+            const start = r * 0.12
+            const packet =
+              motion && kind !== 'advice'
+                ? `<circle class="cw-packet" r="3.5" visibility="hidden"><set attributeName="visibility" to="visible" begin="${start}s"/><animateMotion dur="${1.7 + r * 0.13}s" begin="${start}s" repeatCount="indefinite" path="${d}"/></circle>`
+                : ''
+            return `<g class="cw-wire" data-kind="${kind}" style="--r:${r}"><path class="cw-wire-base" d="${d}"/><path class="cw-wire-line" d="${d}" pathLength="1"/>${packet}</g>`
+          })
+          .join('')
+      })
+      .join('')
+    const cloudBox = cloud.getBoundingClientRect()
+    const fromCost = { x: cloudBox.right - box.left, y: cloudBox.top + cloudBox.height / 2 - box.top }
+    const endCost = port(cost, box)
+    const midCost = fromCost.x + (endCost.x - fromCost.x) / 2
+    const costPath = `M${fromCost.x} ${fromCost.y} C${midCost} ${fromCost.y} ${midCost} ${endCost.y} ${endCost.x} ${endCost.y}`
+    const pricePacket = (path: string) =>
+      motion
+        ? `<circle class="cw-packet" r="3.5" visibility="hidden"><set attributeName="visibility" to="visible" begin="0s"/><animateMotion dur="1.7s" begin="0s" repeatCount="indefinite" path="${path}"/></circle>`
+        : ''
+    svg.insertAdjacentHTML(
+      'beforeend',
+      `<g class="cw-wire cw-cost-wire" data-kind="yes" style="--r:10"><path class="cw-wire-base" d="${costPath}"/><path class="cw-wire-line" d="${costPath}" pathLength="1"/>${pricePacket(costPath)}</g>`,
+    )
+    if (who !== 'vaven') {
+      const teamBox = team.getBoundingClientRect()
+      const teamFrom = { x: teamBox.right - box.left, y: teamBox.top + teamBox.height / 2 - box.top }
+      const teamEnd = port(teamCost, box)
+      const teamMid = teamFrom.x + (teamEnd.x - teamFrom.x) / 2
+      const teamPath = `M${teamFrom.x} ${teamFrom.y} C${teamMid} ${teamFrom.y} ${teamMid} ${teamEnd.y} ${teamEnd.x} ${teamEnd.y}`
+      svg.insertAdjacentHTML(
+        'beforeend',
+        `<g class="cw-wire cw-cost-wire" data-kind="you" style="--r:10"><path class="cw-wire-base" d="${teamPath}"/><path class="cw-wire-line" d="${teamPath}" pathLength="1"/>${pricePacket(teamPath)}</g>`,
+      )
+    }
+    if (!animate) board.classList.remove('is-drawing')
+    else if (motion) {
+      board.classList.remove('is-drawing')
+      void board.offsetWidth // restart the draw-in
+      board.classList.add('is-drawing')
+    }
+  }
+
+  const select = (next: Who, animate = true) => {
+    who = next
+    const p = studioProviders.find((s) => s.who === who)!
+    const handled = layers.filter((l) => l.cover[who][0] === 'yes').length
+    const load = layers.length - handled
+    team.hidden = who === 'vaven'
+    teamCost.hidden = who === 'vaven'
+    board.querySelector<HTMLElement>('.cw-team-assumptions')!.hidden = who === 'vaven'
+    board.dataset.who = who
+    tabs.forEach((t) => t.setAttribute('aria-pressed', String(t.dataset.cwWho === who)))
+    tasks.forEach((t, r) => {
+      const [state, note] = layers[r].cover[who]
+      t.dataset.state = state
+      t.querySelector('[data-cw-note]')!.textContent = note
+      t.title = kindLabel[state]
+    })
+    board.querySelector('[data-cw-cloud-name]')!.textContent = p.name
+    board.querySelector('[data-cw-cloud-count]')!.textContent = `Handles ${handled} of 5`
+    board.querySelector('[data-cw-team-count]')!.textContent = load
+      ? `${load} task${load > 1 ? 's' : ''} on your plate`
+      : 'Free to build your product'
+    cloud.dataset.load = String(handled)
+    team.dataset.load = String(load)
+    const fee = studioPrices()
+    board.querySelector('[data-cw-price]')!.innerHTML =
+      `<div><span>${p.plan}</span><strong>${usd(fee[who])}<small> / month</small></strong></div><p>${who === 'vaven' ? 'Management fee only' : 'Support fee only'}</p>`
+    const hours = Math.max(0, Math.min(10000, Number(hoursInput.value) || 0))
+    const rate = Math.max(0, Math.min(10000, Number(rateInput.value) || 0))
+    const teamEstimate = load ? hours * rate : 0
+    board.querySelector('[data-cw-team-price]')!.innerHTML =
+      `<div><span>Estimated extra team cost</span><strong>${usd(teamEstimate)}<small> / month</small></strong></div><p>${load ? `${hours} hours ? ${usd(rate)} / hour` : 'Covered tasks handled by VavenCloud'}</p><p>Support + team: ${who === 'vaven' ? 'from ' : ''}${usd(fee[who] + teamEstimate)} / month</p>`
+    board.querySelector('[data-cw-sr]')!.textContent =
+      `${p.name}: handles ${handled} of 5 tasks, ${load} left for your team. ${p.plan}: ${usd(fee[who])} per month, excluding servers.`
+    draw(animate)
+  }
+
+  const stopCycle = () => {
+    window.clearInterval(cycle)
+    cycle = 0
+  }
+  const startCycle = () => {
+    stopCycle()
+    if (!motion || userPicked || !visible) return
+    cycle = window.setInterval(() => select(order[(order.indexOf(who) + 1) % order.length]), 4800)
+  }
+
+  tabs.forEach((t) =>
+    t.addEventListener('click', () => {
+      userPicked = true
+      stopCycle()
+      select(t.dataset.cwWho as Who)
+    }),
+  )
+
+  ;[hoursInput, rateInput].forEach((input) =>
+    input.addEventListener('input', () => {
+      userPicked = true
+      stopCycle()
+      select(who, false)
+    }),
+  )
+  select('aws', false)
+  new ResizeObserver(() => draw(false)).observe(stage)
+  new IntersectionObserver(
+    ([entry]) => {
+      const wasVisible = visible
+      visible = entry.isIntersecting
+      if (visible && !wasVisible) {
+        draw(true)
+        startCycle()
+      }
+      if (!visible) stopCycle()
+    },
+    { threshold: 0.35 },
+  ).observe(board)
 }
 
 /* ---------- The page ---------- */
@@ -345,7 +529,7 @@ const partHead = (n: number, id: string, title: string, lead: string) => `
     </div>`
 
 const tool = (): Section => ({
-  init: () => initStudio(),
+  init: () => initManaged(),
   html: `
 <section id="compare" class="v2-section" aria-labelledby="compare-title">
   <div class="container-page">
@@ -358,7 +542,7 @@ const tool = (): Section => ({
     </div>
     <section class="cp-part" aria-labelledby="cp-servers-title">${partHead(1, 'cp-servers-title', 'The servers', 'Five common sizes, one of each. What the same servers cost a month on each cloud.')}${serversPanel()}
     </section>
-    <section id="managed" class="cp-part" aria-labelledby="cp-managed-title">${partHead(2, 'cp-managed-title', 'See who takes care of it', 'An interactive look at the work behind your monthly cost.')}${managedPanel()}
+    <section id="managed" class="cp-part" aria-labelledby="cp-managed-title">${partHead(2, 'cp-managed-title', 'See who takes care of it', 'An interactive look at the work covered by your monthly support or management fee.')}${managedPanel()}
     </section>
     <div class="cp-notes">
       <h2 class="cp-notes-title">How we compared</h2>

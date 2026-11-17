@@ -16,7 +16,7 @@ const options: { value: Palette; label: string; swatch: string }[] = [
 export function paletteSwitcher(): Section {
   return {
     html: `
-<fieldset id="palette-switch" class="fixed bottom-4 left-4 z-[60] flex items-center gap-2 rounded-full border border-neutral-950/10 bg-white/90 p-1 pl-3.5 shadow-[0_10px_30px_-12px_rgb(40_32_20/0.35)] backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-[0_10px_30px_-12px_rgb(0_0_0/0.8)]">
+<fieldset id="palette-switch" class="fixed bottom-4 left-4 z-[60] flex items-center gap-2 rounded-full border border-neutral-950/10 bg-white/90 p-1 pl-3.5 shadow-[0_10px_30px_-12px_rgb(24_24_27/0.35)] backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-[0_10px_30px_-12px_rgb(0_0_0/0.8)]">
   <legend class="sr-only">Colour palette</legend>
   <span class="text-xs font-medium text-neutral-500" aria-hidden="true">Palette</span>
   <div class="flex gap-0.5">

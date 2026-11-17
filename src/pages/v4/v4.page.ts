@@ -31,11 +31,11 @@ createPage({
     heroV4(), // one call fixes it, on your cloud or ours
     trackRecordSection({ label: 'Runs on what you already run' }),
     storyV4(), // that's exactly my night, and one call would have fixed it
+    behindV4(), // who these people are
     ownV4(), // and they'd own every layer of it
     stagesV4(), // wherever I am right now
     reportV4(), // here's what I'd actually get the next morning
     compareV4(), // against the other ways of doing it
-    behindV4(), // who these people are
     reviewsV2(), // people like me trust them: in their own words
     startV4(), // switching isn't a risk
     plansV4(), // what I'd sign up for, and it's safe

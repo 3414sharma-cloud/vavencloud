@@ -497,13 +497,12 @@ export const behindStats: { value: string; label: string }[] = [
   { value: '100%', label: 'Job Success and Top Rated on Upwork' },
 ]
 
-/** Beside them: a co-founder on video (YouTube, loaded only when played) */
+/** VavenCloud overview (YouTube, loaded only when played). Founder videos live on the team page. */
 export const behindVideo = {
-  id: 'N186wgIn-lo',
-  title: 'Jerry Bopara | Co-Founder, DevOps & AI Integration Architect | Vavensoft',
-  caption: 'Jerry Bopara, co-founder of Vavensoft and VavenCloud',
-  /** Where the thumbnail draws its own play button, so ours sits right on it (change it with the thumbnail) */
-  play: { x: '57.6%', y: '60.5%' },
+  id: 'jaCN_R5KTzQ',
+  title: 'VavenCloud overview',
+  caption: 'VavenCloud: Secure Cloud Hosting',
+  play: { x: '50%', y: '50%' },
 }
 
 /** The two co-founders */

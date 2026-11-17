@@ -9,7 +9,7 @@ import { behindIntro, behindStats, behindVideo, founders, teamIntro } from '../v
 
 /*
  * Who's behind it, just before the client stories, in two halves on a wide screen. On the left who VavenCloud
- * is and four numbers; on the right a co-founder on video, the two co-founders side by side, and a button that
+ * is and four numbers; on the right the VavenCloud overview video, the two co-founders side by side, and a button that
  * opens the rest of the team (the engineers on your account, by role) across the whole width under both
  * halves. The video is YouTube's thumbnail until
  * it's played, then the player (youtube-nocookie), as in the client stories (reviews.v2.css styles both).

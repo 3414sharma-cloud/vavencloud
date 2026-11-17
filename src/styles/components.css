@@ -152,7 +152,7 @@
   }
 
   /* ---------- Section surfaces: tinted bands so the page is not one flat sheet ---------- */
-  /* Warm cream linen that fades into the paper */
+  /* Light grey band that fades into the white page */
   .band-linen {
     background-image: linear-gradient(
       180deg,

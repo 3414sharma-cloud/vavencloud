@@ -178,7 +178,8 @@ const teamSection = (): Section => ({
   html: `
 <section id="engineers" class="v2-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="engineers-title">
   <div class="container-page">
-    <div class="max-w-4xl">
+    <div class="tp-engineers-layout">
+    <div class="tp-engineers-intro">
       ${sectionHeading({
         id: 'engineers-title',
         title: 'The engineers <em>on your account.</em>',
@@ -188,15 +189,17 @@ const teamSection = (): Section => ({
     <ul class="tp-roles">
       ${accountTeam
         .map(
-          (m) => `
-      <li class="tp-role-card card">
+          (m, i) => `
+      <li class="tp-role-card">
+        <span class="tp-role-number" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
         <span class="icon-box">${icon(m.icon, 'h-5 w-5')}</span>
-        <h3 class="tp-role-title">${m.role}</h3>
-        <p class="tp-role-text">${m.focus}</p>
+        <div class="tp-role-copy"><h3 class="tp-role-title">${m.role}</h3>
+        <p class="tp-role-text">${m.focus}</p></div>
       </li>`,
         )
         .join('')}
     </ul>
+    </div>
     ${
       members.length
         ? `

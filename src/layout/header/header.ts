@@ -23,7 +23,7 @@ const announcement = () => `
 const html = (links: NavLink[]) => `
 ${announcement()}
 <!-- Fully transparent at the top of the page; becomes frosted glass once the page scrolls (or the mobile menu opens) -->
-<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/80 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.55)_inset,0_8px_30px_-20px_rgb(40_32_20/0.18)] data-solid:backdrop-blur-md dark:data-solid:border-white/8 dark:data-solid:bg-neutral-950/75 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.05)_inset,0_8px_30px_-20px_rgb(0_0_0/0.65)]">
+<header id="site-header" class="sticky top-0 z-50 border-b border-transparent transition-[background-color,border-color,box-shadow,backdrop-filter] duration-300 data-solid:border-neutral-950/5 data-solid:bg-paper/80 data-solid:shadow-[0_1px_0_rgb(255_255_255/0.55)_inset,0_8px_30px_-20px_rgb(24_24_27/0.18)] data-solid:backdrop-blur-md dark:data-solid:border-white/8 dark:data-solid:bg-neutral-950/75 dark:data-solid:shadow-[0_1px_0_rgb(255_255_255/0.05)_inset,0_8px_30px_-20px_rgb(0_0_0/0.65)]">
   <nav class="container-page flex h-18 items-center justify-between gap-6" aria-label="Main">
     ${brandLink()}
 

@@ -4,10 +4,8 @@
  *  - Sky (preview): sky blue brand, night-blue blocks. Switched on by data-palette="sky" on <html>
  *    (shared/lib/palette.ts, from the floating switch); values at the end of this file.
  *
- * Light mode sits on warm paper (`paper`, the page background) with white cards on top, so the page
- * reads like printed material instead of a white template. `neutral-*` is NOT Tailwind's grey: it is
- * remapped to a warm paper-to-graphite scale, so every existing text, border and surface class turns
- * warm without touching the sections. The darkest step (950) is a warm near-black.
+ * Light mode is white (`paper`, the page background) with light-grey bands (`linen`). `neutral-*` is a
+ * clean untinted grey scale (Tailwind zinc values), used for every text, border and surface class.
  * `brand-*` carries buttons, links and highlights; `ink-*` is the dark blocks (.surface-ink in
  * components.css). `sage-*` (muted green) and `clay-*` (muted terracotta) are the two supporting tones
  * for scenes, icon tiles and illustrations.
@@ -49,10 +47,10 @@
 
 /* `static`: always emit these as CSS variables, because module stylesheets read them with var() */
 @theme static {
-  /* Page background (light mode). Cards stay white on top of it */
-  --color-paper: #fbfaf7;
-  /* Cream at the top of tinted section bands (.band-linen), fading into the paper */
-  --color-linen: #f5f1e7;
+  /* Page background (light mode): plain white */
+  --color-paper: #ffffff;
+  /* Light grey at the top of tinted section bands (.band-linen), fading into the white page */
+  --color-linen: #f4f4f5;
 
   /* Brand: VavenCloud petrol. 600 #036972 carries buttons and links (6.4:1 with white), 500 #0f828d (4.6:1) */
   --color-brand-50: #edfafb;
@@ -67,18 +65,18 @@
   --color-brand-900: #023237;
   --color-brand-950: #011e22;
 
-  /* Warm paper-to-graphite greys (replace Tailwind's neutral). Text contrast on paper: 500 = 5.1:1, 600 = 7.4:1 */
-  --color-neutral-50: #f8f5f1;
-  --color-neutral-100: #f0ede7;
-  --color-neutral-200: #e1ded7;
-  --color-neutral-300: #ccc8c0;
-  --color-neutral-400: #9e9990;
-  --color-neutral-500: #706b62;
-  --color-neutral-600: #56524a;
-  --color-neutral-700: #413e37;
-  --color-neutral-800: #2b2923;
-  --color-neutral-900: #1a1814;
-  --color-neutral-950: #0e0d0a;
+  /* Clean, untinted greys (Tailwind zinc). Text contrast on white: 500 = 4.8:1, 600 = 7.7:1 */
+  --color-neutral-50: #fafafa;
+  --color-neutral-100: #f4f4f5;
+  --color-neutral-200: #e4e4e7;
+  --color-neutral-300: #d4d4d8;
+  --color-neutral-400: #a1a1aa;
+  --color-neutral-500: #71717a;
+  --color-neutral-600: #52525b;
+  --color-neutral-700: #3f3f46;
+  --color-neutral-800: #27272a;
+  --color-neutral-900: #18181b;
+  --color-neutral-950: #09090b;
 
   /* Near-black petrol for dark blocks, and the body text on them (11.8:1 on ink-900) */
   --color-ink-700: #103f45;
@@ -117,9 +115,9 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  /* Soft, warm shadows (paper on a desk) instead of blue-tinted ones */
-  --shadow-card: 0 1px 2px rgb(40 32 20 / 0.05), 0 18px 40px -24px rgb(48 38 24 / 0.2);
-  --shadow-lift: 0 2px 4px rgb(40 32 20 / 0.05), 0 28px 56px -26px rgb(48 38 24 / 0.3);
+  /* Soft, neutral shadows */
+  --shadow-card: 0 1px 2px rgb(24 24 27 / 0.05), 0 18px 40px -24px rgb(24 24 27 / 0.18);
+  --shadow-lift: 0 2px 4px rgb(24 24 27 / 0.05), 0 28px 56px -26px rgb(24 24 27 / 0.28);
 
   /* Quiet, short transitions */
   --default-transition-timing-function: ease;

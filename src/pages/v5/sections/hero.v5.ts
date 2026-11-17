@@ -25,7 +25,6 @@ const count = heroSlides.length
 
 const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 
-
 /** A title line split into words, so they can rise in one after another; `from` carries the count across lines */
 const words = (text: string, from: number) =>
   text

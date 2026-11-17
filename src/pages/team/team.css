@@ -211,37 +211,68 @@
 }
 
 /* ---------- The engineers, named members, how they work with you ---------- */
-.tp-roles {
+.tp-engineers-layout {
   display: grid;
-  gap: 1rem;
-  margin-top: 3rem;
+  gap: 2.5rem;
+  align-items: start;
 }
-@media (min-width: 640px) {
-  .tp-roles {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.tp-engineers-intro {
+  max-width: 34rem;
 }
-@media (min-width: 1024px) {
-  .tp-roles {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
+.tp-roles {
+  overflow: hidden;
+  border-top: 1px solid var(--color-neutral-200);
 }
 .tp-role-card {
-  padding: 1.5rem;
+  display: grid;
+  grid-template-columns: 1.5rem auto minmax(0, 1fr);
+  align-items: start;
+  gap: 0.85rem;
+  padding: 1.75rem 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+}
+.tp-role-number {
+  padding-top: 0.7rem;
+  color: var(--color-brand-600);
+  font-size: 0.72rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
 }
 .tp-role-title {
-  margin-top: 1.1rem;
   color: var(--color-neutral-950);
+  font-size: 1.1rem;
   font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.tp-role-text {
+  margin-top: 0.4rem;
+  max-width: 34rem;
+  color: var(--color-neutral-600);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.dark .tp-roles,
+.dark .tp-role-card {
+  border-color: var(--color-neutral-800);
 }
 .dark .tp-role-title {
   color: #fff;
 }
-.tp-role-text {
-  margin-top: 0.4rem;
-  color: var(--color-neutral-500);
-  font-size: 0.92rem;
-  line-height: 1.55;
+.dark .tp-role-text {
+  color: var(--color-neutral-400);
+}
+.dark .tp-role-number {
+  color: var(--color-brand-400);
+}
+@media (min-width: 1024px) {
+  .tp-engineers-layout {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 5rem;
+  }
+  .tp-role-card {
+    gap: 1.25rem;
+    padding: 2rem 0;
+  }
 }
 .tp-sub {
   margin-top: 4rem;
