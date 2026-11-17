@@ -2686,70 +2686,47 @@
   letter-spacing: -0.02em;
 }
 
-/* Soft blue-grey chapters. */
-#behind.v5-dark-band,
-#start.v5-dark-band {
+/* Soft blue-grey chapters apply only in light mode. */
+html:not(.dark) #behind.v5-dark-band,
+html:not(.dark) #start.v5-dark-band {
   color: #40566b;
   border-color: #d5e2ed;
   background:
     radial-gradient(ellipse at 5% 0%, rgb(133 190 231 / 20%), transparent 60%),
     linear-gradient(135deg, #e8f1f8, #f2f6fa 80%);
-}
-.v5-dark-band .section-title { color: #1c344b; }
-.v5-dark-band .section-title em { color: #2873a7; }
-.v5-dark-band .section-lead { color: #4b6278; }
-#behind.v5-dark-band .v4-stats {
+}html:not(.dark) .v5-dark-band .section-title { color: #1c344b; }html:not(.dark) .v5-dark-band .section-title em { color: #2873a7; }html:not(.dark) .v5-dark-band .section-lead { color: #4b6278; }html:not(.dark) #behind.v5-dark-band .v4-stats {
   border-color: #cddde9;
   background: #cddde9;
-}
-#behind.v5-dark-band .v4-stats > div,
-.v5-dark-band .card {
+}html:not(.dark) #behind.v5-dark-band .v4-stats > div,
+html:not(.dark) .v5-dark-band .card {
   color: #40566b;
   border-color: #d5e2ed;
   background: #f9fcff;
   box-shadow: 0 10px 28px rgb(42 78 111 / 5%);
-}
-#behind.v5-dark-band .v4-stats dd,
-#behind.v5-dark-band .v4-person-name { color: #1c344b; }
-#behind.v5-dark-band .v4-stats dt,
-#behind.v5-dark-band .v4-person-bio { color: #4b6278; }
-#behind.v5-dark-band .v4-person-role { color: #2873a7; }
-#behind.v5-dark-band .v4-team-toggle {
+}html:not(.dark) #behind.v5-dark-band .v4-stats dd,
+html:not(.dark) #behind.v5-dark-band .v4-person-name { color: #1c344b; }html:not(.dark) #behind.v5-dark-band .v4-stats dt,
+html:not(.dark) #behind.v5-dark-band .v4-person-bio { color: #4b6278; }html:not(.dark) #behind.v5-dark-band .v4-person-role { color: #2873a7; }html:not(.dark) #behind.v5-dark-band .v4-team-toggle {
   color: #24577d;
   border-color: #bfd3e3;
   background: #f9fcff;
-}
-#behind.v5-dark-band .v4-team-toggle:hover { background: #deedf7; }
-#behind.v5-dark-band .v4-team {
+}html:not(.dark) #behind.v5-dark-band .v4-team-toggle:hover { background: #deedf7; }html:not(.dark) #behind.v5-dark-band .v4-team {
   border-color: #cddde9;
   background: #e2edf6;
-}
-#behind.v5-dark-band .v4-team-intro,
-#behind.v5-dark-band .v4-team-roles li { color: #4b6278; }
-#behind.v5-dark-band .v4-team-roles b { color: #1c344b; }
-#behind.v5-dark-band .v4-team-link { color: #24577d; }
-#start.v5-dark-band .v4-step-when { color: #5b748b; }
-#start.v5-dark-band .v4-handover-title,
-#start.v5-dark-band .v4-handover-list b { color: #1c344b; }
-#start.v5-dark-band .v4-handover-list li { color: #4b6278; }
-#start.v5-dark-band .v4-step-dot {
+}html:not(.dark) #behind.v5-dark-band .v4-team-intro,
+html:not(.dark) #behind.v5-dark-band .v4-team-roles li { color: #4b6278; }html:not(.dark) #behind.v5-dark-band .v4-team-roles b { color: #1c344b; }html:not(.dark) #behind.v5-dark-band .v4-team-link { color: #24577d; }html:not(.dark) #start.v5-dark-band .v4-step-when { color: #5b748b; }html:not(.dark) #start.v5-dark-band .v4-handover-title,
+html:not(.dark) #start.v5-dark-band .v4-handover-list b { color: #1c344b; }html:not(.dark) #start.v5-dark-band .v4-handover-list li { color: #4b6278; }html:not(.dark) #start.v5-dark-band .v4-step-dot {
   color: #2873a7;
   border-color: #bfd3e3;
   background: #f9fcff;
-}
-#start.v5-dark-band .v4-step:last-child .v4-step-dot {
+}html:not(.dark) #start.v5-dark-band .v4-step:last-child .v4-step-dot {
   color: #fff;
   border: 0;
   background: linear-gradient(145deg, #3996d2, #2873a7);
-}
-.v5-dark-band .icon-box {
+}html:not(.dark) .v5-dark-band .icon-box {
   color: #2873a7;
   background: #e0edf7;
-}
+}html:not(.dark) #behind.v5-dark-band .v4-video-caption { color: #4b6278; }html:not(.dark) #start.v5-dark-band .v4-step-title { color: #1c344b; }html:not(.dark) #start.v5-dark-band .v4-step-text { color: #4b6278; }
 
-#behind.v5-dark-band .v4-video-caption { color: #4b6278; }
-#start.v5-dark-band .v4-step-title { color: #1c344b; }
-#start.v5-dark-band .v4-step-text { color: #4b6278; }
 
 /* Stage photography replaces the small diagrams in v5. */
 .v4-stage-art.v5-stage-photo {
@@ -2799,7 +2776,7 @@
     radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--color-brand-400) 30%, transparent), transparent 55%),
     linear-gradient(160deg, var(--color-ink-800), var(--color-ink-900) 60%, var(--color-ink-950));
 }
-#stages .v4-stage:is(:hover, :focus-visible) {
+html:not(.dark) #stages .v4-stage:is(:hover, :focus-visible) {
   --sg-title: var(--color-neutral-950);
   --sg-body: var(--color-neutral-600);
   --sg-num: var(--color-brand-600);
@@ -2825,9 +2802,23 @@
 
   border-color: var(--color-neutral-200);
 }
-#stages .v4-stage::before {
+html:not(.dark) #stages .v4-stage::before {
   background: #fff;
 }
 #stages .v4-stage::after {
   display: none;
+}
+
+/* Dark sections retain dark surfaces, including the stage hover reveal. */
+html.dark #behind.v5-dark-band,
+html.dark #start.v5-dark-band {
+  color: var(--color-neutral-300);
+  border-color: var(--color-neutral-800);
+  background: var(--color-neutral-950);
+}
+html.dark #stages .v4-stage::before {
+  background: linear-gradient(145deg, var(--color-ink-800), var(--color-ink-900));
+}
+html.dark #stages .v4-stage:is(:hover, :focus-visible) {
+  border-color: var(--color-brand-700);
 }
