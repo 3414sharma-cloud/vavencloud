@@ -13,8 +13,7 @@ import { heroSlides, type V5HeroSlide as HeroSlide } from '../v5.data.ts'
  * with a numbered index underneath and two soft glows drifting behind. Each time a slide comes on (and on
  * load, for the first) it plays in: the title word by word, then the description, the
  * buttons and the note. The slider moves on by itself: the line over the active name fills to show how long
- * is left. It holds while a keyboard user is inside it or it is scrolled away, and stops for good with the
- * pause button. The names, the arrow keys and a swipe all change slide. With reduced motion nothing moves by
+ * is left. It holds while a keyboard user is inside it or it is scrolled away. The names, the arrow keys and a swipe all change slide. With reduced motion nothing moves by
  * itself and the slides simply show. Slides not on show are inert, so only the visible one can be reached by
  * keyboard or screen reader.
  */
@@ -51,10 +50,27 @@ const slide = (s: HeroSlide, i: number) => {
       </div>`
 }
 
-/** One entry in the index: a line on top (it fills while its slide is on), the number, the name */
+/**
+ * A fixed audio-style envelope with irregular peaks; the blue overlay tracks slide progress.
+ */
+const signalHeights = [3, 5, 4, 8, 13, 7, 18, 11, 6, 4, 9, 16, 24, 15, 28, 20, 12, 7, 10, 5, 3, 6, 11, 19, 14, 23, 16, 9, 5, 8, 12, 7, 4, 6, 3, 2]
+const signalPath = signalHeights.map((height, i) => {
+  const x = 2 + i * 4
+  return `M${x} ${18 - height / 2}V${18 + height / 2}`
+}).join(' ')
+
+const signalSvg = () => `
+  <svg viewBox="0 0 144 36" fill="none" aria-hidden="true" focusable="false">
+    <path class="hero-signal-line" d="${signalPath}" />
+  </svg>`
+
+/** One compact waveform above each slide label; only the active waveform fills. */
 const tab = (s: HeroSlide, i: number) => `
             <button type="button" role="tab" id="hero-tab-${i}" aria-controls="hero-slide-${i}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" class="hero-tab" style="--dur:${DURATIONS[i]}ms">
-              <span class="hero-tab-bar" aria-hidden="true"><i></i></span>
+              <span class="hero-signal" aria-hidden="true">
+                ${signalSvg()}
+                <span class="hero-signal-fill">${signalSvg()}</span>
+              </span>
               <span class="hero-tab-name"><span class="hero-tab-num" aria-hidden="true">0${i + 1}</span>${s.tab}</span>
             </button>`
 
@@ -70,15 +86,12 @@ const html = () => `
           ${heroSlides.map(slide).join('')}
         </div>
 
-        <p class="v5-oncall hero-enter" style="--i:5"><span class="v5-pulse" aria-hidden="true"></span>On call now<span class="v5-oncall-sep" aria-hidden="true">·</span><time data-clock>--:--</time><span>your time</span></p>
 
         <div class="hero-nav hero-enter" style="--i:6">
           <div role="tablist" aria-label="Choose a slide" class="hero-tabs">
             ${heroSlides.map(tab).join('')}
           </div>
-          <button type="button" class="hero-pause" data-pause aria-label="Pause the slides">
-            <span data-icon-pause>${icon('pause', 'h-3 w-3', true)}</span><span data-icon-play hidden>${icon('play', 'h-3 w-3 translate-x-px', true)}</span>
-          </button>
+
         </div>
       </div>
     </div>
@@ -88,7 +101,6 @@ const html = () => `
 function initSlider(root: HTMLElement): void {
   const slideEls = qsa('[data-slide]', root)
   const tabs = qsa<HTMLButtonElement>('[role="tab"]', root)
-  const pause = qs<HTMLButtonElement>('[data-pause]', root)
   let index = 0
 
   const go = (next: number, dir: 1 | -1, focusTab = false) => {
@@ -145,49 +157,27 @@ function initSlider(root: HTMLElement): void {
   area.addEventListener('pointercancel', () => (touch = null))
 
   if (prefersReducedMotion()) {
-    pause.hidden = true
     return
   }
 
-  // Moving on by itself: the active tab's bar is a CSS animation as long as the slide's turn; when it ends, next
+  // The waveform's fill is also the slide timer; one completed fill advances to the next slide.
   root.addEventListener('animationend', (e) => {
-    if (e.animationName === 'hero-slide-progress') go(index + 1, 1)
+    if (e.animationName === 'hero-wave-progress') go(index + 1, 1)
   })
 
   const holds = new Set<string>()
-  let userPaused = false
   const sync = () => {
-    root.classList.toggle('is-paused', userPaused || holds.size > 0)
-    pause.setAttribute('aria-label', userPaused ? 'Play the slides' : 'Pause the slides')
-    qs('[data-icon-pause]', pause).hidden = userPaused
-    qs('[data-icon-play]', pause).hidden = !userPaused
+    root.classList.toggle('is-paused', holds.size > 0)
   }
   const hold = (reason: string, on: boolean) => {
     if (on) holds.add(reason)
     else holds.delete(reason)
     sync()
   }
-  pause.addEventListener('click', () => {
-    userPaused = !userPaused
-    sync()
-  })
   root.addEventListener('focusin', (e) => (e.target as Element).matches(':focus-visible') && hold('focus', true))
   root.addEventListener('focusout', (e) => !root.contains(e.relatedTarget as Node | null) && hold('focus', false))
   // Only once it is wholly off screen, so a phone that starts with the slides half below the fold still plays
   new IntersectionObserver(([e]) => hold('offscreen', !e.isIntersecting)).observe(root)
-}
-
-/** "On call now · 14:20 your time": the visitor's own time, ticking over on the minute */
-function initClock(hero: HTMLElement): void {
-  const el = qs<HTMLTimeElement>('[data-clock]', hero)
-  const format = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
-  const tick = () => {
-    const now = new Date()
-    el.textContent = format.format(now)
-    el.dateTime = now.toISOString()
-    window.setTimeout(tick, 60_000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 50)
-  }
-  tick()
 }
 
 /** A soft light that follows the mouse across the hero, eased (desktop mice only, not with reduced motion) */
@@ -223,7 +213,6 @@ export function heroV5(): Section {
     init: () => {
       const hero = qs('#top')
       initSlider(qs('[data-carousel]', hero))
-      initClock(hero)
       initSpotlight(hero)
     },
   }

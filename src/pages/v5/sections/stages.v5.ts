@@ -13,18 +13,16 @@ import { stages } from '../v5.data.ts'
  * carries on. With reduced motion the row doesn't move: it is one set of cards you scroll sideways.
  */
 
-type StageImageVariant = 'base' | 'plan'
-
-const card = (s: (typeof stages)[number], i: number, focusable: boolean, imageVariant: StageImageVariant) => `
+const card = (s: (typeof stages)[number], i: number, focusable: boolean) => `
         <li class="v4-stage"${focusable ? ' tabindex="0"' : ''}>
-          <div class="v4-stage-art v5-stage-photo"><img src="/images/stages/${s.id}${imageVariant === 'plan' ? '-plan' : ''}.webp" alt="" width="768" height="512" loading="lazy" decoding="async" draggable="false" /></div>
+          <div class="v4-stage-art v5-stage-photo"><img src="/images/stages/${s.id}.webp" alt="" width="768" height="512" loading="lazy" decoding="async" draggable="false" /></div>
           <span class="v4-stage-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
           <h3 class="v4-stage-title">${s.title}</h3>
           <p class="v4-stage-worry">${s.worry}</p>
           <p class="v4-stage-answer"><b>What we do</b>${s.answer}</p>
         </li>`
 
-export function stagesV5({ imageVariant = 'base' }: { imageVariant?: StageImageVariant } = {}): Section {
+export function stagesV5(): Section {
   return {
     html: `
 <section id="stages" class="v2-section v4-stages-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="stages-title">
@@ -38,7 +36,7 @@ export function stagesV5({ imageVariant = 'base' }: { imageVariant?: StageImageV
     </div>
     <div class="v4-stage-marquee">
       <div class="v4-stage-track">
-        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true, imageVariant)).join('')}
+        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true)).join('')}
         </ol>
       </div>
     </div>

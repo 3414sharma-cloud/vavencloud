@@ -1,4 +1,4 @@
-/*
+﻿/*
  * v4's own chapters (v5.page.ts): what we own, where you are today, the comparison, who's behind it and how we
  * start, plus what v4 adds to v3's chapters (what the night cost under the story, the report's split time bar,
  * what the plan hours cover). Everything else is styled by v2.css, story.v3.css and the modules' own sheets.
@@ -1692,28 +1692,82 @@
   margin-top: 0;
 }
 
-/*
- * v5: the hero's slide index uses a sine wave instead of a flat line. The bar keeps its fill animation; a
- * repeating wave mask shapes both the track and the fill, and the active wave drifts slowly sideways.
- */
-#app .hero-tab-bar {
-  height: 8px;
-  border-radius: 0;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
-  -webkit-mask-size: 24px 8px;
-  mask-size: 24px 8px;
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
+/* Irregular audio peaks with a slow progress fill. */
+#app .hero-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+  align-items: start;
 }
-#app .hero-tab-bar i {
-  border-radius: 0;
+#app .hero-tab {
+  position: relative;
+  min-height: 4.5rem;
+  padding: 0.25rem 0;
+  border: 0;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--color-neutral-500);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: color 0.25s ease;
 }
-#app .hero-tab[aria-selected="true"] .hero-tab-bar {
-  animation: v5-wave-drift 1.6s linear infinite;
+#app .hero-tab-name { align-items: baseline; gap: 0.5rem; }
+#app .hero-tab-num { color: var(--color-neutral-400); font-size: 0.65rem; }
+#app .hero-tab:hover,
+#app .hero-tab[aria-selected="true"] { color: var(--color-brand-700); }
+#app .hero-tab[aria-selected="true"] .hero-tab-num { color: var(--color-brand-600); }
+.hero-signal {
+  position: relative;
+  display: block;
+  width: min(100%, 7.5rem);
+  height: 2rem;
+  margin: 0 auto 0.6rem;
 }
-#app .is-paused .hero-tab[aria-selected="true"] .hero-tab-bar {
-  animation-play-state: paused;
+.hero-signal svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.hero-signal-line {
+  stroke: var(--color-neutral-300);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hero-signal-fill {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(-20% 100% -20% 0);
+}
+.hero-signal-fill .hero-signal-line { stroke: var(--color-brand-600); stroke-width: 2; }
+.hero-signal-glow {
+  stroke: var(--color-brand-400);
+  stroke-width: 5;
+  opacity: 0.35;
+  filter: blur(2px);
+}
+#app .hero-tab[aria-selected="true"] .hero-signal-fill {
+  animation: hero-wave-progress var(--dur, 8s) linear forwards;
+}
+#app .hero-tab:hover .hero-signal > svg .hero-signal-line { stroke: var(--color-brand-300); }
+#app .is-paused .hero-tab[aria-selected="true"] .hero-signal-fill { animation-play-state: paused; }
+#app .hero-pause { margin-top: 0.15rem; }
+.dark .hero-signal-line { stroke: var(--color-neutral-700); }
+.dark .hero-signal-fill .hero-signal-line { stroke: var(--color-brand-400); }
+.dark #app .hero-tab { color: var(--color-neutral-400); }
+.dark #app .hero-tab:hover,
+.dark #app .hero-tab[aria-selected="true"] { color: var(--color-brand-300); }
+@keyframes hero-wave-progress {
+  from { clip-path: inset(-20% 100% -20% 0); }
+  to { clip-path: inset(-20% 0 -20% 0); }
+}
+@media (max-width: 520px) {
+  #app .hero-tabs { gap: 0.65rem; }
+  #app .hero-tab { font-size: 0.72rem; }
+  #app .hero-tab-name { gap: 0.3rem; }
+  .hero-signal { width: min(100%, 6rem); margin-bottom: 0.4rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #app .hero-tab[aria-selected="true"] .hero-signal-fill {
+    animation: none;
+    clip-path: inset(-20% 0 -20% 0);
+  }
 }
 @keyframes v5-wave-drift {
   to {
@@ -2714,4 +2768,66 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* Reverse the stage interaction: blue at rest, white on hover or focus. */
+#stages .v4-stage {
+  --sg-title: #fff;
+  --sg-body: var(--color-ink-text);
+  --sg-num: var(--color-brand-300);
+  --sg-worry: rgb(253 164 175);
+  --sg-rule: rgb(255 255 255 / 0.12);
+  --sg-panel: rgb(255 255 255 / 0.05);
+  --sg-panel-line: rgb(255 255 255 / 0.1);
+  --sg-line: rgb(255 255 255 / 0.25);
+  --sg-ink: rgb(255 255 255 / 0.85);
+  --sg-surface: var(--color-ink-800);
+  --sg-text: rgb(255 255 255 / 0.85);
+  --sg-muted: rgb(255 255 255 / 0.55);
+  --sg-track: rgb(255 255 255 / 0.1);
+  --sg-used: rgb(255 255 255 / 0.22);
+  --sg-brand: var(--color-brand-300);
+  --sg-brand-fill: var(--color-brand-500);
+  --sg-tint: rgb(255 255 255 / 0.1);
+  --sg-brand-text: var(--color-brand-200);
+  --sg-bad: rgb(253 164 175);
+  --sg-bad-fill: rgb(251 113 133);
+  --sg-bad-tint: rgb(244 63 94 / 0.16);
+  --sg-bad-text: rgb(254 205 211);
+  border-color: var(--color-ink-800);
+  background:
+    radial-gradient(120% 140% at 0% 0%, color-mix(in srgb, var(--color-brand-400) 30%, transparent), transparent 55%),
+    linear-gradient(160deg, var(--color-ink-800), var(--color-ink-900) 60%, var(--color-ink-950));
+}
+#stages .v4-stage:is(:hover, :focus-visible) {
+  --sg-title: var(--color-neutral-950);
+  --sg-body: var(--color-neutral-600);
+  --sg-num: var(--color-brand-600);
+  --sg-worry: rgb(190 18 60);
+  --sg-rule: var(--color-neutral-200);
+  --sg-panel: var(--color-neutral-50);
+  --sg-panel-line: var(--color-neutral-200);
+  --sg-line: var(--color-neutral-300);
+  --sg-ink: var(--color-neutral-700);
+  --sg-surface: #fff;
+  --sg-text: var(--color-neutral-800);
+  --sg-muted: var(--color-neutral-500);
+  --sg-track: var(--color-neutral-100);
+  --sg-used: var(--color-neutral-300);
+  --sg-brand: var(--color-brand-600);
+  --sg-brand-fill: var(--color-brand-600);
+  --sg-tint: var(--color-brand-50);
+  --sg-brand-text: var(--color-brand-700);
+  --sg-bad: rgb(225 29 72);
+  --sg-bad-fill: rgb(244 63 94);
+  --sg-bad-tint: rgb(255 228 230);
+  --sg-bad-text: rgb(190 18 60);
+
+  border-color: var(--color-neutral-200);
+}
+#stages .v4-stage::before {
+  background: #fff;
+}
+#stages .v4-stage::after {
+  display: none;
 }

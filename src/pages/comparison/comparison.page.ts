@@ -1,4 +1,4 @@
-import './comparison.css'
+﻿import './comparison.css'
 import { v5Nav } from '@/pages/v5/v5.shell.ts'
 import { createPage } from '@/app/create-page.ts'
 import { routes } from '@/app/routes.ts'
@@ -249,8 +249,8 @@ const layers: Layer[] = [
     icon: 'rocket',
     name: 'Putting updates live',
     cover: {
-      aws: ['you', 'Your team runs them'],
-      azure: ['you', 'Your team runs them'],
+      aws: ['you', 'Managed on your side'],
+      azure: ['you', 'Managed on your side'],
       vaven: ['yes', 'We handle your updates'],
     },
   },
@@ -306,14 +306,13 @@ const managedPanel = () => `
       <div class="cw-dests">
         <div class="cw-dest cw-dest--cloud" data-cw-cloud>
           <span class="cw-port" data-cw-port aria-hidden="true"></span>
-          <span class="cw-dest-icon">${icon('cloud', 'h-5 w-5')}</span>
-          <strong data-cw-cloud-name>AWS</strong>
+          <span class="cw-provider-logo" data-cw-cloud-logo>${provider('AWS')}</span>
           <small data-cw-cloud-count></small>
         </div>
         <div class="cw-dest cw-dest--team" data-cw-team>
           <span class="cw-port" data-cw-port aria-hidden="true"></span>
           <span class="cw-dest-icon">${icon('users', 'h-5 w-5')}</span>
-          <strong>Your team</strong>
+          <strong>Self-managed</strong>
           <small data-cw-team-count></small>
         </div>
       </div>
@@ -328,10 +327,10 @@ const managedPanel = () => `
     </div>
     </div>
     <div class="cw-team-assumptions">
-      <span>Estimate your team&#39;s time</span>
+      <span>Estimate your management time</span>
       <label>Hours / month <input type="number" min="0" max="10000" step="1" value="20" data-cw-hours /></label>
       <label>Hourly rate (USD) <input type="number" min="0" max="10000" step="1" value="50" data-cw-rate /></label>
-      <p>Illustrative inputs, not a market quote. Adjust to your team&#39;s workload and rate; this is not a 24/7 staffing estimate.</p>
+      <p>Illustrative inputs, not a market quote. Adjust to your management workload and rate; this is not a 24/7 staffing estimate.</p>
     </div>
     <p class="sr-only" aria-live="polite" data-cw-sr></p>
     <div class="cw-legend" aria-hidden="true">
@@ -455,7 +454,7 @@ function initManaged(): void {
       t.querySelector('[data-cw-note]')!.textContent = note
       t.title = kindLabel[state]
     })
-    board.querySelector('[data-cw-cloud-name]')!.textContent = p.name
+    board.querySelector('[data-cw-cloud-logo]')!.innerHTML = p.logo
     board.querySelector('[data-cw-cloud-count]')!.textContent = `Handles ${handled} of 5`
     board.querySelector('[data-cw-team-count]')!.textContent = load
       ? `${load} task${load > 1 ? 's' : ''} on your plate`
@@ -469,9 +468,9 @@ function initManaged(): void {
     const rate = Math.max(0, Math.min(10000, Number(rateInput.value) || 0))
     const teamEstimate = load ? hours * rate : 0
     board.querySelector('[data-cw-team-price]')!.innerHTML =
-      `<div><span>Estimated extra team cost</span><strong>${usd(teamEstimate)}<small> / month</small></strong></div><p>${load ? `${hours} hours ? ${usd(rate)} / hour` : 'Covered tasks handled by VavenCloud'}</p><p>Support + team: ${who === 'vaven' ? 'from ' : ''}${usd(fee[who] + teamEstimate)} / month</p>`
+      `<div><span>Estimated management cost</span><strong>${usd(teamEstimate)}<small> / month</small></strong></div><p>${load ? `${hours} hours &times; ${usd(rate)} / hour` : 'Covered tasks handled by VavenCloud'}</p><p>Support + management: ${who === 'vaven' ? 'from ' : ''}${usd(fee[who] + teamEstimate)} / month</p>`
     board.querySelector('[data-cw-sr]')!.textContent =
-      `${p.name}: handles ${handled} of 5 tasks, ${load} left for your team. ${p.plan}: ${usd(fee[who])} per month, excluding servers.`
+      `${p.name}: handles ${handled} of 5 tasks, ${load} left for you to manage. ${p.plan}: ${usd(fee[who])} per month, excluding servers.`
     draw(animate)
   }
 
