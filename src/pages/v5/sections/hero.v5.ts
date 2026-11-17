@@ -53,14 +53,16 @@ const slide = (s: HeroSlide, i: number) => {
 /**
  * A fixed audio-style envelope with irregular peaks; the blue overlay tracks slide progress.
  */
-const signalHeights = [3, 5, 4, 8, 13, 7, 18, 11, 6, 4, 9, 16, 24, 15, 28, 20, 12, 7, 10, 5, 3, 6, 11, 19, 14, 23, 16, 9, 5, 8, 12, 7, 4, 6, 3, 2]
-const signalPath = signalHeights.map((height, i) => {
-  const x = 2 + i * 4
-  return `M${x} ${18 - height / 2}V${18 + height / 2}`
-}).join(' ')
+const signalHeights = [5, 10, 16, 9, 22, 14, 7, 18, 11, 5]
+const signalPath = signalHeights
+  .map((height, i) => {
+    const x = 6 + i * 7
+    return `M${x} ${16 - height / 2}V${16 + height / 2}`
+  })
+  .join(' ')
 
 const signalSvg = () => `
-  <svg viewBox="0 0 144 36" fill="none" aria-hidden="true" focusable="false">
+  <svg viewBox="0 0 75 32" fill="none" aria-hidden="true" focusable="false">
     <path class="hero-signal-line" d="${signalPath}" />
   </svg>`
 

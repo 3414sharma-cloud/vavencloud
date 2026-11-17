@@ -3,7 +3,6 @@ import { qs, qsa } from '@/shared/lib/dom.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { stages } from '../v5.data.ts'
 
-
 /*
  * Where are you today: the five moments founders come to us, in order from idea to "nobody owns it", each with
  * a concept image of that moment, the worry in their words and what we do about it. The cards
@@ -13,13 +12,15 @@ import { stages } from '../v5.data.ts'
  * carries on. With reduced motion the row doesn't move: it is one set of cards you scroll sideways.
  */
 
-const card = (s: (typeof stages)[number], i: number, focusable: boolean) => `
+const card = (s: (typeof stages)[number], focusable: boolean) => `
         <li class="v4-stage"${focusable ? ' tabindex="0"' : ''}>
           <div class="v4-stage-art v5-stage-photo"><img src="/images/stages/${s.id}.webp" alt="" width="768" height="512" loading="lazy" decoding="async" draggable="false" /></div>
-          <span class="v4-stage-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
+          <div class="v5-stage-body">
+          <span class="v5-stage-label">Your next chapter</span>
           <h3 class="v4-stage-title">${s.title}</h3>
           <p class="v4-stage-worry">${s.worry}</p>
-          <p class="v4-stage-answer"><b>What we do</b>${s.answer}</p>
+          <p class="v4-stage-answer"><b>How we help</b>${s.answer}</p>
+          </div>
         </li>`
 
 export function stagesV5(): Section {
@@ -36,7 +37,7 @@ export function stagesV5(): Section {
     </div>
     <div class="v4-stage-marquee">
       <div class="v4-stage-track">
-        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true)).join('')}
+        <ol class="v4-stage-group">${stages.map((s) => card(s, true)).join('')}
         </ol>
       </div>
     </div>
@@ -150,9 +151,23 @@ function initMarquee(): void {
   let last = 0
   let wheelLeft = 0 // how much of the wheel's scrolling is still to glide in, pixels (+ leftwards)
 
+  const edgeCards = qsa<HTMLElement>('.v4-stage', group)
+  const fadeEdges = () => {
+    const bounds = root.getBoundingClientRect()
+    const fade = bounds.width * (bounds.width < 640 ? 0.02 : 0.04)
+    edgeCards.forEach((card) => {
+      const left = card.getBoundingClientRect().left - bounds.left
+      card.style.setProperty(
+        '--stage-edge-mask',
+        `linear-gradient(90deg, rgb(0 0 0 / 35%) ${-left}px, #000 ${fade - left}px, #000 ${bounds.width - fade - left}px, rgb(0 0 0 / 35%) ${bounds.width - left}px)`,
+      )
+    })
+  }
+  root.addEventListener('scroll', fadeEdges, { passive: true })
   const apply = () => {
     offset = Math.min(Math.max(offset, 0), maxOffset)
     track.style.transform = `translate3d(${-offset}px, 0, 0)`
+    fadeEdges()
   }
 
   const tick = (now: number) => {
