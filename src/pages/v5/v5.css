@@ -2631,3 +2631,87 @@
   font-size: 1.12em;
   letter-spacing: -0.02em;
 }
+
+/* Soft blue-grey chapters. */
+#behind.v5-dark-band,
+#start.v5-dark-band {
+  color: #40566b;
+  border-color: #d5e2ed;
+  background:
+    radial-gradient(ellipse at 5% 0%, rgb(133 190 231 / 20%), transparent 60%),
+    linear-gradient(135deg, #e8f1f8, #f2f6fa 80%);
+}
+.v5-dark-band .section-title { color: #1c344b; }
+.v5-dark-band .section-title em { color: #2873a7; }
+.v5-dark-band .section-lead { color: #4b6278; }
+#behind.v5-dark-band .v4-stats {
+  border-color: #cddde9;
+  background: #cddde9;
+}
+#behind.v5-dark-band .v4-stats > div,
+.v5-dark-band .card {
+  color: #40566b;
+  border-color: #d5e2ed;
+  background: #f9fcff;
+  box-shadow: 0 10px 28px rgb(42 78 111 / 5%);
+}
+#behind.v5-dark-band .v4-stats dd,
+#behind.v5-dark-band .v4-person-name { color: #1c344b; }
+#behind.v5-dark-band .v4-stats dt,
+#behind.v5-dark-band .v4-person-bio { color: #4b6278; }
+#behind.v5-dark-band .v4-person-role { color: #2873a7; }
+#behind.v5-dark-band .v4-team-toggle {
+  color: #24577d;
+  border-color: #bfd3e3;
+  background: #f9fcff;
+}
+#behind.v5-dark-band .v4-team-toggle:hover { background: #deedf7; }
+#behind.v5-dark-band .v4-team {
+  border-color: #cddde9;
+  background: #e2edf6;
+}
+#behind.v5-dark-band .v4-team-intro,
+#behind.v5-dark-band .v4-team-roles li { color: #4b6278; }
+#behind.v5-dark-band .v4-team-roles b { color: #1c344b; }
+#behind.v5-dark-band .v4-team-link { color: #24577d; }
+#start.v5-dark-band .v4-step-when { color: #5b748b; }
+#start.v5-dark-band .v4-handover-title,
+#start.v5-dark-band .v4-handover-list b { color: #1c344b; }
+#start.v5-dark-band .v4-handover-list li { color: #4b6278; }
+#start.v5-dark-band .v4-step-dot {
+  color: #2873a7;
+  border-color: #bfd3e3;
+  background: #f9fcff;
+}
+#start.v5-dark-band .v4-step:last-child .v4-step-dot {
+  color: #fff;
+  border: 0;
+  background: linear-gradient(145deg, #3996d2, #2873a7);
+}
+.v5-dark-band .icon-box {
+  color: #2873a7;
+  background: #e0edf7;
+}
+
+#behind.v5-dark-band .v4-video-caption { color: #4b6278; }
+#start.v5-dark-band .v4-step-title { color: #1c344b; }
+#start.v5-dark-band .v4-step-text { color: #4b6278; }
+
+/* Stage photography replaces the small diagrams in v5. */
+.v4-stage-art.v5-stage-photo {
+  height: auto;
+  aspect-ratio: 3 / 2;
+  flex-shrink: 0;
+  width: calc(100% + 2.2rem);
+  margin: -1.1rem -1.1rem 1.1rem;
+  border: 0;
+  border-radius: 1.35rem 1.35rem 0 0;
+  overflow: hidden;
+  background: #f4f6f8;
+}
+.v5-stage-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

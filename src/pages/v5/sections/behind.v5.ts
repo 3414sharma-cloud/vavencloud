@@ -64,7 +64,7 @@ const teamPanel = () => `
 export function behindV5(): Section {
   return {
     html: `
-<section id="behind" class="v2-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="behind-title">
+<section id="behind" class="v2-section v5-dark-band border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="behind-title">
   <div class="container-page v4-behind">
     <div class="min-w-0">
       ${sectionHeading({

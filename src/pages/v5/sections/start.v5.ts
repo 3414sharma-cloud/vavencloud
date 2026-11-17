@@ -12,7 +12,7 @@ import { handover, startSteps } from '../v5.data.ts'
 export function startV5(): Section {
   return {
     html: `
-<section id="start" class="v2-section band-linen border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="start-title">
+<section id="start" class="v2-section v5-dark-band border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="start-title">
   <div class="container-page">
     <div class="v4-wide-head">
       ${sectionHeading({

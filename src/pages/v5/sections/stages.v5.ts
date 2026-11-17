@@ -2,27 +2,29 @@ import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { stages } from '../v5.data.ts'
-import { stageArt } from './stage-art.v5.ts'
+
 
 /*
  * Where are you today: the five moments founders come to us, in order from idea to "nobody owns it", each with
- * a small diagram of that moment (stage-art.v5.ts), the worry in their words and what we do about it. The cards
+ * a concept image of that moment, the worry in their words and what we do about it. The cards
  * run along one row that scrolls round by itself, endlessly (the five are drawn twice, and the row slides the
  * width of one set, so it loops without a jump). Pointing at a card, or tabbing to one, stops the row and the
  * card pops up a little and turns night blue, its diagram's colours swapping with it (v5.css); let go and the row
  * carries on. With reduced motion the row doesn't move: it is one set of cards you scroll sideways.
  */
 
-const card = (s: (typeof stages)[number], i: number, focusable: boolean) => `
+type StageImageVariant = 'base' | 'plan'
+
+const card = (s: (typeof stages)[number], i: number, focusable: boolean, imageVariant: StageImageVariant) => `
         <li class="v4-stage"${focusable ? ' tabindex="0"' : ''}>
-          <div class="v4-stage-art">${stageArt[s.id]}</div>
+          <div class="v4-stage-art v5-stage-photo"><img src="/images/stages/${s.id}${imageVariant === 'plan' ? '-plan' : ''}.webp" alt="" width="768" height="512" loading="lazy" decoding="async" draggable="false" /></div>
           <span class="v4-stage-n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span>
           <h3 class="v4-stage-title">${s.title}</h3>
           <p class="v4-stage-worry">${s.worry}</p>
           <p class="v4-stage-answer"><b>What we do</b>${s.answer}</p>
         </li>`
 
-export function stagesV5(): Section {
+export function stagesV5({ imageVariant = 'base' }: { imageVariant?: StageImageVariant } = {}): Section {
   return {
     html: `
 <section id="stages" class="v2-section v4-stages-section border-t border-neutral-200 dark:border-neutral-800" aria-labelledby="stages-title">
@@ -36,7 +38,7 @@ export function stagesV5(): Section {
     </div>
     <div class="v4-stage-marquee">
       <div class="v4-stage-track">
-        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true)).join('')}
+        <ol class="v4-stage-group">${stages.map((s, i) => card(s, i, true, imageVariant)).join('')}
         </ol>
       </div>
     </div>
