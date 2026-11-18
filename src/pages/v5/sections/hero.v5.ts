@@ -77,10 +77,9 @@ const tab = (s: HeroSlide, i: number) => `
             </button>`
 
 const html = () => `
-<section id="top" class="hero dark v5-hero-dark band-linen relative -mt-18 overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
+<section id="top" class="hero dark v5-hero-dark band-linen relative overflow-hidden border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="hero-title">
   <div class="hero-glow" aria-hidden="true"><span></span><span></span></div>
   <div class="hero-noise" aria-hidden="true"></div>
-  <div class="v5-spot" aria-hidden="true"></div>
   <div class="container-page relative pt-32 pb-14 sm:pt-40 sm:pb-20">
     <div class="hero-inner">
       <div data-carousel aria-roledescription="carousel" aria-label="What we do">
@@ -182,40 +181,9 @@ function initSlider(root: HTMLElement): void {
   new IntersectionObserver(([e]) => hold('offscreen', !e.isIntersecting)).observe(root)
 }
 
-/** A soft light that follows the mouse across the hero, eased (desktop mice only, not with reduced motion) */
-function initSpotlight(hero: HTMLElement): void {
-  if (prefersReducedMotion() || !matchMedia('(hover: hover) and (pointer: fine)').matches) return
-  const spot = qs('.v5-spot', hero)
-  let x = 0.5
-  let y = 0.4
-  let tx = x
-  let ty = y
-  let frame = 0
-  const step = () => {
-    x += (tx - x) * 0.1
-    y += (ty - y) * 0.1
-    spot.style.setProperty('--sx', `${(x * 100).toFixed(2)}%`)
-    spot.style.setProperty('--sy', `${(y * 100).toFixed(2)}%`)
-    frame = Math.abs(tx - x) + Math.abs(ty - y) > 0.0005 ? requestAnimationFrame(step) : 0
-  }
-  hero.addEventListener('pointermove', (e) => {
-    if (e.pointerType !== 'mouse') return
-    const r = hero.getBoundingClientRect()
-    tx = (e.clientX - r.left) / r.width
-    ty = (e.clientY - r.top) / r.height
-    hero.classList.add('is-lit')
-    if (!frame) frame = requestAnimationFrame(step)
-  })
-  hero.addEventListener('pointerleave', () => hero.classList.remove('is-lit'))
-}
-
 export function heroV5(): Section {
   return {
     html: html(),
-    init: () => {
-      const hero = qs('#top')
-      initSlider(qs('[data-carousel]', hero))
-      initSpotlight(hero)
-    },
+    init: () => initSlider(qs('#top [data-carousel]')),
   }
 }

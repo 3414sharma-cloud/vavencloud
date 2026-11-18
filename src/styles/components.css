@@ -126,7 +126,8 @@
     -webkit-mask: var(--logo) 0 0 / 100% 100% no-repeat;
     mask: var(--logo) 0 0 / 100% 100% no-repeat;
   }
-  .dark[data-logo="brand"] .vc-logo {
+  .dark[data-logo="brand"] .vc-logo,
+  [data-logo="brand"] #site-header.dark .vc-logo {
     background: linear-gradient(90deg, var(--color-brand-300), var(--color-brand-400) 24%, #fff 24.5%);
   }
   [data-logo="brand"] .vc-logo--mark,

@@ -2522,7 +2522,6 @@
  *  3. "On call now · 14:20 your time" under the slides: the visitor's own time, ticking.
  *  4. Headline: weight 540 instead of 620, the second line in Instrument Serif italic.
  *  5. Buttons: the arrow in a disc that nudges on hover, a press on click; the link's underline grows.
- *  6. A soft light follows the mouse (desktop mice only, off with reduced motion).
  * ===================================================================================================== */
 
 /* 4. Headline */
@@ -2632,31 +2631,6 @@
   background-size:
     100% 1px,
     100% 1px;
-}
-
-/* 6. The light under the mouse */
-.v5 #top .v5-spot {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    28rem circle at var(--sx, 50%) var(--sy, 40%),
-    color-mix(in srgb, var(--color-brand-200) 38%, transparent),
-    transparent 70%
-  );
-  transition: opacity 0.6s ease;
-}
-.v5.dark #top .v5-spot {
-  background: radial-gradient(
-    28rem circle at var(--sx, 50%) var(--sy, 40%),
-    color-mix(in srgb, var(--color-brand-500) 14%, transparent),
-    transparent 70%
-  );
-}
-.v5 #top.is-lit .v5-spot {
-  opacity: 1;
 }
 
 /* 1. Short screens and phones: the whole hero, slide names included, on the first screen */
@@ -3141,6 +3115,8 @@ html.dark #stages .v4-stage-answer b {
 
 /* The hero keeps its dark appearance independently of the page theme. */
 #top.hero.v5-hero-dark {
+  /* Overlap the navigation and its one-pixel bottom border. */
+  margin-top: calc(-18 * var(--spacing) - 1px);
   color-scheme: dark;
   color: var(--color-neutral-300);
   border-color: var(--color-neutral-800);
@@ -3159,4 +3135,3 @@ html.dark #stages .v4-stage-answer b {
 #app #top.v5-hero-dark .hero-tab[aria-selected="true"] .hero-tab-num { color: var(--color-brand-300); }
 #app #top.v5-hero-dark .hero-signal > svg .hero-signal-line { stroke: var(--color-neutral-700); }
 #app #top.v5-hero-dark .hero-signal-fill .hero-signal-line { stroke: var(--color-brand-400); }
-#top.v5-hero-dark .v5-spot { opacity: 0.4; }

@@ -33,8 +33,8 @@ ${announcement()}
 
     <div class="flex items-center gap-2">
       <button id="theme-toggle" type="button" class="${iconButton}" aria-label="Switch theme">
-        <span class="dark:hidden">${icon('moon', 'h-4 w-4')}</span>
-        <span class="hidden dark:block">${icon('sun', 'h-4 w-4')}</span>
+        <span class="[html.dark_&]:hidden">${icon('moon', 'h-4 w-4')}</span>
+        <span class="hidden [html.dark_&]:block">${icon('sun', 'h-4 w-4')}</span>
       </button>
       <a href="${routes.book}" class="btn-primary hidden whitespace-nowrap sm:inline-flex">Book a free review</a>
       <button id="menu-toggle" type="button" class="${iconButton} lg:hidden" aria-expanded="false" aria-controls="mobile-menu" aria-label="Open menu">
@@ -130,11 +130,21 @@ function initActiveLink(siteHeader: HTMLElement): void {
   })
 }
 
-/** Glass background only once the page has scrolled (or while the mobile menu is open). */
+/** Frost the header on scroll or menu open, and match the dark hero beneath it. */
 function initSolidOnScroll(siteHeader: HTMLElement): void {
-  const update = () =>
-    siteHeader.toggleAttribute('data-solid', window.scrollY > 8 || siteHeader.hasAttribute('data-menu-open'))
+  const darkHero = document.querySelector('#main > .v5-hero-dark')
+  const update = () => {
+    if (darkHero) {
+      const overHero = darkHero.getBoundingClientRect().bottom > siteHeader.getBoundingClientRect().top
+      siteHeader.classList.toggle('dark', overHero)
+    }
+    siteHeader.toggleAttribute(
+      'data-solid',
+      window.scrollY > 8 || siteHeader.hasAttribute('data-menu-open'),
+    )
+  }
   window.addEventListener('scroll', update, { passive: true })
+  if (darkHero) window.addEventListener('resize', update)
   siteHeader.addEventListener('vc:headerstate', update)
   update()
 }
