@@ -294,7 +294,7 @@ const managedPanel = () => `
       <ul class="cw-tasks">${layers
         .map(
           (l, r) => `
-        <li class="cw-task" data-cw-task="${r}" data-state="${l.cover.aws[0]}">
+        <li class="cw-task" data-cw-task="${r}" data-task-icon="${l.icon}" data-state="${l.cover.aws[0]}">
           <span class="cw-task-icon">${icon(l.icon, 'h-4 w-4')}</span>
           <span class="cw-task-text"><strong>${l.name}</strong><small data-cw-note>${l.cover.aws[1]}</small></span>
           <span class="cw-port" data-cw-port aria-hidden="true"></span>

@@ -940,10 +940,15 @@
   padding: 0.75rem 1.1rem 0.75rem 0.75rem;
   border: 1px solid var(--cw-line);
   border-radius: 0.85rem;
-  background: var(--cw-card);
+  background: color-mix(in srgb, var(--task-accent, transparent) 10%, var(--cw-card));
   box-shadow: var(--shadow-card);
   transition: border-color 0.35s;
 }
+.cw-task[data-task-icon="server"] { --task-accent: #2589cb; }
+.cw-task[data-task-icon="activity"] { --task-accent: #319d62; }
+.cw-task[data-task-icon="zap"] { --task-accent: #e18a26; }
+.cw-task[data-task-icon="rocket"] { --task-accent: #8661ca; }
+.cw-task[data-task-icon="code"] { --task-accent: #168f92; }
 .cw-task-icon {
   display: flex;
   align-items: center;
