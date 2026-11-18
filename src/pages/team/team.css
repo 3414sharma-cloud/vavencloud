@@ -1,12 +1,131 @@
 /*
  * The team page (team.page.ts), on top of v5's look (v2.css, v5.css). The site's own .card, .icon-box,
- * .section-title and buttons do most of it; this adds the hero, the co-founders' profiles, the roles, the
+ * .section-title and buttons do most of it; this adds the hero (a black particle stage), the intro, the co-founders' profiles, the roles, the
  * named members (once there are any), how the team works with you, and the closing call to action.
  */
 
-/* ---------- Hero ---------- */
+/* ---------- Hero: the full-screen black stage with the logo in particles ---------- */
 .tp-hero {
-  padding-block: 9rem 4.5rem;
+  /* Pull up under the header: its 72px height plus its 1px bottom border, or a 1px strip of the light page
+     shows between the announcement bar and the header (as v5's hero does) */
+  margin-top: calc(-18 * var(--spacing) - 1px);
+  color-scheme: dark;
+  background: #07080b;
+}
+.tp-stage {
+  position: relative;
+  height: 100svh;
+  min-height: 30rem;
+  touch-action: pan-y; /* phones still scroll; a scroll cancels the press */
+  cursor: crosshair;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* While the announcement bar shows above the header, the stage gives up its height so it still ends at the
+   bottom of the first screen (one line on wide screens, two on phones) */
+body:has(#top-bar:not(.hidden)) .tp-stage {
+  height: calc(100svh - 2.5rem);
+}
+@media (max-width: 639px) {
+  body:has(#top-bar:not(.hidden)) .tp-stage {
+    height: calc(100svh - 3.5rem);
+  }
+}
+.tp-stage canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+.tp-stage.is-ready canvas {
+  opacity: 1;
+}
+.tp-stage > span {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  /* The frame fades out as the hero scrolls away (--out, 0 to 1, set by logo-particles.ts) */
+  opacity: calc(1 - var(--out, 0) * 2.5);
+}
+.tp-corner {
+  width: 14px;
+  height: 14px;
+  border: 0 solid rgb(255 255 255 / 0.25);
+}
+.tp-corner:nth-child(1) {
+  top: 5.5rem;
+  left: 12px;
+  border-width: 1px 0 0 1px;
+}
+.tp-corner:nth-child(2) {
+  top: 5.5rem;
+  right: 12px;
+  border-width: 1px 1px 0 0;
+}
+.tp-corner:nth-child(3) {
+  bottom: calc(12px + 2rem);
+  left: 12px;
+  border-width: 0 0 1px 1px;
+}
+.tp-corner:nth-child(4) {
+  bottom: calc(12px + 2rem);
+  right: 12px;
+  border-width: 0 1px 1px 0;
+}
+.tp-form-label,
+.tp-hint {
+  left: 32px;
+  color: #8b8f9a;
+  font: 11px/1.4 ui-monospace, SFMono-Regular, Consolas, monospace;
+  letter-spacing: 0.12em;
+}
+.tp-form-label {
+  top: calc(5.5rem + 10px);
+}
+.tp-hint {
+  bottom: calc(34px + 2rem);
+  max-width: calc(100% - 64px);
+  letter-spacing: 0.04em;
+}
+.tp-progress {
+  left: 32px;
+  right: 32px;
+  bottom: calc(24px + 2rem);
+  height: 1px;
+  background: rgb(255 255 255 / 0.1);
+}
+.tp-progress i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-brand-600), var(--color-brand-300));
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-hint,
+  .tp-progress {
+    display: none;
+  }
+}
+
+/* ---------- Intro: who's behind it and four numbers ----------
+   A sheet that comes up over the hero's last 2rem, rounded at the top, so scrolling reads as the page
+   sliding out over the black stage; its lines rise in ([data-reveal], shared/lib/reveal.ts) */
+.tp-intro {
+  position: relative;
+  z-index: 1;
+  margin-top: -2rem;
+  border-radius: 2rem 2rem 0 0;
+  padding-block: 4.5rem;
+  box-shadow: 0 -24px 60px -20px rgb(0 0 0 / 0.55);
+}
+@media (max-width: 639px) {
+  .tp-intro {
+    border-radius: 1.5rem 1.5rem 0 0;
+  }
 }
 .tp-kicker {
   color: var(--color-brand-700);
@@ -81,8 +200,8 @@
   line-height: 1.4;
 }
 @media (min-width: 900px) {
-  .tp-hero {
-    padding-block: 11rem 6rem;
+  .tp-intro {
+    padding-block: 6rem;
   }
   .tp-stats {
     grid-template-columns: repeat(4, minmax(0, 1fr));

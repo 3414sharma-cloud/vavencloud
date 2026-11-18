@@ -7,6 +7,7 @@ import { routes } from '@/app/routes.ts'
 import { site } from '@/app/site.config.ts'
 import type { Section } from '@/app/types.ts'
 import { accountTeam } from '@/modules/stats/stats.data.ts'
+import { mountLogoParticles } from '@/shared/effects/logo-particles.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
@@ -17,22 +18,54 @@ import { founders, members, ways, type Founder, type Member } from './team.data.
  * (v5.shell.ts, data-landing="v5"): who's behind VavenCloud and four numbers, the two co-founders in full
  * (Jerry with his video), the engineers on your account by role, the team members (team.data.ts) and how
  * they work with you, then one call to action.
+ *
+ * The hero is a full-screen black stage with the logo in particles (shared/effects/logo-particles.ts): dots
+ * that form the "VAVENCLOUD" wordmark, then fly across into the "V" mark and back, in the logo's colours,
+ * pushed aside by the pointer, gathered by a press and thrown out on release. Corner marks, the form's number, a hint and a line that
+ * fills until the next form frame it. It is decorative (aria-hidden) and always dark, like v5's hero, so the
+ * header turns dark over it (.v5-hero-dark). The title, intro and numbers follow in their own block.
+ * Scrolling down, the dots pour out of the hero and its frame fades, while the intro slides up over it as a
+ * rounded sheet and its lines rise in.
  */
 
 const newTab = '<span class="sr-only"> (opens in a new tab)</span>'
 
 const hero = (): Section => ({
   html: `
-<section id="top" class="band-linen tp-hero -mt-18 border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="team-title">
+<section id="top" class="dark v5-hero-dark tp-hero" aria-hidden="true">
+  <div class="tp-stage" data-logo-stage>
+    <span class="tp-corner"></span><span class="tp-corner"></span><span class="tp-corner"></span><span class="tp-corner"></span>
+    <span class="tp-form-label" data-form-label>FORM / 01</span>
+    <span class="tp-hint">move = repel · hold = gather · release = burst</span>
+    <span class="tp-progress"><i data-form-progress></i></span>
+  </div>
+</section>
+<section id="intro" class="band-linen tp-intro border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="team-title">
   <div class="container-page">
-    <p class="tp-kicker">The team behind VavenCloud</p>
-    <h1 id="team-title" class="tp-title">The people who own <em>your production.</em></h1>
-    <p class="tp-lead">${behindIntro}</p>
-    <dl class="tp-stats">
+    <p class="tp-kicker" data-reveal>The team behind VavenCloud</p>
+    <h1 id="team-title" class="tp-title" data-reveal>The people who own <em>your production.</em></h1>
+    <p class="tp-lead" data-reveal>${behindIntro}</p>
+    <dl class="tp-stats" data-reveal>
       ${behindStats.map((s) => `<div><dt>${s.label}</dt><dd>${s.value}</dd></div>`).join('')}
     </dl>
   </div>
 </section>`,
+  init() {
+    const stage = qs('#top [data-logo-stage]')
+    const label = qs('[data-form-label]', stage)
+    mountLogoParticles(stage, {
+      sources: ['/logo-text.png', '/logo-mark.png'], // first the wordmark, then the "V" mark
+      holds: [7, 6],
+      backdrop: true,
+      // The logo's colours, blended a third of the way toward the site's sky blue; glow and trail in sky blue
+      tint: { colour: '--color-brand-400', amount: 0.3 },
+      accent: '--color-brand-400',
+      scrollOut: true, // scrolling down, the dots pour out of the hero as the intro slides up over it
+      progress: qs('[data-form-progress]', stage),
+      onForm: (form) => (label.textContent = `FORM / 0${form + 1}`),
+      onReady: () => stage.classList.add('is-ready'),
+    })
+  },
 })
 
 /** A founder's video: YouTube's thumbnail until it's played, then the player (as on v5's "who's behind it") */

@@ -107,35 +107,13 @@
   }
 
   /*
-   * The VavenCloud logo (shared/ui/logo.ts). On a page with data-logo="brand" on <html> (v3) it takes the
-   * site's colours: the image's shape masks its wrapper and the brand colours fill it, the "V" (the first
-   * quarter of the logo) in a gradient and the wordmark solid, white on the dark theme. The image stays, unseen,
-   * for its size and its alt text.
+   * The VavenCloud logo (shared/ui/logo.ts). It keeps its own blue/pink colours everywhere, so the wrapper
+   * only lays it out. The header sits over v5's dark hero with the dark class, so there it shows the
+   * white-wordmark version (logo-light.png) even on the light theme.
    */
   .vc-logo {
     display: inline-flex;
     flex: none;
-  }
-  [data-logo="brand"] .vc-logo {
-    background: linear-gradient(
-      90deg,
-      var(--color-brand-300),
-      var(--color-brand-500) 24%,
-      var(--color-brand-700) 24.5%
-    );
-    -webkit-mask: var(--logo) 0 0 / 100% 100% no-repeat;
-    mask: var(--logo) 0 0 / 100% 100% no-repeat;
-  }
-  .dark[data-logo="brand"] .vc-logo,
-  [data-logo="brand"] #site-header.dark .vc-logo {
-    background: linear-gradient(90deg, var(--color-brand-300), var(--color-brand-400) 24%, #fff 24.5%);
-  }
-  [data-logo="brand"] .vc-logo--mark,
-  .dark[data-logo="brand"] .vc-logo--mark {
-    background: linear-gradient(135deg, var(--color-brand-300), var(--color-brand-600));
-  }
-  [data-logo="brand"] .vc-logo img {
-    opacity: 0;
   }
 
   /* White cards sit on the paper background with a soft, warm shadow instead of a flat outline */

@@ -1,24 +1,25 @@
 import { routes } from '@/app/routes.ts'
 
 /*
- * Brand logo images (public/), from the old site (vavencloud-static-website/src/assets/logo.png):
- *  - logo.png        original: gradient "V" mark + indigo "Vavencloud" wordmark, for light backgrounds
- *  - logo-light.png  same mark with a white wordmark, for dark backgrounds
- *  - favicon.png     the "V" mark alone
- * The logos are 320x80 (4:1).
+ * Brand logo images (public/), made from the full-size logo public/Logo Cloud-1.png (trimmed, transparent):
+ *  - logo.png        blue/pink "V" mark + charcoal "VAVEN" + blue "CLOUD", for light backgrounds
+ *  - logo-light.png  the same with a white "VAVEN", for dark backgrounds
+ *  - favicon.png     the "V" mark alone (256px square)
+ *  - logo-text.png   the wordmark alone, and logo-mark.png the "V" alone, large: the shapes the team page's
+ *                    particle hero forms (shared/effects/logo-particles.ts)
+ * The logos are 777x120 (about 6.5:1).
  *
- * Every one sits in a .vc-logo wrapper. As is, the wrapper changes nothing; on a page whose <html> has
- * data-logo="brand" (v3), the image's shape masks the wrapper and the site's brand colours fill it
- * (components.css), so the logo follows the palette.
+ * Every one sits in a .vc-logo wrapper. The logo keeps its own colours on every page (data-logo="brand" no
+ * longer repaints it).
  */
 
 /** A logo image in its wrapper */
 export const logoImage = (src: string, className: string, alt = '') =>
-  `<span class="vc-logo" style="--logo:url(${src})"><img src="${src}" alt="${alt}" width="320" height="80" class="${className}" decoding="async" /></span>`
+  `<span class="vc-logo"><img src="${src}" alt="${alt}" width="777" height="120" class="${className}" decoding="async" /></span>`
 
 /** The "V" mark alone, `size` px square */
 export const logoMark = (size: number, className: string) =>
-  `<span class="vc-logo vc-logo--mark" style="--logo:url(/favicon.png)"><img src="/favicon.png" alt="" width="${size}" height="${size}" class="${className}" /></span>`
+  `<span class="vc-logo vc-logo--mark"><img src="/favicon.png" alt="" width="${size}" height="${size}" class="${className}" /></span>`
 
 const logoImg = (src: string, extra = '') => logoImage(src, `h-8 w-auto sm:h-9 ${extra}`)
 
