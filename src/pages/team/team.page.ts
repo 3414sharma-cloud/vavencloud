@@ -1,4 +1,4 @@
-import '@/pages/v2/sections/reviews.v2.css'
+import '@/pages/v5/base/reviews.v2.css'
 import './team.css'
 import { v5Nav } from '@/pages/v5/v5.shell.ts'
 import { behindIntro, behindStats, teamIntro } from '@/pages/v5/v5.data.ts'
@@ -14,7 +14,7 @@ import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { founders, members, ways, type Founder, type Member } from './team.data.ts'
 
 /*
- * The team page (/team/), opened from "Meet the whole Vavensoft team" on v5 and the About page. In v5's look
+ * The team page (/team/), opened from "Meet the whole Vavensoft team" on v5 and the "About" links. In v5's look
  * (v5.shell.ts, data-landing="v5"): who's behind VavenCloud and four numbers, the two co-founders in full
  * (Jerry with his video), the engineers on your account by role, the team members (team.data.ts) and how
  * they work with you, then one call to action.
@@ -135,7 +135,7 @@ const foundersSection = (): Section => ({
 /** A team member's photo; until there is one, a head and shoulders on the brand colour (cropped to fill the card) */
 const galleryPhoto = (m: Member) =>
   m.photo
-    ? `<img src="${m.photo}" alt="${m.name}" width="640" height="800" loading="lazy" class="tp-gal-img" draggable="false" />`
+    ? `<img src="${m.photo}" alt="${m.role}" width="800" height="800" loading="lazy" decoding="async" class="tp-gal-img" draggable="false" />`
     : `<svg class="tp-gal-img tp-gal-img--empty" viewBox="0 0 120 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><circle cx="60" cy="58" r="24" /><path d="M14 150c3-30 22-46 46-46s43 16 46 46z" /></svg>`
 
 /**
@@ -147,7 +147,7 @@ const galleryItem = (m: Member) => `
           <div class="tp-gal-card">
             <div class="tp-gal-photo">${galleryPhoto(m)}</div>
             <div class="tp-gal-info">
-              <p class="tp-gal-name">${m.name}</p>
+              <p class="tp-gal-name">${m.tagline}</p>
               <p class="tp-gal-role">${m.role}</p>
               <div class="tp-gal-more">
                 <div>
@@ -159,53 +159,30 @@ const galleryItem = (m: Member) => `
           </div>
         </li>`
 
-/** The team as a gallery: a row of cards where the one you point at grows, and arrows that slide along when there are more than fit */
-const gallery = () => `
-    <div class="tp-gal" data-gallery style="--n:${members.length}">
-      <div class="tp-gal-viewport">
-        <ul class="tp-gal-track" role="list">${members.map(galleryItem).join('')}
-        </ul>
-      </div>
-      <button type="button" class="tp-gal-nav tp-gal-nav--prev" data-gal-prev aria-label="Previous team members" hidden>${icon('chevron-left', 'h-5 w-5')}</button>
-      <button type="button" class="tp-gal-nav tp-gal-nav--next" data-gal-next aria-label="Next team members" hidden>${icon('chevron-right', 'h-5 w-5')}</button>
-    </div>`
+/** At most this many cards share a row on a wide screen */
+const PER_ROW = 5
+
+/** Splits the members into rows as even as possible (9 → 5 + 4, 7 → 4 + 3), the longer rows first */
+const rows = (list: Member[]): Member[][] => {
+  const count = Math.ceil(list.length / PER_ROW)
+  const out: Member[][] = []
+  for (let r = 0, from = 0; r < count; r++) {
+    const size = Math.ceil((list.length - from) / (count - r))
+    out.push(list.slice(from, from + size))
+    from += size
+  }
+  return out
+}
 
 /**
- * Slides the gallery: --start (the first visible card) moves the track in CSS; how many show at once (--per)
- * comes from the screen's width in team.css. The arrows only appear when there are more cards than fit, and
- * stop at each end. Tabbing to a card that's off to the side slides it into view.
+ * The team as a gallery, with no sliding: on a wide screen, rows of tall cards where the one you point at (or
+ * tab to) grows and opens; on smaller screens, a plain grid of cards. Every card is always on the page.
  */
-function initGallery(root: HTMLElement): void {
-  const n = members.length
-  const viewport = qs('.tp-gal-viewport', root)
-  const prev = qs<HTMLButtonElement>('[data-gal-prev]', root)
-  const next = qs<HTMLButtonElement>('[data-gal-next]', root)
-  const items = qsa('.tp-gal-item', root)
-  let start = 0
-
-  const per = () => parseInt(getComputedStyle(root).getPropertyValue('--per'), 10) || 5
-  const show = (to: number) => {
-    const max = Math.max(n - per(), 0)
-    start = Math.min(Math.max(to, 0), max)
-    root.style.setProperty('--start', String(start))
-    prev.hidden = next.hidden = max === 0
-    prev.disabled = start <= 0
-    next.disabled = start >= max
-  }
-
-  prev.addEventListener('click', () => show(start - 1))
-  next.addEventListener('click', () => show(start + 1))
-  window.addEventListener('resize', () => show(start))
-  items.forEach((item, i) =>
-    item.addEventListener('focusin', () => {
-      // The browser scrolls a clipped box to a focused card: undo that and slide the track instead
-      viewport.scrollLeft = 0
-      if (i < start) show(i)
-      else if (i >= start + per()) show(i - per() + 1)
-    }),
-  )
-  show(0)
-}
+const gallery = () => `
+    <ul class="tp-gal" role="list">${rows(members)
+      .map((row) => `<li class="tp-gal-row"><ul class="tp-gal-track" role="list">${row.map(galleryItem).join('')}</ul></li>`)
+      .join('')}
+    </ul>`
 
 const teamSection = (): Section => ({
   html: `
@@ -246,9 +223,6 @@ const teamSection = (): Section => ({
     </ul>
   </div>
 </section>`,
-  init() {
-    qsa('#engineers [data-gallery]').forEach(initGallery)
-  },
 })
 
 const cta = (): Section => ({

@@ -11,7 +11,7 @@ export const navLinks: NavLink[] = [
   { label: 'How we help', href: routes.oneTeam },
   { label: 'How it works', href: routes.process },
   { label: 'Plans', href: routes.plans },
-  { label: 'About', href: routes.about },
+  { label: 'About', href: routes.team },
 ]
 
 /**

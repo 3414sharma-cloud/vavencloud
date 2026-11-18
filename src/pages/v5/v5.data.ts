@@ -1,8 +1,8 @@
 import { routes } from '@/app/routes.ts'
 import { reviews } from '@/modules/reviews/reviews.data.ts'
-import type { Testimonial } from '@/pages/v2/v2.data.ts'
-import type { HeroSlide } from '@/pages/home/sections/hero.data.ts'
-import type { Caller, CallerId, Scene, SiteState } from '@/pages/v3/v3.data.ts'
+import type { Testimonial } from '@/pages/v5/base/v2.data.ts'
+import type { HeroSlide } from '@/pages/v5/base/hero.data.ts'
+import type { Caller, CallerId, Scene, SiteState } from '@/pages/v5/base/v3.data.ts'
 import type { IconName } from '@/shared/ui/icons.ts'
 
 /*

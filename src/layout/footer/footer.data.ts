@@ -32,7 +32,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: 'Company',
     links: [
-      { label: 'About VavenCloud', href: routes.about },
+      { label: 'About VavenCloud', href: routes.team },
       { label: 'About Vavensoft', href: site.vavensoftUrl, external: true },
       { label: 'Contact', href: `${vc}/contact`, external: true },
       { label: 'Blog', href: site.blogUrl, external: true },

@@ -1,4 +1,4 @@
-import '@/pages/home/sections/hero.css'
+import '@/pages/v5/base/hero.css'
 import type { Section } from '@/app/types.ts'
 import { qs, qsa } from '@/shared/lib/dom.ts'
 import { prefersReducedMotion } from '@/shared/lib/motion.ts'

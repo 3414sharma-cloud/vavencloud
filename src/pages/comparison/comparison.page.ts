@@ -26,8 +26,8 @@ import {
 /*
  * The comparison page (/comparison/): AWS, Azure and VavenCloud side by side, in two tabs.
  * One after the other, no tabs:
- *  1. The servers: five fixed sizes, one of each; each cloud's monthly price and what you save with
- *     VavenCloud, with the total underneath.
+ *  1. The servers: five fixed sizes, each compared on its own (no total: nobody buys one of every size);
+ *     each cloud's monthly price for one server and what you save with VavenCloud.
  *  2. Someone to run them (#managed): each cloud's support plan beside VavenCloud's Managed plan, what it
  *     covers, and the monthly support or management fee. The numbers are in comparison.data.ts.
  */
@@ -53,7 +53,7 @@ const vaven = '<span class="cp-vc">VavenCloud</span>'
 
 const hero = (): Section => ({
   html: `
-<section id="top" class="band-linen cp-hero -mt-18 border-b border-neutral-200 dark:border-neutral-800" aria-labelledby="comparison-title">
+<section id="top" class="dark v5-hero-dark cp-hero" aria-labelledby="comparison-title">
   <div class="container-page">
     <p class="cp-kicker">Price comparison</p>
     <h1 id="comparison-title" class="cp-title">AWS, Azure or VavenCloud: <em>what you’d actually pay.</em></h1>
@@ -122,7 +122,7 @@ const serverRow = (row: Row, i: number, kind: Kind) => {
   return `
           <tr data-row="${i}">
             <th scope="row" class="cp-config">
-              <span class="cp-fixed">${sizes[row.size].vcpu} vCPU · ${sizes[row.size].ram} GB<span class="cp-fixed-qty">× ${row.qty}</span></span>
+              <span class="cp-fixed">${sizes[row.size].vcpu} vCPU · ${sizes[row.size].ram} GB</span>
             </th>
             <td data-label="AWS" data-cell="aws">${c.aws}</td>
             <td data-label="Azure" data-cell="azure">${c.azure}</td>
@@ -131,19 +131,11 @@ const serverRow = (row: Row, i: number, kind: Kind) => {
           </tr>`
 }
 
-const totals = (rows: Row[], kind: Kind) => {
-  const sum = rows.reduce(
-    (t, r) => {
-      const p = priced(r, kind)
-      return { aws: t.aws + p.aws, azure: t.azure + p.azure, vaven: t.vaven + p.vaven }
-    },
-    { aws: 0, azure: 0, vaven: 0 },
-  )
-  return { ...sum, cheap: cheaperOf(sum.aws, sum.azure) }
-}
-
+/*
+ * Nobody buys one of every size, so the table has no "total" row: each row is one server, compared on its own,
+ * and the summary above it speaks per server too.
+ */
 const serversTable = (rows: Row[], kind: Kind) => {
-  const t = totals(rows, kind)
   return `
       <div class="cp-table-wrap card">
         <table class="cp-table">
@@ -158,44 +150,43 @@ const serversTable = (rows: Row[], kind: Kind) => {
           </thead>
           <tbody data-rows>${rows.map((r, i) => serverRow(r, i, kind)).join('')}
           </tbody>
-          <tfoot>
-            <tr data-total>
-              <th scope="row">Total a month</th>
-              <td data-label="AWS" data-total="aws"><span class="cp-price">${usd(t.aws)}</span></td>
-              <td data-label="Azure" data-total="azure"><span class="cp-price">${usd(t.azure)}</span></td>
-              <td data-label="VavenCloud" class="cp-us" data-total="vaven"><span class="cp-price">${usd(t.vaven)}</span></td>
-              <td data-label="You save" data-total="save">${saving(t.cheap.value, t.vaven, t.cheap.name)}</td>
-            </tr>
-          </tfoot>
         </table>
       </div>
       <p class="cp-kind-note">VavenCloud includes SSD storage in every plan. AWS and Azure charge separately for it.</p>`
 }
 
-/** The big numbers above the table: what each cloud costs for these servers, as bars, and the saving a year */
+/**
+ * The big numbers above the table, per server (never a sum of all the sizes): the saving on the smallest and
+ * the largest size against Azure, and the biggest percentage saved on any size.
+ */
 const summary = (rows: Row[], kind: Kind) => {
-  const t = totals(rows, kind)
-  const max = Math.max(t.aws, t.azure, t.vaven)
-  const diff = t.cheap.value - t.vaven
-  const bar = (label: string, value: number, us = false) => `
+  const each = rows.map((r) => {
+    const p = priced({ ...r, qty: 1 }, kind)
+    const cheap = cheaperOf(p.aws, p.azure)
+    return { size: p.size, name: cheap.name, diff: cheap.value - p.vaven, pct: ((cheap.value - p.vaven) / cheap.value) * 100 }
+  })
+  const first = each[0]
+  const last = each[each.length - 1]
+  const all = each.every((e) => e.diff > 0.005)
+  const lo = Math.min(...each.map((e) => e.diff))
+  const hi = Math.max(...each.map((e) => e.diff))
+  const best = Math.round(Math.max(...each.map((e) => e.pct)))
+  const headline = all
+    ? `Every size costs less on VavenCloud: <b>${usd0(lo)} to ${usd0(hi)} less a month per server</b> than on ${first.name}.`
+    : `Compare one server at a time: find the size you need and see what it costs on each cloud.`
+  const stat = (label: string, value: string, unit: string, us = false) => `
         <div class="cp-bar${us ? ' cp-bar--us' : ''}">
           <p class="cp-bar-label">${label}</p>
-          <p class="cp-bar-value">${usd0(value)}<span> a month</span></p>
-          <span class="cp-bar-track" aria-hidden="true"><i style="width:${((value / max) * 100).toFixed(1)}%"></i></span>
+          <p class="cp-bar-value">${value}<span> ${unit}</span></p>
         </div>`
-  const headline =
-    diff > 0.005
-      ? `With VavenCloud you’d pay <b>${usd(diff)} less every month</b> than on ${t.cheap.name}, <b>${usd(diff * 12)} a year</b>.`
-      : diff < -0.005
-        ? `For these servers ${t.cheap.name} comes out ${usd0(-diff)} a month cheaper on price alone. VavenCloud adds the people who run them.`
-        : `For these servers the price is the same as ${t.cheap.name}.`
+  const sizeName = (e: (typeof each)[number]) => `${e.size.vcpu} vCPU · ${e.size.ram} GB server`
   return `
       <div class="cp-summary" data-summary>
         <p class="cp-headline">${headline}</p>
         <div class="cp-bars">
-          ${bar('AWS', t.aws)}
-          ${bar('Azure', t.azure)}
-          ${bar('VavenCloud', t.vaven, true)}
+          ${stat(sizeName(first), first.diff > 0 ? `Save ${usd0(first.diff)}` : usd0(first.diff), 'a month')}
+          ${stat(sizeName(last), last.diff > 0 ? `Save ${usd0(last.diff)}` : usd0(last.diff), 'a month')}
+          ${stat('Any one server', `Up to ${best}%`, `less than ${first.name}`, true)}
         </div>
       </div>`
 }
@@ -271,10 +262,10 @@ const studioProviders: { who: Who; name: string; logo: string; plan: string }[] 
   { who: 'vaven', name: 'VavenCloud', logo: logoMark(24, 'studio-mark') + vaven, plan: 'Managed / starting price' },
 ]
 
+/** The monthly support or management fee, for one server (AWS's share of a one-server bill is its $29 minimum) */
 const studioPrices = () => {
-  const servers = totals(startRows(), KIND)
-  const fee = { aws: awsBusiness(servers.aws), azure: azureStandard, vaven: vavenManaged.managed }
-  return fee
+  const largest = priced({ size: sizes.length - 1, qty: 1 }, KIND)
+  return { aws: awsBusiness(largest.aws), azure: azureStandard, vaven: vavenManaged.managed }
 }
 
 const kindLabel: Record<Cover, string> = { yes: 'Handled for you', half: 'Advice only, you fix it', you: 'You do it' }
@@ -539,7 +530,7 @@ const tool = (): Section => ({
         description: 'First the servers, then the people who run them, on AWS, Azure and VavenCloud.',
       })}
     </div>
-    <section class="cp-part" aria-labelledby="cp-servers-title">${partHead(1, 'cp-servers-title', 'The servers', 'Five common sizes, one of each. What the same servers cost a month on each cloud.')}${serversPanel()}
+    <section class="cp-part" aria-labelledby="cp-servers-title">${partHead(1, 'cp-servers-title', 'The servers', 'Five common sizes. What one server of each size costs a month on each cloud.')}${serversPanel()}
     </section>
     <section id="managed" class="cp-part" aria-labelledby="cp-managed-title">${partHead(2, 'cp-managed-title', 'See who takes care of it', 'An interactive look at the work covered by your monthly support or management fee.')}${managedPanel()}
     </section>
@@ -548,7 +539,7 @@ const tool = (): Section => ({
       <ul>
         <li><b>Servers.</b> AWS prices are taken from the AWS console for EC2 in US East (Ohio). Azure prices are from Microsoft’s public pricing page for virtual machines in Central US. Both are Linux, on demand, ${HOURS} hours a month. For each size we price the cheapest machine with at least that many vCPUs and that much RAM. AWS and Azure prices are for the server only: disk, bandwidth and backups cost extra there. VavenCloud’s price includes the SSD shown.</li>
         <li><b>List prices.</b> These are AWS’s and Azure’s list prices. What you actually pay can vary by account, for example with discounts, reservations or credits.</li>
-        <li><b>Managed service.</b> AWS Business Support+ and Azure Standard, at their published prices. AWS charges a share of your AWS bill, so its fee is worked out on the AWS server total above. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
+        <li><b>Managed service.</b> AWS Business Support+ and Azure Standard, at their published prices. AWS charges the greater of $29 or a share of your AWS bill; for any one of the servers above, that’s the $29 minimum. Their support plans give you help from the cloud’s engineers; they don’t run your product for you.</li>
         <li><b>VavenCloud.</b> Server prices are our current monthly plans, with the SSD storage shown included. Managed plans are a fixed monthly fee agreed after a free review; the figures shown are starting points.</li>
         <li><b>Checked ${pricesCheckedOn}.</b> Cloud prices change, so check the calculators before you decide: <a href="https://calculator.aws/" target="_blank" rel="noopener">AWS<span class="sr-only"> (opens in a new tab)</span></a> · <a href="https://azure.microsoft.com/en-us/pricing/calculator/" target="_blank" rel="noopener">Azure<span class="sr-only"> (opens in a new tab)</span></a>.</li>
       </ul>

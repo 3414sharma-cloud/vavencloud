@@ -1,11 +1,11 @@
-import '../v2/v2.css'
+import '@/pages/v5/base/v2.css'
 import './v5.css'
 import { createPage } from '@/app/create-page.ts'
 import { blogSection } from '@/modules/blog/blog.section.ts'
 import { contactSection } from '@/modules/contact/contact.section.ts'
 import { faqSection } from '@/modules/faq/faq.section.ts'
-import { reviewsV2 } from '@/pages/v2/sections/reviews.v2.ts'
-import { stickyCtaV2 } from '@/pages/v2/sections/sticky-cta.v2.ts'
+import { reviewsV2 } from '@/pages/v5/base/reviews.v2.ts'
+import { stickyCtaV2 } from '@/pages/v5/base/sticky-cta.v2.ts'
 import { behindV5 } from './sections/behind.v5.ts'
 import { compareV5 } from './sections/compare.v5.ts'
 import { heroV5 } from './sections/hero.v5.ts'
@@ -14,19 +14,18 @@ import { plansV5 } from './sections/plans.v5.ts'
 import { reportV5 } from './sections/report.v5.ts'
 import { stagesV5 } from './sections/stages.v5.ts'
 import { startV5 } from './sections/start.v5.ts'
-import { storyV4 } from '@/pages/v4/sections/story.v4.ts'
+import { storyV4 } from '@/pages/v5/base/story.v4.ts'
 import { trackRecordV5 } from './sections/track-record.v5.ts'
 import { chapters, clientReviews } from './v5.data.ts'
 
 /*
- * v5 of the landing page (/v5/): a copy of v4 with every eyebrow tag removed (the small pills above the hero
- * title and section titles, e.g. "VavenCloud Infrastructure + Services"). Everything below is v4's description.
+ * The landing page (/, src/pages/index.html). It is "v5", the only version left: the earlier versions (v2, v3,
+ * v4 and the first landing page) were removed, and the pieces of them this page still uses now live in ./base/
+ * (they keep their old names, e.g. story.v4.ts and v2.css, as the classes inside them do).
  *
- * v4 of the landing page (/v4/): v3's design with the v4 draft's order and copy. After the problem (v3's story,
- * now ending on what the night cost) it says what we own, meets you where you are, shows the morning after,
- * compares the real options, says who's behind it (then the clients' own words), and how we start, before the
- * plans. The copy lives in v5.data.ts; v4's own copies of the hero, the story and the report keep the landing
- * page, v2 and v3 exactly as they are.
+ * After the problem (the story, ending on what the night cost) it says who's behind it, what we own, meets you
+ * where you are, shows the morning after, compares the real options, lets clients speak, and how we start,
+ * before the plans. The copy lives in v5.data.ts.
  */
 createPage({
   nav: chapters,

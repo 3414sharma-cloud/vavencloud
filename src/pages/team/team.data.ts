@@ -78,9 +78,10 @@ export const ways: { icon: IconName; title: string; text: string }[] = [
 ]
 
 export interface Member {
-  name: string
+  /** A short headline about them, shown where the name goes (names are left off for now) */
+  tagline: string
   role: string
-  /** A square photo in /public, e.g. '/team/first-last.jpg'. Without one, the card shows a placeholder portrait */
+  /** A photo in /public, e.g. '/team/qa-tester.webp'. Without one, the card shows a placeholder portrait */
   photo?: string
   /** What they work on, shown as small tags */
   tags: string[]
@@ -91,39 +92,72 @@ export interface Member {
 /**
  * Team members, shown as cards under the roles ("Meet some of the team").
  *
- * TODO before launch: these five are PLACEHOLDERS (a template), not real people. Replace each name, role, tags
- * and line with a real, approved team member, and add their photo; or remove the ones you don't need. Keep
- * every line true (docs/messaging.md: no invented people or numbers).
+ * The photos are the team's illustrated portraits (public/team/*.webp, made from the PNGs beside them). Names
+ * are left off for now: each card leads with a tagline. Before launch, check every role, tag and line with the
+ * person it shows (docs/messaging.md: nothing invented).
  */
 export const members: Member[] = [
   {
-    name: 'Full Name',
+    tagline: 'Keeps production calm',
     role: 'Lead DevOps Engineer',
+    photo: '/team/devops-lead.webp',
     tags: ['DevOps', 'Kubernetes', 'On-call lead'],
-    line: 'Short description: what they look after and what they’re known for on client accounts.',
+    line: 'Looks after the pipelines and clusters behind client products, and leads the response when something breaks.',
   },
   {
-    name: 'Full Name',
-    role: 'Cloud & Database Engineer',
-    tags: ['AWS', 'PostgreSQL', 'Backups'],
-    line: 'Short description: the clouds and databases they run, and how they keep them healthy.',
+    tagline: 'Ships it every day',
+    role: 'DevOps Engineer',
+    photo: '/team/devops-engineer.webp',
+    tags: ['CI/CD', 'Docker', 'Terraform'],
+    line: 'Builds the code → build → test → deploy pipelines, and keeps them fast and repeatable.',
   },
   {
-    name: 'Full Name',
-    role: 'Security Engineer',
-    tags: ['Hardening', 'Patching', 'Firewalls'],
-    line: 'Short description: how they keep client servers patched, locked down and audited.',
+    tagline: 'Infrastructure you never think about',
+    role: 'Cloud & DevOps Engineer',
+    photo: '/team/cloud-devops.webp',
+    tags: ['AWS', 'Infra', 'Monitoring'],
+    line: 'Runs client infrastructure on AWS and watches it, so problems are caught before customers notice.',
   },
   {
-    name: 'Full Name',
-    role: 'Full-stack Developer',
-    tags: ['Node.js', 'React', 'Bug fixes'],
-    line: 'Short description: the kind of fixes in client code they handle within the plan’s hours.',
+    tagline: 'From code to cloud',
+    role: 'Cloud Developer',
+    photo: '/team/cloud-developer.webp',
+    tags: ['Next.js', 'Node.js', 'AWS'],
+    line: 'Writes the code and ships it to the cloud, so a fix goes from commit to live without a handoff.',
   },
   {
-    name: 'Full Name',
-    role: 'Site Reliability Engineer',
-    tags: ['Monitoring', 'Incidents', 'Reports'],
-    line: 'Short description: how they spot problems early and write up every incident.',
+    tagline: 'Front to back, end to end',
+    role: 'Full Stack Developer',
+    photo: '/team/full-stack.webp',
+    tags: ['React', 'Node.js', 'PostgreSQL'],
+    line: 'Fixes and builds across the whole product: the interface, the API and the database under it.',
+  },
+  {
+    tagline: 'Turns ideas into working features',
+    role: 'Full Stack Developer',
+    photo: '/team/full-stack-2.webp',
+    tags: ['React', 'Next.js', 'Deploy'],
+    line: 'Takes a feature from first sketch to production, frontend, backend and deploy.',
+  },
+  {
+    tagline: 'Breaks it before your users do',
+    role: 'QA Tester',
+    photo: '/team/qa-tester.webp',
+    tags: ['Test cases', 'Automation', 'Selenium'],
+    line: 'Writes the test cases, automates them, and retests every fix before it goes out.',
+  },
+  {
+    tagline: 'Designs that make sense',
+    role: 'UI/UX Designer',
+    photo: '/team/ui-ux-designer.webp',
+    tags: ['Research', 'Wireframes', 'Figma'],
+    line: 'Researches, wireframes and prototypes screens so they’re clear before a line of code is written.',
+  },
+  {
+    tagline: 'Your first hello',
+    role: 'Bidding & Sales',
+    photo: '/team/bidding-sales.webp',
+    tags: ['Proposals', 'RFPs', 'Follow-up'],
+    line: 'Answers RFPs, writes proposals and stays in touch until the work is agreed.',
   },
 ]

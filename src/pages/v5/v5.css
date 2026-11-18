@@ -1509,9 +1509,12 @@
   background: #fff;
   color: var(--color-neutral-950);
 }
-/* The logo in its dark-ground colours: the V in the brand gradient, the wordmark white */
-#app > footer .vc-logo {
-  background: linear-gradient(90deg, var(--color-brand-300), var(--color-brand-400) 24%, #fff 24.5%);
+/* The footer is dark in both themes, so it always shows the white-wordmark logo (logo-light.png) */
+#app > footer .vc-logo:not(.vc-logo--light) {
+  display: none;
+}
+#app > footer .vc-logo--light {
+  display: inline-flex;
 }
 #app > footer .footer-wordmark svg {
   color: rgb(255 255 255 / 0.08);

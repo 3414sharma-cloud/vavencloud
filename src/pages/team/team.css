@@ -404,32 +404,44 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
   color: #fff;
 }
 /*
- * The team gallery (team.page.ts). On a phone: a row of cards you swipe through, each showing everything.
- * From 900px: tall cards side by side where the one you point at (or tab to) grows and opens, the others
- * shrink and dim, and arrows slide along when there are more cards than fit (--per at a time).
+ * The team gallery (team.page.ts), with no slider. Below 900px: a grid of cards, two across (three from
+ * 640px), each showing everything (on the narrowest phones, the photo, tagline and role only). From 900px:
+ * rows of tall cards side by side (at most five a row), where the one you point at (or tab to) grows and
+ * opens and the others in its row shrink and dim.
  */
 .tp-gal {
-  --per: 5;
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
   margin-top: 1.5rem;
 }
-.tp-gal-viewport {
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scrollbar-width: none;
+@media (min-width: 640px) {
+  .tp-gal {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
-.tp-gal-viewport::-webkit-scrollbar {
-  display: none;
-}
+/* Below 900px the rows don't box anything: their cards sit straight in the grid */
+.tp-gal-row,
 .tp-gal-track {
-  display: flex;
-  gap: 0.75rem;
-  padding-bottom: 0.5rem;
+  display: contents;
 }
 .tp-gal-item {
-  flex: 0 0 min(76vw, 17rem);
-  scroll-snap-align: start;
   outline: none;
+}
+@media (max-width: 559px) {
+  .tp-gal .tp-gal-info {
+    padding: 0.75rem 0.8rem 0.9rem;
+  }
+  .tp-gal .tp-gal-name {
+    font-size: 0.95rem;
+    line-height: 1.25;
+  }
+  .tp-gal .tp-gal-role {
+    font-size: 0.75rem;
+  }
+  .tp-gal .tp-gal-more {
+    display: none;
+  }
 }
 .tp-gal-card {
   position: relative;
@@ -468,6 +480,41 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
   height: 100%;
   width: 100%;
   object-fit: cover;
+}
+/*
+ * The photos are never shown in full colour: they're faded (desaturated, under a soft wash in the brand's
+ * dark blue). On a device with a pointer they start more faded, and the one you point at (or tab to) fades
+ * a little less. Touch screens can't hover, so they always show the lighter fade.
+ */
+.tp-gal-img {
+  filter: grayscale(0.7) contrast(0.88) brightness(0.96);
+  transition: filter 0.6s ease;
+}
+.tp-gal-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--color-brand-900) 22%, transparent),
+    color-mix(in srgb, var(--color-brand-950, var(--color-brand-900)) 38%, transparent)
+  );
+  opacity: 0.8;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+@media (hover: hover) {
+  .tp-gal-item:not(:hover, :focus-within) .tp-gal-img {
+    filter: grayscale(0.95) contrast(0.82) brightness(0.92);
+  }
+  .tp-gal-item:not(:hover, :focus-within) .tp-gal-photo::after {
+    opacity: 1;
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-brand-900) 34%, transparent),
+      color-mix(in srgb, var(--color-brand-950, var(--color-brand-900)) 50%, transparent)
+    );
+  }
 }
 /* The placeholder portrait: a soft head and shoulders in the brand colour, kept in proportion at the card's foot */
 .tp-gal-img--empty {
@@ -525,27 +572,18 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
   font-size: 0.85rem;
   line-height: 1.5;
 }
-.tp-gal-nav {
-  display: none;
-}
-
 @media (min-width: 900px) {
   .tp-gal {
-    --per: 3;
-  }
-  .tp-gal-viewport {
-    overflow: hidden;
-    height: clamp(26rem, 64vh, 33rem);
-    border-radius: 1.75rem;
-  }
-  /* The track is as wide as all the cards at one screen's share each; --start slides it along */
-  .tp-gal-track {
-    width: calc(var(--n) / var(--per) * 100%);
-    height: 100%;
+    display: flex;
+    flex-direction: column;
     gap: 0;
-    padding-bottom: 0;
-    transform: translateX(calc(var(--start, 0) * -100% / var(--n)));
-    transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tp-gal-row {
+    display: block;
+  }
+  .tp-gal-track {
+    display: flex;
+    height: clamp(22rem, 58vh, 30rem);
   }
   .tp-gal-item {
     flex: 1 1 0;
@@ -565,11 +603,11 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
     position: absolute;
     inset: 0;
     aspect-ratio: auto;
-    transition: filter 0.6s ease;
   }
-  /* While one card is open, the others dim and go grey, like the gallery it's modelled on */
-  .tp-gal-track:has(.tp-gal-item:is(:hover, :focus-within)) .tp-gal-item:not(:is(:hover, :focus-within)) .tp-gal-photo {
-    filter: grayscale(0.8) brightness(0.8);
+  /* An open card is wider than tall, so the square portrait is cropped top and bottom: keep the crop near
+     the top, where the face is, instead of the middle */
+  .tp-gal-img {
+    object-position: 50% 18%;
   }
   .tp-gal-info {
     position: absolute;
@@ -579,7 +617,8 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
     justify-content: flex-end;
     overflow: hidden;
     padding: 1.5rem 1.4rem;
-    background: linear-gradient(to top, rgb(4 12 24 / 0.86) 0%, rgb(4 12 24 / 0.5) 38%, transparent 68%);
+    /* Only as much shade as the text needs, low on the card, so the photo above stays in full colour */
+    background: linear-gradient(to top, rgb(4 12 24 / 0.8) 0%, rgb(4 12 24 / 0.35) 28%, transparent 48%);
     transition: opacity 0.5s ease;
   }
   .tp-gal-track:has(.tp-gal-item:is(:hover, :focus-within)) .tp-gal-item:not(:is(:hover, :focus-within)) .tp-gal-info {
@@ -631,63 +670,13 @@ body:has(#top-bar:not(.hidden)) .tp-stage {
   .tp-gal-line {
     color: rgb(255 255 255 / 0.85);
   }
-
-  /* Arrows: on the left and right edges, at the middle of the cards */
-  .tp-gal-nav {
-    position: absolute;
-    top: 50%;
-    z-index: 5;
-    display: inline-flex;
-    height: 2.75rem;
-    width: 2.75rem;
-    align-items: center;
-    justify-content: center;
-    transform: translateY(-50%);
-    border: 1px solid rgb(255 255 255 / 0.5);
-    border-radius: 999px;
-    background: rgb(4 12 24 / 0.6);
-    color: #fff;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition:
-      background-color 0.2s ease,
-      opacity 0.2s ease;
-  }
-  .tp-gal-nav[hidden] {
-    display: none;
-  }
-  .tp-gal-nav:hover:not(:disabled) {
-    background: rgb(4 12 24 / 0.85);
-  }
-  .tp-gal-nav:disabled {
-    cursor: default;
-    opacity: 0.3;
-  }
-  .tp-gal-nav:focus-visible {
-    outline: 2px solid var(--color-brand-300);
-    outline-offset: 2px;
-  }
-  .tp-gal-nav--prev {
-    left: 0.9rem;
-  }
-  .tp-gal-nav--next {
-    right: 0.9rem;
-  }
-}
-@media (min-width: 1100px) {
-  .tp-gal {
-    --per: 4;
-  }
-}
-@media (min-width: 1250px) {
-  .tp-gal {
-    --per: 5;
-  }
 }
 @media (prefers-reduced-motion: reduce) {
   .tp-gal-track,
   .tp-gal-item,
   .tp-gal-photo,
+  .tp-gal-photo::after,
+  .tp-gal-img,
   .tp-gal-info,
   .tp-gal-more {
     transition: none !important;

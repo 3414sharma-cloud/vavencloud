@@ -53,25 +53,83 @@ export function initSmoothScroll(): void {
 
   cancelGlideOnScrollbarDrag()
 
-  // In-page links glide to their target, stopping below the sticky header
+  /*
+   * Every link on this site scrolls smoothly:
+   *  - to a section on this page ("/#plans" while on "/"): glides there, stopping below the sticky header;
+   *  - to this same page without a section (e.g. "About VavenCloud" while on /team/): glides back to the top
+   *    instead of reloading;
+   *  - to a section on another page ("/#plans" from /comparison/): opens that page at the top, then
+   *    glides down to the section (the section's id is handed over in sessionStorage, see glideAfterRoute).
+   */
   document.addEventListener('click', (e) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-    const link = (e.target as Element).closest<HTMLAnchorElement>('a[href*="#"]')
-    if (!link || link.target) return
-    // Links are written as "/#plans": same page, with a hash
+    const link = (e.target as Element).closest<HTMLAnchorElement>('a[href]')
+    if (!link || link.target || link.hasAttribute('download')) return
     const url = new URL(link.href, window.location.href)
-    if (url.origin !== window.location.origin || url.pathname !== window.location.pathname) return
-    const hash = url.hash
-    if (hash.length < 2) return
-    const target = document.querySelector<HTMLElement>(hash)
-    if (!target) return
+    if (url.origin !== window.location.origin) return
+    const hash = url.hash.length > 1 ? url.hash : ''
+
+    if (url.pathname !== window.location.pathname) {
+      if (!hash) return // a page without a section: the browser opens it at the top as usual
+      e.preventDefault()
+      try {
+        sessionStorage.setItem(GLIDE_KEY, hash)
+      } catch {
+        window.location.href = url.href // no storage: let the browser jump there
+        return
+      }
+      window.location.href = url.pathname + url.search
+      return
+    }
+
+    const target = hash ? document.querySelector<HTMLElement>(hash) : null
+    if (hash && !target) return
     e.preventDefault()
+    if (!target || hash === '#top') {
+      lenis?.scrollTo(0, { duration: 1.4 })
+      if (!hash && url.search === window.location.search) return
+      history.pushState(null, '', hash || url.pathname + url.search)
+      return
+    }
     // Lenis already stops short by the page's `scroll-padding-top`, so the sticky header never covers the section
-    if (hash !== '#top') skipPast(target.getBoundingClientRect().top + window.scrollY - scrollPadding())
-    lenis?.scrollTo(hash === '#top' ? 0 : target, { duration: 1.4 })
+    skipPast(target.getBoundingClientRect().top + window.scrollY - scrollPadding())
+    lenis?.scrollTo(target, { duration: 1.4 })
     history.pushState(null, '', hash)
     window.dispatchEvent(new HashChangeEvent('hashchange'))
   })
+
+  glideAfterRoute()
+}
+
+/** sessionStorage key holding the section ("#plans") a link from another page asked for */
+const GLIDE_KEY = 'vc-glide-to'
+
+/**
+ * Arriving from a link to a section on this page (see the click handler above): starts at the top, then,
+ * once the page has laid out, glides down to that section and puts its #hash in the address bar.
+ */
+function glideAfterRoute(): void {
+  let hash: string | null = null
+  try {
+    hash = sessionStorage.getItem(GLIDE_KEY)
+    sessionStorage.removeItem(GLIDE_KEY)
+  } catch {
+    return
+  }
+  if (!hash) return
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
+  lenis?.scrollTo(0, { immediate: true, force: true })
+  const go = () =>
+    window.setTimeout(() => {
+      const target = document.querySelector<HTMLElement>(hash!)
+      if (!target || !lenis) return
+      skipPast(target.getBoundingClientRect().top + window.scrollY - scrollPadding())
+      lenis.scrollTo(target, { duration: 1.6 })
+      history.replaceState(null, '', hash!)
+      window.dispatchEvent(new HashChangeEvent('hashchange'))
+    }, 250)
+  if (document.readyState === 'complete') go()
+  else window.addEventListener('load', go, { once: true })
 }
 
 /**

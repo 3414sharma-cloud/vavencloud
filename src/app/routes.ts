@@ -1,41 +1,22 @@
 /**
- * Every internal link in one place. The site is a single landing page for now, so these are
- * section anchors. Prefixed with the landing page's path so they keep working from other pages.
- *
- * The landing page has versions at /v2/ and /v3/ with their own copy of these sections, so on a version the
- * anchors point at that version (a visitor stays on the one they're reading). Everywhere else they point at /.
+ * Every internal link in one place. Most are sections of the landing page (/, built from src/pages/v5/),
+ * written as "/#plans" so they work from every page.
  */
-/*
- * Pages outside a version folder (about, the legal pages) can say which version they belong to with
- * data-landing on <html> (e.g. data-landing="v5"), so their header, footer and buttons lead back to it.
- */
-const fromPath = typeof location !== 'undefined' ? /^\/(v\d+)(\/|$)/.exec(location.pathname)?.[1] : undefined
-const fromPage = typeof document !== 'undefined' ? document.documentElement.dataset.landing : undefined
-const version = fromPath ?? (fromPage && /^v\d+$/.test(fromPage) ? fromPage : undefined)
-const landing = version ? `/${version}/` : '/'
+const landing = '/'
 
 export const routes = {
   home: landing,
-  about: '/about/',
-  /** The team page: the co-founders and the engineers (opened from "Meet the whole Vavensoft team") */
+  /** The team page: the co-founders and the engineers (opened from "Meet the whole Vavensoft team", and the "About" links) */
   team: '/team/',
   /** The price comparison: the same servers and cover on AWS, Azure and VavenCloud */
   comparison: '/comparison/',
   top: `${landing}#top`,
   oneTeam: `${landing}#one-team`,
-  /** The versions have no "how it works" chapter: there, it goes to what you get after an incident (the report) */
-  process: version ? `${landing}#report` : `${landing}#how-it-works`,
+  /** There's no "how it works" chapter: it goes to what you get after an incident (the report) */
+  process: `${landing}#report`,
   plans: `${landing}#plans`,
-  proof: `${landing}#proof`,
-  faq: `${landing}#faq`,
   /** Every "Book a free review" button leads here (final call to action + booking form) */
   book: `${landing}#book`,
-  contact: `${landing}#book`,
-  // Kept for the older, currently unused pricing modules.
-  clients: `${landing}#proof`,
-  pricing: `${landing}#plans`,
-  webHosting: `${landing}#plans`,
-  cloudServices: `${landing}#plans`,
 }
 
 export type Route = (typeof routes)[keyof typeof routes]

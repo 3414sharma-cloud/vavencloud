@@ -107,13 +107,27 @@
   }
 
   /*
-   * The VavenCloud logo (shared/ui/logo.ts). It keeps its own blue/pink colours everywhere, so the wrapper
-   * only lays it out. The header sits over v5's dark hero with the dark class, so there it shows the
-   * white-wordmark version (logo-light.png) even on the light theme.
+   * The VavenCloud logo (shared/ui/logo.ts). It keeps its own blue/pink colours, except "CLOUD": a gradient
+   * in the current palette's brand colours lies over it, cut to the letters by logo-cloud-mask.png (the same
+   * 777x120 size as the logo, so it lines up at any height). On dark backgrounds (logo-light.png) the
+   * gradient is lighter. The header sits over v5's dark hero with the dark class, so there it shows the
+   * white-wordmark version even on the light theme.
    */
   .vc-logo {
+    position: relative;
     display: inline-flex;
     flex: none;
+  }
+  .vc-logo-cloud {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(90deg, var(--color-brand-700) 58%, var(--color-brand-500) 80%, var(--color-brand-400));
+    -webkit-mask: url('/logo-cloud-mask.png') 0 0 / 100% 100% no-repeat;
+    mask: url('/logo-cloud-mask.png') 0 0 / 100% 100% no-repeat;
+  }
+  .vc-logo--light .vc-logo-cloud {
+    background: linear-gradient(90deg, var(--color-brand-400) 58%, var(--color-brand-300) 80%, var(--color-brand-200));
   }
 
   /* White cards sit on the paper background with a soft, warm shadow instead of a flat outline */

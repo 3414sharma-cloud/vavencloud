@@ -1,4 +1,4 @@
-import '@/pages/v2/sections/reviews.v2.css'
+import '@/pages/v5/base/reviews.v2.css'
 import type { Section } from '@/app/types.ts'
 import { routes } from '@/app/routes.ts'
 import { accountTeam } from '@/modules/stats/stats.data.ts'

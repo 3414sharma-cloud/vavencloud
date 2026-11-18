@@ -82,7 +82,9 @@ const html = () => `
       <p>© <span id="year"></span> ${copyrightOwner}</p>
       <div class="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
         <ul class="flex flex-wrap gap-x-6 gap-y-2">
-          ${legalLinks.map((l) => `<li><a href="${l.href}" class="${linkClass}">${l.label}</a></li>`).join('')}
+          ${/* Plain text for now, not links: the legal pages aren't routed yet. To link them again, use
+            `<a href="${l.href}" class="${linkClass}">` in place of the <span> (the paths are in footer.data.ts). */ ''}
+          ${legalLinks.map((l) => `<li><span>${l.label}</span></li>`).join('')}
         </ul>
         ${themeSwitch()}
       </div>

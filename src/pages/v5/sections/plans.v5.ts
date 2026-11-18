@@ -1,7 +1,7 @@
 import type { Section } from '@/app/types.ts'
 import { routes } from '@/app/routes.ts'
 import { plans, type Plan } from '@/modules/pricing/plans.section.ts'
-import { safety } from '@/pages/v2/v2.data.ts'
+import { safety } from '@/pages/v5/base/v2.data.ts'
 import { icon } from '@/shared/ui/icons.ts'
 import { sectionHeading } from '@/shared/ui/section-heading.ts'
 import { scope } from '../v5.data.ts'
