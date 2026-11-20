@@ -71,7 +71,7 @@ export const TRUST_AND_SECURITY: LegalPage = {
     {
       heading: 'Backups and recovery',
       blocks: [
-        'Automated backups on a schedule agreed with you, stored separately from your production systems. We test a restore at least once a quarter and report the result, because a backup you have not restored is only a hope.',
+        'Automated backups on the schedule your plan sets, stored separately from your production systems. We test restores on that schedule too and report the result, because a backup you have not restored is only a hope.',
       ],
     },
     {

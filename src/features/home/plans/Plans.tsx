@@ -1,32 +1,31 @@
 import { Link } from 'react-router'
-import { routes } from '@/app/routes.ts'
 import { Icon } from '@/components/ui/Icon.tsx'
 import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
 import { Start } from '../start/Start.tsx'
-import { comparisonFeatures, plans, safety, scope } from './plans.data.ts'
-import type { IconName } from '@/components/ui/icons.ts'
-import { btnPrimary, card, container, iconBox } from '@/components/ui/classes.ts'
+import { comparison, everyPlan, plans, safety, sameCore, scope } from './plans.data.ts'
+import { btnPrimary, btnSecondary, card, container, iconBox } from '@/components/ui/classes.ts'
 import { cn } from '@/lib/cn.ts'
 
 /*
- * The plans: the heading, the three plans as tall cards (numbered, the price large), then Managed and Partner
- * in a light comparison table (Partner's column highlighted; a card per plan on a phone), the safety promises as one strip,
- * the handover (Start), and what the plan hours cover.
+ * The plans ("VavenCloud Plans: Essential, Managed, Partner"): the heading, the three plan cards (six bullets
+ * each, so they line up), the line on what every plan shares, then the full comparison (what every plan includes,
+ * and each plan row by row, in groups: a table from 768px, a fold-out card per plan on a phone), the safety
+ * promises, the handover (Start), and what the plan hours cover.
  */
 
-const comparedPlans = plans.flatMap(({ name, icon, comparison }) =>
-  comparison ? [{ name, icon, ...comparison }] : [],
-)
-const maxCodeFixHours = Math.max(...comparedPlans.map((plan) => plan.codeFixHours))
-
 const mono = 'font-[ui-monospace,SFMono-Regular,Menlo,monospace]'
+
+/** A check, as in front of every included item */
+const Check = ({ className = '' }: { className?: string }) => (
+  <Icon name="check" className={cn('size-3.5 flex-none text-brand-600 dark:text-brand-400', className)} />
+)
 
 function Pricing() {
   return (
     <div className="mt-10 sm:mt-14">
       <ul aria-label="Production support plans" className="grid gap-4 md:grid-cols-3">
         {plans.map((plan, i) => (
-          <li key={plan.name} data-reveal="" className={cn(card, 'flex flex-col rounded-3xl p-6 sm:p-7')}>
+          <li key={plan.key} data-reveal="" className={cn(card, 'flex flex-col rounded-3xl p-6 sm:p-7')}>
             <div className="flex items-center justify-between gap-3">
               <span className={iconBox} aria-hidden="true">
                 <Icon name={plan.icon} className="size-5" />
@@ -38,190 +37,174 @@ function Pricing() {
             <h3 className="mt-6 text-[1.3rem] font-[650] tracking-[-0.02em] text-neutral-950 dark:text-white">
               {plan.name}
             </h3>
-            <p className="mt-2 text-[0.95rem] leading-relaxed text-neutral-600 dark:text-neutral-400">{plan.bestFor}</p>
-            <div className="mt-auto pt-6">
-              <p className="border-t border-dashed border-neutral-200 pt-5 text-[1.35rem] font-semibold tracking-[-0.03em] text-brand-700 dark:border-neutral-800 dark:text-brand-300">
+            {/* Two lines tall from 768px, so the prices line up across the cards */}
+            <p className="mt-2 text-[0.95rem] leading-relaxed text-neutral-600 md:min-h-[3.1rem] dark:text-neutral-400">
+              {plan.tagline}
+            </p>
+            <div className="mt-5 border-t border-dashed border-neutral-200 pt-5 dark:border-neutral-800">
+              <p className="text-[1.35rem] font-semibold tracking-[-0.03em] text-brand-700 dark:text-brand-300">
                 {plan.price}
               </p>
+              <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">{plan.forWhom}</p>
+            </div>
+            <ul className="mt-5 grid gap-2.5 text-[0.92rem] leading-snug text-neutral-700 dark:text-neutral-300">
+              {plan.bullets.map((b) => (
+                <li key={b} className="flex items-start gap-2.5">
+                  <Check className="mt-[0.2rem]" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <div className="mt-auto pt-7">
+              <Link
+                to={plan.cta.href}
+                className={cn(plan.key === 'essential' ? btnSecondary : btnPrimary, 'min-h-11 w-full px-5')}
+              >
+                {plan.cta.label} <Icon name="arrow-right" className="size-4" />
+              </Link>
             </div>
           </li>
         ))}
       </ul>
+
+      <p className="mx-auto mt-6 max-w-2xl text-center text-[0.95rem] leading-relaxed text-neutral-600 dark:text-neutral-400">
+        {sameCore}
+      </p>
 
       <Comparison />
     </div>
   )
 }
 
-/** An icon for each comparison row */
-const featureIcon: Record<(typeof comparisonFeatures)[number]['key'], IconName> = {
-  engineering: 'users',
-  infrastructure: 'server',
-  reporting: 'activity',
-}
-
-/** The hours as a row of segments, one per hour, out of the largest plan's */
-const HoursMeter = ({ hours }: { hours: number }) => (
-  <div aria-hidden="true" className="mt-3 flex max-w-64 gap-[3px]">
-    {Array.from({ length: maxCodeFixHours }, (_, h) => (
-      <span
-        key={h}
-        className={cn(
-          'h-2 flex-1 rounded-full',
-          h < hours ? 'bg-brand-500 dark:bg-brand-400' : 'bg-neutral-200 dark:bg-neutral-800',
-        )}
-      />
-    ))}
-  </div>
-)
-
 /** A plan's name with its icon */
-const PlanName = ({ plan, highlight }: { plan: (typeof comparedPlans)[number]; highlight: boolean }) => (
+const PlanName = ({ plan }: { plan: (typeof plans)[number] }) => (
   <span className="flex items-center gap-3">
-    <span
-      className={cn(
-        iconBox,
-        'size-9 rounded-lg',
-        highlight && 'border-transparent bg-brand-600 text-white dark:border-transparent dark:bg-brand-500 dark:text-white',
-      )}
-      aria-hidden="true"
-    >
+    <span className={cn(iconBox, 'size-9 rounded-lg')} aria-hidden="true">
       <Icon name={plan.icon} className="size-4" />
     </span>
-    <span className="text-[1.15rem] font-[650] tracking-[-0.02em] text-neutral-950 dark:text-white">{plan.name}</span>
+    <span className="text-[1.1rem] font-[650] tracking-[-0.02em] text-neutral-950 dark:text-white">{plan.name}</span>
   </span>
 )
 
+const groupLabel = 'text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400'
+
+/** What every plan includes: the core that never moves behind a higher price */
+function EveryPlan() {
+  return (
+    <div className="mt-8 rounded-2xl bg-brand-50/70 p-5 sm:p-6 dark:bg-brand-950/30">
+      <h4 className={groupLabel}>Included on every plan</h4>
+      <ul className="mt-4 grid gap-x-8 gap-y-3 text-[0.93rem] leading-snug text-neutral-700 sm:grid-cols-2 dark:text-neutral-300">
+        {everyPlan.map((item) => (
+          <li key={item} className="flex items-start gap-2.5">
+            <Check className="mt-[0.2rem]" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
 /*
- * Managed and Partner side by side on a white card. From 768px a table, the Partner column lifted with a brand
- * tint and a bar across its top; on a phone a card per plan, each row's label above its value.
+ * The full comparison on a white card: what every plan includes, then each plan row by row. From 768px a table
+ * with a heading row per group; on a phone a fold-out card per plan, its rows under the same group headings.
  */
 function Comparison() {
-  const last = comparedPlans.length - 1
-  /** The highlighted (last) column's cells */
-  const col = (i: number) =>
-    cn('border-l border-neutral-200 px-6 dark:border-neutral-800', i === last && 'bg-brand-50/70 dark:bg-brand-950/40')
+  const col = 'border-l border-neutral-200 px-5 dark:border-neutral-800'
   return (
     <section
       aria-labelledby="plan-comparison-heading"
       data-reveal=""
-      className="mt-5 rounded-[2rem] border border-neutral-200/80 bg-white p-5 [box-shadow:var(--shadow-card)] sm:p-8 lg:p-10 dark:border-neutral-800 dark:bg-neutral-900"
+      className="mt-8 rounded-[2rem] border border-neutral-200/80 bg-white p-5 [box-shadow:var(--shadow-card)] sm:p-8 lg:p-10 dark:border-neutral-800 dark:bg-neutral-900"
     >
       <h3
         id="plan-comparison-heading"
         className="text-center text-[length:clamp(1.5rem,3vw,2.1rem)] font-[600] tracking-[-0.03em] text-neutral-950 dark:text-white"
       >
-        Compare Managed and Partner
+        Compare the plans
       </h3>
+
+      <EveryPlan />
 
       {/* From 768px: the table */}
       <div className="mt-8 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block dark:border-neutral-800">
-        <table aria-labelledby="plan-comparison-heading" className="w-full table-fixed text-left text-[0.93rem] leading-relaxed">
+        <table
+          aria-labelledby="plan-comparison-heading"
+          className="w-full table-fixed text-left text-[0.9rem] leading-relaxed"
+        >
           <thead>
             <tr>
-              <th scope="col" className="w-[30%] px-6 py-5 align-bottom text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                Feature
+              <th
+                scope="col"
+                className="w-[22%] px-5 py-5 align-bottom text-sm font-medium text-neutral-500 dark:text-neutral-400"
+              >
+                <span className="sr-only">Feature</span>
               </th>
-              {comparedPlans.map((plan, i) => (
-                <th
-                  key={plan.name}
-                  scope="col"
-                  className={cn(
-                    col(i),
-                    'relative py-5 font-normal',
-                    i === last &&
-                      "before:absolute before:inset-x-0 before:top-0 before:h-1 before:bg-brand-600 before:content-[''] dark:before:bg-brand-400",
-                  )}
-                >
-                  <PlanName plan={plan} highlight={i === last} />
+              {plans.map((plan) => (
+                <th key={plan.key} scope="col" className={cn(col, 'py-5 font-normal')}>
+                  <PlanName plan={plan} />
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-neutral-200 border-t border-neutral-200 text-neutral-700 dark:divide-neutral-800 dark:border-neutral-800 dark:text-neutral-300">
-            <tr>
-              <th scope="row" className="px-6 py-5 align-top font-[650] text-neutral-950 dark:text-white">
-                <span className="flex items-center gap-2.5">
-                  <Icon name="clock" className="size-4 flex-none text-brand-600 dark:text-brand-400" />
-                  Monthly code fixes
-                </span>
-              </th>
-              {comparedPlans.map(({ name, codeFixHours }, i) => (
-                <td key={name} className={cn(col(i), 'py-5 align-top')}>
-                  <span className="text-[1.9rem] leading-none font-[650] tracking-[-0.04em] text-neutral-950 tabular-nums dark:text-white">
-                    {codeFixHours} hours
-                  </span>
-                  <HoursMeter hours={codeFixHours} />
-                </td>
-              ))}
-            </tr>
-            {comparisonFeatures.map(({ key, label }) => (
-              <tr key={key}>
-                <th scope="row" className="px-6 py-5 align-top font-[650] text-neutral-950 dark:text-white">
-                  <span className="flex items-center gap-2.5">
-                    <Icon name={featureIcon[key]} className="size-4 flex-none text-brand-600 dark:text-brand-400" />
-                    {label}
-                  </span>
+          {comparison.map(({ group, rows }) => (
+            <tbody
+              key={group}
+              className="border-t border-neutral-200 text-neutral-700 dark:border-neutral-800 dark:text-neutral-300"
+            >
+              <tr className="bg-neutral-50 dark:bg-neutral-950/40">
+                <th scope="colgroup" colSpan={plans.length + 1} className={cn(groupLabel, 'px-5 py-3')}>
+                  {group}
                 </th>
-                {comparedPlans.map((plan, i) => (
-                  <td key={plan.name} className={cn(col(i), 'py-5 align-top')}>
-                    <span className="flex items-start gap-2.5">
-                      <Icon name="check" className="mt-[0.3rem] size-3.5 flex-none text-brand-600 dark:text-brand-400" />
-                      {plan.benefits[key]}
-                    </span>
-                  </td>
-                ))}
               </tr>
-            ))}
-          </tbody>
+              {rows.map((row) => (
+                <tr key={row.label} className="border-t border-neutral-200 dark:border-neutral-800">
+                  <th scope="row" className="px-5 py-4 align-top font-[650] text-neutral-950 dark:text-white">
+                    {row.label}
+                  </th>
+                  {plans.map((plan) => (
+                    <td key={plan.key} className={cn(col, 'py-4 align-top')}>
+                      {row.values[plan.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          ))}
         </table>
       </div>
 
-      {/* Under 768px: a card per plan */}
-      <div className="mt-6 grid gap-4 md:hidden">
-        {comparedPlans.map((plan, i) => (
-          <article
-            key={plan.name}
-            className={cn(
-              'overflow-hidden rounded-2xl border p-5',
-              i === last
-                ? 'border-brand-200 bg-brand-50/70 [box-shadow:inset_0_4px_0_var(--color-brand-600)] dark:border-brand-900 dark:bg-brand-950/40 dark:[box-shadow:inset_0_4px_0_var(--color-brand-400)]'
-                : 'border-neutral-200 dark:border-neutral-800',
-            )}
+      {/* Under 768px: a fold-out card per plan */}
+      <div className="mt-6 grid gap-3 md:hidden">
+        {plans.map((plan) => (
+          <details
+            key={plan.key}
+            className="group rounded-2xl border border-neutral-200 open:bg-neutral-50/60 dark:border-neutral-800 dark:open:bg-neutral-950/30"
           >
-            <h4>
-              <PlanName plan={plan} highlight={i === last} />
-            </h4>
-            <dl className="mt-5 grid gap-4 text-[0.93rem] leading-relaxed text-neutral-700 dark:text-neutral-300">
-              <div>
-                <dt className="text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-                  Monthly code fixes
-                </dt>
-                <dd className="mt-1.5">
-                  <span className="text-[1.7rem] leading-none font-[650] tracking-[-0.04em] text-neutral-950 tabular-nums dark:text-white">
-                    {plan.codeFixHours} hours
-                  </span>
-                  <HoursMeter hours={plan.codeFixHours} />
-                </dd>
-              </div>
-              {comparisonFeatures.map(({ key, label }) => (
-                <div key={key} className="border-t border-neutral-200 pt-4 dark:border-neutral-800">
-                  <dt className="flex items-center gap-2 text-xs font-semibold tracking-wider text-neutral-500 uppercase dark:text-neutral-400">
-                    <Icon name={featureIcon[key]} className="size-3.5 text-brand-600 dark:text-brand-400" />
-                    {label}
-                  </dt>
-                  <dd className="mt-1.5">{plan.benefits[key]}</dd>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 [&::-webkit-details-marker]:hidden">
+              <PlanName plan={plan} />
+              <Icon
+                name="chevron-down"
+                className="size-4 flex-none text-neutral-500 transition-transform group-open:rotate-180"
+              />
+            </summary>
+            <div className="px-4 pb-5">
+              {comparison.map(({ group, rows }) => (
+                <div key={group} className="mt-4 first:mt-0">
+                  <h4 className={groupLabel}>{group}</h4>
+                  <dl className="mt-2 grid gap-3 text-[0.92rem] leading-relaxed text-neutral-700 dark:text-neutral-300">
+                    {rows.map((row) => (
+                      <div key={row.label} className="border-t border-neutral-200 pt-3 dark:border-neutral-800">
+                        <dt className="font-[650] text-neutral-950 dark:text-white">{row.label}</dt>
+                        <dd className="mt-0.5">{row.values[plan.key]}</dd>
+                      </div>
+                    ))}
+                  </dl>
                 </div>
               ))}
-            </dl>
-          </article>
+            </div>
+          </details>
         ))}
-      </div>
-
-      <div className="mt-7 flex justify-center sm:mt-8">
-        <Link to={routes.book} className={cn(btnPrimary, 'min-h-11 px-6')}>
-          Book a free review <Icon name="arrow-right" className="size-4" />
-        </Link>
       </div>
     </section>
   )

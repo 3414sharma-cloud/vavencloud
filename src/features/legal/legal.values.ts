@@ -1,45 +1,43 @@
+import { planTerms } from '@/features/shared/plan-terms.ts'
+
 /*
  * The placeholder register from "VavenCloud Legal Pages v1": every value in [SQUARE BRACKETS] on the legal pages,
  * in one place. Fill a value here and it appears on every page that uses it. While a value is empty, the
  * placeholder is shown highlighted, so it can't be missed on staging.
  *
  * Do not go live until every value is filled. The same values must match the landing page, the plans and the
- * FAQ ("change it in one place, change it everywhere"). The PDF's suggested starting point is in each comment;
- * none is filled in yet because each is a business decision.
+ * FAQ ("change it in one place, change it everywhere"). The PDF's suggested starting point is in each comment.
+ *
+ * The plan values (response times, code-fix hours, Essential's scope, backups) come from the shared plan numbers
+ * (features/shared/plan-terms.ts, from "VavenCloud Plans: Essential, Managed, Partner"), the same ones the plan
+ * cards and comparison use. Change them there, not here. The rest are still to be decided.
  *
  * The PDF uses one [RESPONSE TIME] and one [SEV-2 TIME] for all three plans in the SLA table; they are split
- * per plan here because the suggested values differ per plan.
+ * per plan here because the values differ per plan.
  */
+const { criticalResponse, highResponse, codeFixHours, serverLimit, backupDays } = planTerms
+
 export const legalValues: Record<string, string> = {
   /** All pages. Suggested: the date the pages go live */
   'EFFECTIVE DATE': '',
 
-  /** SLA (and landing page, plans, FAQ): Severity 1 response. Suggested: 4 hours */
-  'ESSENTIAL RESPONSE TIME': '',
-  /** Suggested: 1 hour */
-  'MANAGED RESPONSE TIME': '',
-  /** Suggested: 30 minutes */
-  'PARTNER RESPONSE TIME': '',
+  /* SLA: Severity 1 and 2 response, per plan (plan-terms.ts) */
+  'ESSENTIAL RESPONSE TIME': criticalResponse.essential,
+  'MANAGED RESPONSE TIME': criticalResponse.managed,
+  'PARTNER RESPONSE TIME': criticalResponse.partner,
+  'ESSENTIAL SEV-2 TIME': highResponse.essential,
+  'MANAGED SEV-2 TIME': highResponse.managed,
+  'PARTNER SEV-2 TIME': highResponse.partner,
 
-  /** SLA: Severity 2 response. Suggested: 1 business day */
-  'ESSENTIAL SEV-2 TIME': '',
-  /** Suggested: 4 hours */
-  'MANAGED SEV-2 TIME': '',
-  /** Suggested: 2 hours */
-  'PARTNER SEV-2 TIME': '',
-
-  /**
-   * Terms (and plans, SLA): monthly code-fix hours. Suggested: Managed 10 h, Partner 25 h (Essential: quoted).
-   * Note: the plans on the landing page currently say Managed 4 h, Partner 20 h (home/plans/plans.data.ts).
-   */
-  'CODE-FIX HOURS': '',
-  /** Terms (and plans): exactly what $100 a month covers. Suggested: one environment, one cloud account */
-  'ESSENTIAL PLAN SCOPE': '',
+  /** Terms §6: "Managed and Partner plans include … of code fixes each month" */
+  'CODE-FIX HOURS': `${codeFixHours.managed} hours (Managed) and ${codeFixHours.partner} hours (Partner, with priority)`,
+  /** Terms §5: "Essential starts at $100 a month and covers …" */
+  'ESSENTIAL PLAN SCOPE': `a shared senior team, one production environment of up to ${serverLimit.essential} servers or services, monitoring, daily backups kept ${backupDays.essential} days and monthly patching`,
 
   /** SLA: monthly uptime for servers on VavenCloud. Suggested: 99.9% */
   'UPTIME TARGET': '',
-  /** SLA, Trust: default backup frequency and retention. Suggested: daily, kept 14 days */
-  'BACKUP SCHEDULE': '',
+  /** SLA §9, Trust: backups and restore tests, per plan */
+  'BACKUP SCHEDULE': `daily backups kept ${backupDays.essential} days on Essential; daily backups kept ${backupDays.managed} days with a quarterly restore test on Managed; hourly database snapshots kept ${backupDays.partner} days with a monthly restore test and a disaster recovery plan on Partner`,
   /** Terms: notice to cancel or change plan. Suggested: 30 days */
   'NOTICE PERIOD': '',
   /** Terms: when invoices are due. Suggested: 7 days */

@@ -127,7 +127,7 @@ export const SERVICE_LEVEL_AGREEMENT: LegalPage = {
     {
       heading: '9. Backups',
       blocks: [
-        'We take automated backups on the schedule set in your order form, with a default of [BACKUP SCHEDULE]. We test a restore at least once a quarter and include the result in your monthly report.',
+        'We take automated backups and test restores on the schedule your plan sets, unless your order form sets a different one: [BACKUP SCHEDULE]. Every restore test result is included in your monthly report.',
       ],
     },
     {
