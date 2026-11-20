@@ -4,8 +4,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
 import { PlayButton, VideoPoster } from '@/components/ui/VideoPoster.tsx'
 import { clientReviews, type Testimonial } from './reviews.data.ts'
 import { useReviewsRow } from './useReviewsRow.ts'
-import { bandMist, container } from '@/components/ui/classes.ts'
-import { cn } from '@/lib/cn.ts'
+import { container } from '@/components/ui/classes.ts'
 
 /*
  * Client stories: only the clients' own words, on a light mist band, in one row of cards that scrolls sideways,
@@ -187,7 +186,7 @@ function VideoCard({ t, index }: { t: Testimonial; index: number }) {
  * by useReviewsRow), and while it glides or is dragged the snap is off
  */
 const row = [
-  '[--fade:3rem] -mx-4 mt-6 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-5 lg:gap-5',
+  '[--fade:3rem] -mx-4 mt-4 flex gap-4 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-5 lg:gap-5',
   'snap-x snap-mandatory scroll-px-4 cursor-grab [scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
   '[mask-image:linear-gradient(to_right,transparent,#000_var(--fade),#000_calc(100%-var(--fade)),transparent)]',
   '[&.is-start]:[mask-image:linear-gradient(to_right,#000_calc(100%-var(--fade)),transparent)]',
@@ -208,17 +207,14 @@ export function Reviews({ testimonials = clientReviews }: { testimonials?: Testi
   const controls = useRef<HTMLDivElement>(null)
   useReviewsRow(track, controls)
   return (
-    <section
-      id="clients"
-      className={cn(bandMist, 'py-20 sm:py-26 border-t border-neutral-200 py-14! sm:py-18! dark:border-neutral-800')}
-      aria-labelledby="clients-title"
-    >
+    <div id="clients" className={'mt-10 sm:mt-14'}>
       <div className={container}>
-        <div className="mx-auto max-w-5xl text-center">
+        <div className="border-t border-brand-200/80 pt-7 sm:pt-9 dark:border-neutral-800">
           <SectionHeading
+            tag="h3"
             id="clients-title"
             title="Don’t take our word for it. <em>Take theirs.</em>"
-            titleClassName="text-[length:clamp(2rem,3.6vw,3.2rem)]"
+            titleClassName="text-[length:clamp(1.75rem,3.2vw,2.65rem)] [&_em]:inline"
           />
         </div>
         <ul
@@ -250,6 +246,6 @@ export function Reviews({ testimonials = clientReviews }: { testimonials?: Testi
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 }

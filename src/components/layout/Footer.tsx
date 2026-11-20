@@ -159,7 +159,7 @@ export function Footer() {
     <footer className="border-t border-t-transparent bg-(--color-ink-950) bg-[radial-gradient(90%_120%_at_0%_0%,color-mix(in_srgb,var(--color-brand-500)_22%,transparent)_0%,transparent_55%)] pt-16 pb-10 text-sm text-(--color-ink-text) dark:bg-[#050504] dark:bg-[radial-gradient(90%_120%_at_0%_0%,color-mix(in_srgb,var(--color-brand-500)_10%,transparent)_0%,transparent_55%)] dark:text-neutral-400">
       <div className={container}>
         <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-5">
             <BrandLink tone="dark" />
             <p className="mt-5 max-w-sm leading-relaxed">
               VavenCloud, by Vavensoft. One team for your servers, your deployments and your code.
@@ -180,7 +180,7 @@ export function Footer() {
           </div>
 
           {footerColumns.map((col) => (
-            <nav key={col.title} className="lg:col-span-2" aria-label={col.title}>
+            <nav key={col.title} className="lg:col-span-3" aria-label={col.title}>
               <p className="font-semibold text-white">{col.title}</p>
               <ul className="mt-4 space-y-3">
                 {col.links.map((l) => (
@@ -201,7 +201,7 @@ export function Footer() {
             </nav>
           ))}
 
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-4">
             <p className="font-semibold text-white">Contact</p>
             <ul className="mt-4 space-y-3">
               <li className="flex gap-3">

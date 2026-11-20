@@ -81,9 +81,6 @@ export function Stages() {
                     />
                   </div>
                   <div className="mt-36 flex flex-col p-0 max-[640px]:mt-32">
-                    <span className="mb-[0.7rem] text-[0.6rem] font-[650] tracking-[0.16em] text-[#a9d7f7] uppercase">
-                      Your next chapter
-                    </span>
                     <h3
                       className={`m-0 text-[2.05rem] leading-[1.08] font-[650] tracking-[-0.04em] text-balance text-white [text-shadow:0_2px_12px_rgb(5_20_34/30%)] max-[640px]:text-[1.85rem] ${part} [transition-delay:0s]`}
                       data-stage-part=""

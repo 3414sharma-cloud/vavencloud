@@ -70,7 +70,7 @@ export function Compare() {
         <div>
           <SectionHeading
             id="compare-title"
-            title="Three ways to run production. <em>Only one has an owner.</em>"
+            title="Only one option <em>has an owner.</em>"
             description="The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team."
             leadClassName="max-w-none"
           />
@@ -126,14 +126,14 @@ export function Compare() {
         <p className="mt-6 text-[0.94rem] text-balance text-neutral-700 dark:text-neutral-300" data-reveal="">
           <b className="text-neutral-950 dark:text-white">What this means for you:</b> {compareMeans}
         </p>
-        <p className="mt-6" data-reveal="">
+        <div className="mt-4" data-reveal="">
           <Link
             to={routes.comparison}
-            className="inline-flex items-center gap-2 font-semibold text-neutral-950 underline decoration-neutral-950/25 underline-offset-[0.3rem] hover:text-brand-700 dark:text-white dark:decoration-white/25 dark:hover:text-brand-300"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-brand-800 underline underline-offset-4 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:text-brand-300 dark:hover:text-brand-200"
           >
-            See the AWS and Azure price comparison <Icon name="arrow-right" className="h-4 w-4" />
+            See the AWS and Azure price comparison <Icon name="arrow-right" className="size-4 shrink-0" />
           </Link>
-        </p>
+        </div>
       </div>
     </section>
   )

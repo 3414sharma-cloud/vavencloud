@@ -16,6 +16,7 @@ export interface HeroLink {
 export interface HeroSlide {
   /** Its name in the numbered index under the slides */
   tab: string
+  eyebrow: string
   /** Two lines: the first dark, the second muted */
   title: [string, string]
   description: string
@@ -33,6 +34,8 @@ const book: HeroLink = { label: 'Book a free production review', href: routes.bo
 export const heroSlides: HeroSlide[] = [
   {
     tab: 'One call fixes it',
+    eyebrow: 'Production ownership for founders',
+    reassurance: 'Free 30-minute review. Keep the written roadmap.',
     title: ['When something breaks, you make one call.', 'We fix the rest.'],
     description:
       'One team runs your servers, deployments and code, on call 24/7. No more chasing your host, freelancer and developers.',
@@ -41,6 +44,7 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     tab: 'Stay on your cloud',
+    eyebrow: 'Managed on your cloud',
     title: ['On AWS, Azure or Google Cloud?', 'We run it right where it is.'],
     titleEm: 14.9,
     description:
@@ -52,11 +56,12 @@ export const heroSlides: HeroSlide[] = [
   },
   {
     tab: 'Or run on ours',
+    eyebrow: 'Managed VavenCloud infrastructure',
     title: ['Cloud servers with engineers attached,', 'so you’re never managing them alone.'],
     titleEm: 17.6,
     longText: true,
     description:
-      'High-performance private cloud with built-in security, backups and auto-scaling, managed around the clock by the team that runs your deployments and code.',
+      'Private cloud with built-in security, backups and auto-scaling, managed around the clock by the team that runs your deployments and code.',
     primary: book,
     secondary: { label: 'Explore our cloud', href: 'https://vavencloud.com/cloud-services', external: true },
     reassurance: 'Same team · same chat · no lock-in',
@@ -65,3 +70,5 @@ export const heroSlides: HeroSlide[] = [
 
 /** How long each slide stays before the next one, in ms. The first stays longer, so its title can play in. */
 export const DURATIONS = [9000, 8000, 8000]
+
+export const ownershipHighlights = ['One accountable team', '24/7 production cover', 'Fixes in your code']

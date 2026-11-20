@@ -63,7 +63,7 @@ export const ways: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'clock',
     title: 'On call 24/7',
-    text: 'Engineers watch your product day and night. Critical incidents get a response within an hour, or 30 minutes on Partner.',
+    text: 'Engineers watch your product day and night. Critical incidents are handled according to your plan.',
   },
   {
     icon: 'support',

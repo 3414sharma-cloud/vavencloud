@@ -88,7 +88,7 @@ export function Own() {
         <div>
           <SectionHeading
             id="own-title"
-            title="One team. <em>Every layer. Every fix.</em>"
+            title="One team owns every layer, <em>including your code.</em>"
             description="Most founders run their product on three vendors. We replace all three with one named engineer, backed by a 24/7 operations team and Vavensoft’s developers. Whatever layer the problem sits in, it’s ours."
             leadClassName="max-w-none"
           />
@@ -98,6 +98,9 @@ export function Own() {
             <Card key={l.title} l={l} />
           ))}
         </div>
+        <p className="mt-5 rounded-2xl border border-brand-200 bg-brand-50 px-5 py-4 text-center text-base font-semibold text-brand-900 sm:mt-6 sm:text-lg dark:border-brand-900 dark:bg-brand-950 dark:text-brand-100">
+          One call. One team. We own the fix.
+        </p>
       </div>
     </section>
   )

@@ -1,3 +1,4 @@
+import { LogoImage } from '@/components/ui/Logo.tsx'
 import type { CSSProperties } from 'react'
 import { brandLogos, type BrandLogo } from '@/features/shared/brand-logos.ts'
 import { toolLogos } from './tool-logos.ts'
@@ -88,6 +89,10 @@ const list = [
 
 const Items = () => (
   <>
+    <li className={logo}>
+      <LogoImage src="/logo.png" alt="VavenCloud" className="h-5 w-auto" wrapClass="dark:hidden" />
+      <LogoImage src="/logo-light.png" alt="VavenCloud" className="h-5 w-auto" wrapClass="hidden dark:inline-flex" />
+    </li>
     {clouds.map((c) => (
       <li key={c} className={logo}>
         <CloudLogo name={c} />

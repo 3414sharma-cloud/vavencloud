@@ -1,45 +1,56 @@
 import type { IconName } from '@/components/ui/icons.ts'
 
-/**
- * The plans (VavenCloud-Sample-Content.md). No prices on purpose: a fixed monthly fee is agreed after the free
- * review. TODO: confirm response times and monthly code hours before launch.
- */
-export interface Plan {
+export const comparisonFeatures = [
+  { key: 'engineering', label: 'Engineering coverage' },
+  { key: 'infrastructure', label: 'Infrastructure & operations' },
+  { key: 'reporting', label: 'Reporting' },
+] as const
+
+interface Plan {
   name: string
-  popular?: boolean
+  icon: IconName
   bestFor: string
-  rows: { label: string; value: string }[]
+  price: string
+  comparison?: {
+    codeFixHours: number
+    benefits: Record<(typeof comparisonFeatures)[number]['key'], string>
+  }
 }
 
 export const plans: Plan[] = [
   {
+    name: 'Essential',
+    icon: 'server',
+    bestFor: 'Early-stage founders',
+    price: 'From $100/month',
+  },
+  {
     name: 'Managed',
+    icon: 'shield',
     bestFor: 'Live products with a small development team',
-    rows: [
-      { label: 'Price', value: 'Fixed monthly fee, agreed after your review' },
-      { label: 'On call', value: '24/7, 7 days a week' },
-      { label: 'Critical incident response', value: 'Within 1 hour, any time' },
-      { label: 'Your engineers', value: 'A dedicated team in your portal and chat' },
-      { label: 'Infrastructure', value: 'Designed, built and run by us' },
-      { label: 'Deployments and monitoring', value: 'Set up and maintained' },
-      { label: 'Fixes in your code', value: '4 hours every month' },
-      { label: 'Reporting', value: 'Monthly report' },
-    ],
+    price: 'Agreed after your review',
+    comparison: {
+      codeFixHours: 4,
+      benefits: {
+        engineering: 'Dedicated engineers on call 24/7',
+        infrastructure: 'Managed infrastructure, deployments, and monitoring',
+        reporting: 'Monthly report',
+      },
+    },
   },
   {
     name: 'Partner',
-    popular: true,
+    icon: 'zap',
     bestFor: 'Products where every minute of downtime costs revenue',
-    rows: [
-      { label: 'Price', value: 'Fixed monthly fee, agreed after your review' },
-      { label: 'On call', value: '24/7, 7 days a week' },
-      { label: 'Critical incident response', value: 'Within 30 minutes, any time' },
-      { label: 'Your engineers', value: 'A named lead engineer who knows your product inside out' },
-      { label: 'Infrastructure', value: 'Designed, built, run and scaled ahead of growth' },
-      { label: 'Deployments and monitoring', value: 'Set up and improved every quarter' },
-      { label: 'Fixes in your code', value: '20 hours every month' },
-      { label: 'Reporting', value: 'Monthly report and a quarterly growth review' },
-    ],
+    price: 'Agreed after your review',
+    comparison: {
+      codeFixHours: 20,
+      benefits: {
+        engineering: 'Named lead engineer and 24/7 cover',
+        infrastructure: 'Proactive scaling and quarterly deployment and monitoring improvements',
+        reporting: 'Monthly report and quarterly growth review',
+      },
+    },
   },
 ]
 
@@ -70,7 +81,7 @@ export const safety: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'search',
     title: 'Free review first',
-    text: '45 minutes with a senior engineer. You keep the written roadmap either way.',
+    text: '30 minutes with a senior engineer. You keep the written roadmap either way.',
   },
   {
     icon: 'wallet',
@@ -80,6 +91,6 @@ export const safety: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'lock',
     title: 'Never locked in',
-    text: 'Standard Linux, MySQL and PostgreSQL. Leave any time with everything handed over.',
+    text: 'Standard Linux, MySQL and PostgreSQL. Change plans anytime, or leave with everything handed over.',
   },
 ]

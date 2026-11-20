@@ -33,7 +33,7 @@ export const compare: Compare[] = [
     label: 'How you pay',
     vendors: { text: 'Three bills, plus hourly extras' },
     hire: { text: 'A full salary, plus months of hiring' },
-    vaven: 'One fixed monthly fee',
+    vaven: 'From $100/month',
   },
   {
     label: 'If someone leaves',

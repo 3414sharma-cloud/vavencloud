@@ -1,7 +1,7 @@
 /* ---------- How we start: first call to fully covered ---------- */
 
 export const startSteps: { when: string; title: string; text: string }[] = [
-  { when: 'Day 1', title: 'Free review call', text: '45 minutes with a senior engineer, not a salesperson.' },
+  { when: 'Day 1', title: 'Free review call', text: '30 minutes with a senior engineer, not a salesperson.' },
   {
     when: 'Within 48 hours',
     title: 'Written roadmap',

@@ -595,7 +595,7 @@ const Payoff = () => (
     <div className="flex flex-col items-center gap-3 text-center">
       <p className="font-[650] text-white">{payoff.question}</p>
       <Link to={routes.book} className={cn(btnPrimary, 'w-full !px-7 !py-3.5 !text-base md:w-auto')}>
-        Book a free production review <Icon name="arrow-right" className="h-4 w-4" />
+        Book a free 30-minute production review <Icon name="arrow-right" className="h-4 w-4" />
       </Link>
       <p className="text-[0.8rem] opacity-75">{payoff.note}</p>
     </div>
@@ -610,6 +610,7 @@ export function Story() {
         {/* The heading across the whole width, a size down (ProblemHeading.tsx) */}
         <div>
           <ProblemHeading />
+          <p className="mt-4 text-sm font-semibold text-neutral-500 dark:text-neutral-400">Illustrative example</p>
         </div>
         <div ref={stageRef} className={stage} data-story="" data-scene={timeline[0].id} data-site="ok">
           <Narration />

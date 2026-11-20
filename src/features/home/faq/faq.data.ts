@@ -26,7 +26,7 @@ export const faqs: Faq[] = [
   },
   {
     q: 'What happens when something breaks at night or at the weekend?',
-    a: 'Your engineers are on call 24 hours a day, 7 days a week. Critical incidents get a response within 1 hour on Managed and within 30 minutes on Partner, and we keep you updated in your portal until it’s fixed. Afterwards you get a written explanation of what happened and what we changed so it doesn’t happen again.',
+    a: 'Your engineers are on call 24 hours a day, 7 days a week. We respond according to your plan and keep you updated in your portal until it’s fixed. Afterwards you get a written explanation of what happened and what we changed so it doesn’t happen again.',
   },
   {
     q: 'What if we want to leave?',
@@ -38,11 +38,14 @@ export const faqs: Faq[] = [
   },
   {
     q: 'Where is our data stored, and who can access it?',
-    // TODO: confirm the platform logs engineer access before keeping "every access is logged"
-    a: 'In the region you choose, the United States or Europe. Access is limited to your assigned engineers, and every access is logged.',
+    a: 'In the region you choose, the United States or Europe. Access is limited to your assigned engineers.',
+  },
+  {
+    q: 'Can we change plans?',
+    a: 'Yes. You can change plans any time as your product and support needs change.',
   },
   {
     q: 'How much does it cost?',
-    a: 'A fixed monthly fee, agreed after your free review, once we understand your product. It’s usually a fraction of hiring one senior DevOps engineer, and you get a whole team, the infrastructure and fixes in your code. There’s no hourly meter and no surprise invoices.',
+    a: 'Essential starts from $100/month. We agree your fixed monthly fee after the free review. It’s usually a fraction of hiring one senior DevOps engineer, and you get a whole team, the infrastructure and fixes in your code. There’s no hourly meter and no surprise invoices.',
   },
 ]

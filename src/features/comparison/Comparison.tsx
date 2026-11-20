@@ -417,7 +417,7 @@ export function ComparisonCta() {
               Want the real number for your product?
             </h2>
             <p className="mt-[0.9rem] max-w-xl leading-[1.6]">
-              A free 45-minute production review with a senior engineer, not a salesperson. You keep the written roadmap
+              A free 30-minute production review with a senior engineer, not a salesperson. You keep the written roadmap
               either way.
             </p>
           </div>

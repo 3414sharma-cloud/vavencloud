@@ -7,34 +7,13 @@ export interface FooterColumn {
   links: { label: string; href: string; external?: boolean }[]
 }
 
-/** vavencloud.com, where the pages below live (same names as its navigation and footer) */
-const vc = 'https://vavencloud.com'
-
 export const footerColumns: FooterColumn[] = [
-  {
-    title: 'Hosting',
-    links: [
-      { label: 'Web Hosting', href: `${vc}/web-hosting`, external: true },
-      { label: 'Cloud Services', href: `${vc}/cloud-services`, external: true },
-      { label: 'Email Solutions', href: `${vc}/email-solutions`, external: true },
-    ],
-  },
-  {
-    title: 'Services',
-    links: [
-      { label: 'Website Development', href: `${vc}/services`, external: true },
-      { label: 'Mobile App Development', href: `${vc}/services#mobile`, external: true },
-      { label: 'DevOps & Server Support', href: `${vc}/services#devops`, external: true },
-      { label: 'Plans', href: routes.plans },
-      { label: 'AWS & Azure price comparison', href: routes.comparison },
-    ],
-  },
   {
     title: 'Company',
     links: [
       { label: 'About VavenCloud', href: routes.team },
       { label: 'About Vavensoft', href: site.vavensoftUrl, external: true },
-      { label: 'Contact', href: `${vc}/contact`, external: true },
+      { label: 'Contact', href: routes.book },
       { label: 'Blog', href: site.blogUrl, external: true },
     ],
   },

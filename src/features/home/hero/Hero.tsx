@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 import { Icon } from '@/components/ui/Icon.tsx'
-import { DURATIONS, heroSlides, type HeroSlide } from './hero.data.ts'
+import { DURATIONS, heroSlides, ownershipHighlights, type HeroSlide } from './hero.data.ts'
 import { useHeroSlider } from './useHeroSlider.ts'
 import { btnPrimary, container } from '@/components/ui/classes.ts'
 import { cn } from '@/lib/cn.ts'
@@ -27,7 +27,9 @@ const vars = (v: Record<string, string | number>) => v as CSSProperties
 const riseDelays = {
   description: '[animation-delay:calc(0.5s+var(--after)*55ms)]',
   actions: '[animation-delay:calc(0.6s+var(--after)*55ms)]',
+  highlight: '[animation-delay:calc(0.7s+var(--after)*55ms+var(--chip-index)*75ms)]',
   reassurance: '[animation-delay:calc(0.7s+var(--after)*55ms)]',
+  firstReassurance: '[animation-delay:calc(0.95s+var(--after)*55ms)]',
 }
 
 /** A title line split into words, so they can rise in one after another; `from` carries the count across lines */
@@ -67,18 +69,18 @@ const slideHidden =
  * phone; a long title sized so each half keeps to one line (--title-em)
  */
 const title = [
-  'mt-[1.6rem] text-[length:clamp(2.5rem,5.4vw,5.1rem)] leading-[0.98] font-[540] tracking-[-0.05em] text-balance text-white',
+  'mt-3 text-[length:clamp(2.5rem,5.4vw,5.1rem)] leading-[0.98] font-[540] tracking-[-0.05em] text-balance text-white',
   'max-[768px]:mt-2 max-[768px]:text-[length:clamp(2rem,8.6vw,2.5rem)]',
 ].join(' ')
 /** The paragraph under it, in the section leads' type: 1rem below 768px, then 1.12rem */
 const heroLead =
-  'mx-auto mt-7 max-w-[38rem] text-[1rem] leading-[1.65] text-pretty text-neutral-400 min-[768px]:text-[1.12rem] max-[768px]:mt-[1.125rem]'
+  'mx-auto mt-5 max-w-[38rem] text-[1rem] leading-[1.65] text-pretty text-neutral-400 min-[768px]:text-[1.12rem] max-[768px]:mt-[1.125rem]'
 const longTitle = 'md:text-[length:min(calc((min(100vw,72rem)-3rem)/var(--title-em)),5.4vw,5.1rem)]'
 const titleLine = 'block px-[0.04em] pt-[0.04em] pb-[0.1em] text-balance'
 
 /** The buttons' arrows nudge right under the pointer; the main button's arrow sits in a soft circle */
 const actions =
-  'mt-[2.1rem] flex flex-wrap items-center justify-center gap-x-7 gap-y-4 max-[768px]:mt-6 [&_svg]:[transition:transform_0.2s_ease] [&_a:hover_svg]:[transform:translateX(3px)]'
+  'mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 max-[768px]:mt-5 [&_svg]:[transition:transform_0.2s_ease] [&_a:hover_svg]:[transform:translateX(3px)]'
 const primary = cn(
   btnPrimary,
   'gap-3 !px-7 !py-3.5 !text-base active:[transform:scale(0.97)]',
@@ -111,6 +113,7 @@ function Slide({ s, i, active, slideRef }: SlideProps) {
       inert={!active}
       style={vars(s.titleEm ? { '--after': after, '--title-em': s.titleEm } : { '--after': after })}
     >
+      <p className="text-xs font-semibold tracking-widest text-brand-300 uppercase sm:text-sm">{s.eyebrow}</p>
       <Tag id={first ? 'hero-title' : undefined} className={`${title} ${s.titleEm ? longTitle : ''}`}>
         <span className={titleLine}>
           <span className="block">
@@ -145,9 +148,29 @@ function Slide({ s, i, active, slideRef }: SlideProps) {
           </Link>
         )}
       </div>
+      {first && (
+        <ul aria-label="What we own" className="mt-4 flex flex-wrap justify-center gap-1.5 sm:mt-5 sm:gap-2">
+          {ownershipHighlights.map((highlight, index) => (
+            <li
+              key={highlight}
+              className={cn(
+                'rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-neutral-200',
+                active && `animate-hero-rise ${riseDelays.highlight} motion-reduce:[animation:none]`,
+              )}
+              style={vars({ '--chip-index': index })}
+            >
+              {highlight}
+            </li>
+          ))}
+        </ul>
+      )}
       {s.reassurance && (
         <p
-          className={`mx-auto mt-[1.2rem] max-w-[34rem] text-[0.82rem] leading-[1.5] text-neutral-500 ${active ? `animate-hero-rise ${riseDelays.reassurance} motion-reduce:[animation:none]` : ''}`}
+          className={cn(
+            'mx-auto mt-3 max-w-[34rem] text-[0.82rem] leading-[1.5] text-neutral-400',
+            active &&
+              `animate-hero-rise ${first ? riseDelays.firstReassurance : riseDelays.reassurance} motion-reduce:[animation:none]`,
+          )}
         >
           {s.reassurance}
         </p>
@@ -259,7 +282,7 @@ export function Hero() {
         className="pointer-events-none absolute inset-0 -z-1 bg-[radial-gradient(color-mix(in_srgb,var(--color-neutral-950)_10%,transparent)_0.55px,transparent_0.55px)] bg-size-[7px_7px] opacity-[0.13] [mask-image:radial-gradient(ellipse_70%_70%_at_50%_40%,black,transparent_85%)]"
         aria-hidden="true"
       ></div>
-      <div className={cn(container, 'relative pt-[6.25rem] pb-14 md:pt-[clamp(7rem,17vh,10rem)] md:pb-20')}>
+      <div className={cn(container, 'relative pt-24 pb-14 md:pt-[clamp(7rem,14vh,9rem)] md:pb-18')}>
         <div>
           <div {...slider.carouselProps} data-carousel="" aria-roledescription="carousel" aria-label="What we do">
             <div className="grid touch-pan-y" data-slides="" {...slider.slidesProps}>

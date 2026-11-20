@@ -1,8 +1,8 @@
 import { Icon } from '@/components/ui/Icon.tsx'
 import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
-import { bandCard, bandIconBox, bandLead, bandTitle, darkBand } from '../dark-band.ts'
+import { bandCard, bandIconBox, bandLead, bandTitle } from '../dark-band.ts'
 import { handover, startSteps } from './start.data.ts'
-import { card, container, iconBox } from '@/components/ui/classes.ts'
+import { card, iconBox } from '@/components/ui/classes.ts'
 import { cn } from '@/lib/cn.ts'
 
 /*
@@ -27,7 +27,7 @@ const lastDot = `${dot} border-0 bg-[linear-gradient(145deg,#3996d2,#2873a7)] te
  * centre to the last's
  */
 const steps = [
-  'relative mt-14 grid gap-7 lg:grid-cols-5 lg:gap-0',
+  'relative mt-7 grid gap-6 sm:mt-9 lg:grid-cols-5 lg:gap-0',
   "lg:before:absolute lg:before:top-[calc(1.5rem-3px)] lg:before:right-[calc(20%-1.5rem)] lg:before:left-6 lg:before:h-2 lg:before:content-['']",
   'lg:before:bg-neutral-300 dark:lg:before:bg-neutral-700',
   'lg:before:[mask-image:var(--v5-wave)] lg:before:[mask-size:24px_8px] lg:before:[mask-repeat:repeat-x]',
@@ -35,68 +35,63 @@ const steps = [
 
 export function Start() {
   return (
-    <section
-      id="start"
-      className={`py-20 sm:py-26 border-t border-neutral-200 dark:border-neutral-800 ${darkBand}`}
-      aria-labelledby="start-title"
-    >
-      <div className={container}>
-        {/* A heading across the whole width */}
-        <div>
-          <SectionHeading
-            id="start-title"
-            title="From first call to fully covered <em>in about two weeks.</em>"
-            description="Switching shouldn’t feel risky. We find the problems first, fix the urgent ones, and only then take responsibility."
-            titleClassName={bandTitle}
-            leadClassName={cn('max-w-none', bandLead)}
-          />
-        </div>
-        <ol className={steps}>
-          {startSteps.map((s, i) => (
-            <li
-              key={s.title}
-              className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-[1.1rem] lg:block lg:pr-6"
-              data-reveal=""
+    <div id="start" className="mt-10 rounded-3xl bg-brand-50/70 p-5 sm:mt-14 sm:p-8 dark:bg-brand-950/30">
+      {/* A heading across the whole width */}
+      <div>
+        <SectionHeading
+          tag="h3"
+          id="start-title"
+          title="How the handover works"
+          description="Switching shouldn’t feel risky. We find the problems first, fix the urgent ones, and only then take responsibility."
+          titleClassName={cn('text-[length:clamp(1.8rem,3.5vw,2.75rem)]', bandTitle)}
+          leadClassName={cn('mt-3 max-w-2xl text-sm sm:text-base', bandLead)}
+        />
+      </div>
+      <ol className={steps}>
+        {startSteps.map((s, i) => (
+          <li
+            key={s.title}
+            className="grid grid-cols-[3rem_minmax(0,1fr)] gap-x-[1.1rem] lg:block lg:pr-6"
+            data-reveal=""
+          >
+            <span className={i === startSteps.length - 1 ? lastDot : stepDot} aria-hidden="true">
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <p
+              className={`mt-[0.15rem] ${mono} text-[0.66rem] tracking-[0.08em] text-[#5b748b] uppercase lg:mt-[1.1rem] dark:text-neutral-500`}
             >
-              <span className={i === startSteps.length - 1 ? lastDot : stepDot} aria-hidden="true">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <p
-                className={`mt-[0.15rem] ${mono} text-[0.66rem] tracking-[0.08em] text-[#5b748b] uppercase lg:mt-[1.1rem] dark:text-neutral-500`}
-              >
-                {s.when}
-              </p>
-              <h3 className="mt-[0.3rem] text-[1.05rem] font-[650] tracking-[-0.02em] text-[#1c344b] dark:text-white">
-                {s.title}
-              </h3>
-              <p className="mt-[0.4rem] text-[0.9rem] leading-[1.55] text-[#4b6278] dark:text-inherit">{s.text}</p>
-            </li>
-          ))}
-        </ol>
-        <div
-          data-reveal=""
-          className={cn(
-            card,
-            bandCard,
-            'mt-14 grid gap-[1.1rem] rounded-3xl px-6 py-[1.6rem] md:grid-cols-[auto_minmax(0,1fr)] md:gap-5 md:px-[1.9rem] md:py-7',
-          )}
-        >
-          <span className={cn(iconBox, bandIconBox)}>
-            <Icon name="shield" className="h-5 w-5" />
-          </span>
-          <div className="min-w-0">
-            <h3 className="text-[1.05rem] font-[650] text-[#1c344b] dark:text-white">What happens in the handover</h3>
-            <ul className="mt-[0.9rem] grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {handover.map((h) => (
-                <li key={h.title} className="text-[0.9rem] leading-[1.5] text-[#4b6278] dark:text-neutral-300">
-                  <b className="mb-[0.15rem] block font-[650] text-[#1c344b] dark:text-white">{h.title}</b>
-                  {h.text}
-                </li>
-              ))}
-            </ul>
-          </div>
+              {s.when}
+            </p>
+            <h4 className="mt-[0.3rem] text-[1.05rem] font-[650] tracking-[-0.02em] text-[#1c344b] dark:text-white">
+              {s.title}
+            </h4>
+            <p className="mt-[0.4rem] text-[0.9rem] leading-[1.55] text-[#4b6278] dark:text-inherit">{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <div
+        data-reveal=""
+        className={cn(
+          card,
+          bandCard,
+          'mt-7 grid gap-3 sm:mt-9 rounded-3xl px-6 py-[1.6rem] md:grid-cols-[auto_minmax(0,1fr)] md:gap-5 md:px-[1.9rem] md:py-7',
+        )}
+      >
+        <span className={cn(iconBox, bandIconBox)}>
+          <Icon name="shield" className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <h4 className="text-[1.05rem] font-[650] text-[#1c344b] dark:text-white">What happens in the handover</h4>
+          <ul className="mt-[0.9rem] grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {handover.map((h) => (
+              <li key={h.title} className="text-[0.9rem] leading-[1.5] text-[#4b6278] dark:text-neutral-300">
+                <b className="mb-[0.15rem] block font-[650] text-[#1c344b] dark:text-white">{h.title}</b>
+                {h.text}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
