@@ -81,7 +81,7 @@ export const PRIVACY_POLICY: LegalPage = {
         {
           list: [
             '**Our team:** VavenCloud and Vavensoft engineers who work on your account, each bound by confidentiality.',
-            '**Service providers (sub-processors):** [SUB-PROCESSORS]. Each is bound by a written contract to protect the data and use it only for the service they provide to us.',
+            '**Service providers (sub-processors):** [SUB-PROCESSORS]. Any we add will be bound by a written contract to protect the data and use it only for the service they provide to us.',
             '**Your cloud provider:** when we run your product in your own cloud account, your data stays with your provider under your agreement with them.',
             '**Authorities:** only when the law requires, and we tell you first unless the law forbids it.',
           ],

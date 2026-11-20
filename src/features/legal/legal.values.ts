@@ -43,8 +43,8 @@ export const legalValues: Record<string, string> = {
   'EXIT RETENTION': '30 days',
   /** SLA §6 and §7: monthly uptime on VavenCloud infrastructure. The PDF's suggestion */
   'UPTIME TARGET': '99.9%',
-  /** Terms §19: "governed by …". The PDF's suggestion */
-  'GOVERNING LAW': 'the laws of India, and the courts at Mohali, Punjab have jurisdiction',
+  /** Terms §19: "these terms are governed by …" */
+  'GOVERNING LAW': 'the laws of India',
   /**
    * Privacy §5, Trust: where VavenCloud's own servers are. The regions the old site published
    * (vavencloud-static-website, serviceRegionsData.ts), matching the FAQ ("the United States or Europe").
@@ -63,13 +63,15 @@ export const legalValues: Record<string, string> = {
    */
   'EMERGENCY PHONE': '+91 90609 79706',
 
-  /* Still to decide: no suggestion can stand in for these */
-  /** All pages: the date the pages go live */
-  'EFFECTIVE DATE': '',
-  /** Privacy (2 places): the named person for complaints (Indian IT Rules): name and email */
-  'GRIEVANCE OFFICER': '',
-  /** Privacy, Trust: every third party that touches client data, by name (cloud host, email, billing, chat) */
-  'SUB-PROCESSORS': '',
+  /** All pages: "Last updated: …". Update it whenever a page changes materially */
+  'EFFECTIVE DATE': '20 November 2026',
+  /** Privacy (2 places): the named person for complaints (Indian IT Rules) */
+  'GRIEVANCE OFFICER': 'Puneet Kumar, puneets@vavensoft.com',
+  /**
+   * Privacy §4, Trust: third parties that handle client data. None at present. Before adding one, name it here
+   * and tell clients at least 30 days ahead (as the Trust page promises).
+   */
+  'SUB-PROCESSORS': 'none at present',
 }
 
 /*

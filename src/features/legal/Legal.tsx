@@ -29,13 +29,16 @@ const policies = [
   { label: 'Contact Us', href: legalPaths.contact },
 ]
 
-/** **bold**, [PLACEHOLDER] or an @vavencloud.com address */
-const inlineToken = /(\*\*.+?\*\*|\[[A-Z0-9][A-Z0-9 -]*\]|[a-z]+@vavencloud\.com)/g
+/** **bold**, [PLACEHOLDER] or an @vavencloud.com / @vavensoft.com address */
+const inlineToken = /(\*\*.+?\*\*|\[[A-Z0-9][A-Z0-9 -]*\]|[a-z.]+@vaven(?:cloud|soft)\.com)/g
 
-/** A placeholder: its value from legal.values.ts, or the [NAME] highlighted while it's still empty */
+/**
+ * A placeholder: its value from legal.values.ts (with its email addresses linked), or the [NAME] highlighted
+ * while it's still empty
+ */
 function Placeholder({ name }: { name: string }) {
   const value = legalValues[name]
-  if (value) return <>{value.trim()}</>
+  if (value) return <Inline text={value.trim()} />
   return (
     <mark className={placeholderCls} title="Placeholder: fill it in src/features/legal/legal.values.ts">
       [{name}]
