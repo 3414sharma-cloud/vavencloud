@@ -12,7 +12,7 @@ import { cn } from '@/lib/cn.ts'
 
 /*
  * The team page's sections (pages/TeamPage.tsx lays them out): who's behind VavenCloud and four numbers, the two
- * co-founders in full (Jerry with his video), the engineers on your account by role, the team members
+ * co-founders in full (Jerry's card led by his video), the engineers on your account by role, the team members
  * (team.data.ts) and how they work with you, then one call to action. Styled with Tailwind classes only.
  *
  * Widths: Tailwind's max-[N]: is "narrower than N", so max-[640px]: is "639px wide or less".
@@ -142,59 +142,105 @@ export function Intro() {
 
 /* ---------- The co-founders ---------- */
 
-/** A founder's video: YouTube's thumbnail until it's played, then the player */
-const Video = ({ v, name }: { v: NonNullable<Founder['video']>; name: string }) => (
-  <VideoPoster
-    id={v.id}
-    title={v.title}
-    label={`Play the video: ${name}`}
-    play={v.play}
-    buttonProps={{ 'data-play': v.id, 'data-title': v.title }}
-  />
+/*
+ * Only Jerry has a video so far, so each founder gets a full-width card instead of two uneven ones side by side:
+ * with a video, the video on the left and the profile beside it; without one, the name and bio on the left and
+ * the facts and focus on the right. Both use the same two columns, so the cards line up. A founder who gets a
+ * video later (team.data.ts) moves to the video layout by himself.
+ */
+const columns = 'lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]'
+
+/** The initials, the name and the role */
+const ProfileHead = ({ f }: { f: Founder }) => (
+  <div className="flex items-center gap-4">
+    <span
+      className="inline-flex size-14 flex-none items-center justify-center rounded-full bg-[linear-gradient(145deg,var(--color-brand-500),var(--color-brand-700))] text-[1.05rem] font-bold tracking-[0.02em] text-white [box-shadow:0_10px_24px_-14px_var(--color-brand-700)]"
+      aria-hidden="true"
+    >
+      {f.initials}
+    </span>
+    <div className="min-w-0">
+      <h3 className="text-[1.3rem] font-[650] tracking-[-0.025em] text-neutral-950 dark:text-white">{f.name}</h3>
+      <p className="mt-[0.15rem] text-[0.88rem] font-semibold text-brand-700 dark:text-brand-300">{f.role}</p>
+    </div>
+  </div>
 )
 
-function Profile({ f }: { f: Founder }) {
-  return (
-    <article className={cn(card, 'overflow-hidden p-0')}>
-      {f.video && <Video v={f.video} name={f.name} />}
-      <div className="px-6 pt-[1.6rem] pb-7">
-        <div className="flex items-center gap-4">
+const Bio = ({ f }: { f: Founder }) => (
+  <p className="mt-[1.1rem] leading-[1.65] text-neutral-600 dark:text-neutral-400">{f.bio}</p>
+)
+
+/** The facts, each with a tick, then the focus tags */
+const Details = ({ f, className = '' }: { f: Founder; className?: string }) => (
+  <div className={className}>
+    <ul className="grid gap-[0.55rem] text-[0.93rem] text-neutral-800 dark:text-neutral-200">
+      {f.facts.map((x) => (
+        <li key={x} className="flex items-start gap-[0.6rem]">
           <span
-            className="inline-flex size-14 flex-none items-center justify-center rounded-full bg-[linear-gradient(145deg,var(--color-brand-500),var(--color-brand-700))] text-[1.05rem] font-bold tracking-[0.02em] text-white [box-shadow:0_10px_24px_-14px_var(--color-brand-700)]"
+            className="mt-[0.15rem] inline-flex size-[1.15rem] flex-none items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-[color-mix(in_srgb,var(--color-brand-500)_18%,transparent)] dark:text-brand-300"
             aria-hidden="true"
           >
-            {f.initials}
+            <Icon name="check" className="h-3 w-3" />
           </span>
-          <div className="min-w-0">
-            <h3 className="text-[1.3rem] font-[650] tracking-[-0.025em] text-neutral-950 dark:text-white">{f.name}</h3>
-            <p className="mt-[0.15rem] text-[0.88rem] font-semibold text-brand-700 dark:text-brand-300">{f.role}</p>
-          </div>
-        </div>
-        <p className="mt-[1.1rem] leading-[1.65] text-neutral-600 dark:text-neutral-400">{f.bio}</p>
-        <ul className="mt-5 grid gap-[0.55rem] border-t border-t-neutral-200 pt-5 text-[0.93rem] text-neutral-800 dark:border-t-neutral-800 dark:text-neutral-200">
-          {f.facts.map((x) => (
-            <li key={x} className="flex items-start gap-[0.6rem]">
-              <span
-                className="mt-[0.15rem] inline-flex size-[1.15rem] flex-none items-center justify-center rounded-full bg-brand-50 text-brand-700 dark:bg-[color-mix(in_srgb,var(--color-brand-500)_18%,transparent)] dark:text-brand-300"
-                aria-hidden="true"
-              >
-                <Icon name="check" className="h-3 w-3" />
-              </span>
-              {x}
-            </li>
-          ))}
-        </ul>
-        <ul className="mt-5 flex flex-wrap gap-[0.45rem]" aria-label="Focus">
-          {f.focus.map((x) => (
-            <li
-              key={x}
-              className="rounded-full border border-neutral-200 px-3 py-[0.3rem] text-[0.78rem] font-semibold text-neutral-600 dark:border-neutral-700 dark:text-neutral-300"
-            >
-              {x}
-            </li>
-          ))}
-        </ul>
+          {x}
+        </li>
+      ))}
+    </ul>
+    <ul className="mt-5 flex flex-wrap gap-[0.45rem]" aria-label="Focus">
+      {f.focus.map((x) => (
+        <li
+          key={x}
+          className="rounded-full border border-neutral-200 px-3 py-[0.3rem] text-[0.78rem] font-semibold text-neutral-600 dark:border-neutral-700 dark:text-neutral-300"
+        >
+          {x}
+        </li>
+      ))}
+    </ul>
+  </div>
+)
+
+/** A founder with a video: the video, framed, on the left (on top on a phone); the profile beside it */
+function VideoProfile({ f, v }: { f: Founder; v: NonNullable<Founder['video']> }) {
+  return (
+    <article className={cn(card, 'grid gap-2 p-3 sm:p-4 lg:items-center', columns)}>
+      <figure className="min-w-0">
+        <VideoPoster
+          id={v.id}
+          title={v.title}
+          label={`Play the video: ${f.name}`}
+          play={v.play}
+          className="rounded-[1.25rem]"
+          buttonProps={{ 'data-play': v.id, 'data-title': v.title }}
+        />
+        <figcaption className="mt-3 flex items-center gap-[0.6rem] px-1 text-[0.86rem] text-neutral-600 dark:text-neutral-400">
+          <span className="inline-flex items-center gap-[0.4rem] rounded-full bg-brand-50 px-[0.7rem] py-1 text-[0.72rem] font-[650] text-brand-700 dark:bg-[color-mix(in_srgb,var(--color-brand-500)_18%,transparent)] dark:text-brand-300">
+            <Icon name="play" className="h-2.5 w-2.5" filled />
+            Video
+          </span>
+          Meet {f.name.split(' ')[0]}
+        </figcaption>
+      </figure>
+      <div className="min-w-0 px-3 pt-5 pb-4 sm:px-4 lg:px-7 lg:py-6">
+        <ProfileHead f={f} />
+        <Bio f={f} />
+        <Details f={f} className="mt-5 border-t border-t-neutral-200 pt-5 dark:border-t-neutral-800" />
       </div>
+    </article>
+  )
+}
+
+/** A founder without a video: name and bio on the left; facts and focus on the right, past a divider */
+function Profile({ f }: { f: Founder }) {
+  return (
+    <article className={cn(card, 'grid gap-x-12 px-6 pt-[1.6rem] pb-7 sm:px-8 lg:py-8', columns)}>
+      <div className="min-w-0">
+        <ProfileHead f={f} />
+        <Bio f={f} />
+      </div>
+      <Details
+        f={f}
+        className="mt-5 min-w-0 border-t border-t-neutral-200 pt-5 lg:mt-0 lg:border-t-0 lg:border-l lg:border-l-neutral-200 lg:pt-1 lg:pl-12 dark:border-neutral-800"
+      />
     </article>
   )
 }
@@ -210,10 +256,10 @@ export function Founders() {
             description="Vavensoft and VavenCloud are run by the people who started them, and who still look at production systems every week."
           />
         </div>
-        <div className="mt-12 grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:[align-items:start]">
-          {founders.map((f) => (
-            <Profile key={f.name} f={f} />
-          ))}
+        <div className="mt-12 grid gap-5">
+          {founders.map((f) =>
+            f.video ? <VideoProfile key={f.name} f={f} v={f.video} /> : <Profile key={f.name} f={f} />,
+          )}
         </div>
       </div>
     </section>

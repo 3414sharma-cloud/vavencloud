@@ -1,27 +1,31 @@
-/* The shape of a legal page's copy (./data). Plain text throughout; React escapes it. */
+/*
+ * The shape of a legal page's copy (./data), from "VavenCloud Legal Pages v1". Every string may use three bits of
+ * inline markup, turned into elements by Legal.tsx (React still escapes the text):
+ *  - **Bold lead-in:** the bold label that starts many paragraphs and list items
+ *  - [PLACEHOLDER]   a value still to be decided, filled from legal.values.ts and highlighted until then
+ *  - name@vavencloud.com   becomes a mailto link
+ */
 
 interface LegalTable {
   headers: readonly string[]
   rows: readonly (readonly string[])[]
 }
 
+/** A paragraph (a plain string), a bulleted or numbered list, or a table */
+export type LegalBlock = string | { list: readonly string[]; ordered?: boolean } | { table: LegalTable }
+
 export interface LegalSection {
   heading: string
-  body?: readonly string[]
-  list?: readonly string[]
-  table?: LegalTable
-  bodyAfter?: readonly string[]
-  links?: readonly { label: string; href: string }[]
-  contact?: { email: string; address?: string }
+  blocks: readonly LegalBlock[]
 }
 
 export interface LegalPage {
   title: string
-  subtitle?: string
-  intro?: string
-  effectiveDate?: string
-  /** The page's <title> and description (data/*.ts) */
-  seoTitle?: string
-  seoDescription?: string
+  /** Shown as "Last updated: …" under the title */
+  lastUpdated: string
+  intro: string
+  /** The page's <title> and description */
+  seoTitle: string
+  seoDescription: string
   sections: readonly LegalSection[]
 }

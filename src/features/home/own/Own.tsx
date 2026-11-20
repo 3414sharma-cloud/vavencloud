@@ -24,7 +24,8 @@ function Card({ l }: { l: Layer }) {
     <article
       className={cn(
         dark ? surfaceInk : card,
-        'flex flex-col rounded-3xl px-6 pt-[1.6rem] pb-6',
+        'own-card flex flex-col rounded-3xl px-6 pt-[1.6rem] pb-6',
+        dark && 'own-card--feature',
         dark ? place.feature : place[l.size],
       )}
     >

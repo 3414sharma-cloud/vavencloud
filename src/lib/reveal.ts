@@ -38,7 +38,9 @@ export function initAutoReveal(): () => void {
   // [data-no-reveal]: blocks that move their own content (e.g. the story's stacked cards, positioned every
   // frame from the scroll), where `.reveal`'s transform transition would drag behind every move
   const els = qsa(`#main > section:not(#top) ${AUTO}`).filter(
-    (el) => !el.closest('.stats-panel, [data-done], [data-step], [data-no-reveal]'),
+    (el) =>
+      !el.closest('.stats-panel, [data-done], [data-step], [data-no-reveal]') &&
+      (!el.closest('.own-card') || el.matches('.own-card')),
   )
   els.forEach((el) => {
     const siblings = el.parentElement ? [...el.parentElement.children].filter((c) => c.matches(AUTO)) : []

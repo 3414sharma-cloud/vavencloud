@@ -238,15 +238,17 @@ export function Footer() {
             © <span id="year">{new Date().getFullYear()}</span> {copyrightOwner}
           </p>
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
-            {/* Plain text for now, not links (as on the live site). To link them, use
-                <Link to={l.href} className={linkClass}> in place of the <span> (the paths are in footer.data.ts). */}
-            <ul className="flex flex-wrap gap-x-6 gap-y-2">
-              {legalLinks.map((l) => (
-                <li key={l.label}>
-                  <span>{l.label}</span>
-                </li>
-              ))}
-            </ul>
+            <nav aria-label="Legal">
+              <ul className="flex flex-wrap gap-x-6 gap-y-2">
+                {legalLinks.map((l) => (
+                  <li key={l.href}>
+                    <Link to={l.href} className={linkClass}>
+                      {l.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </nav>
             <ThemeSwitch />
           </div>
         </div>

@@ -89,6 +89,26 @@ function ContactStep({
           <Help id="bk-company" text="So we can look at your product before the call." />
         </div>
         <div>
+          <Label id="bk-phone" text="Phone" required={false} />
+          <input
+            id="bk-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            inputMode="tel"
+            pattern="[\d\s+\-\(\)]+"
+            title="Digits, spaces, +, -, ( and ) only"
+            className={field}
+            aria-describedby="bk-phone-help"
+            // As on the old contact form: only characters a phone number can have
+            onInput={(e) => {
+              const input = e.currentTarget
+              input.value = input.value.replace(/[^\d\s+\-()]/g, '')
+            }}
+          />
+          <Help id="bk-phone" text="With country code. Only if you’d like a call back." />
+        </div>
+        <div>
           <Label id="bk-role" text="Your role" />
           <RoleSelect value={role} onChoose={onRole} invalid={invalid.role} triggerRef={roleTrigger} />
         </div>

@@ -9,8 +9,8 @@
  *    pay-as-you-go), since there is no Azure login to check against. The actual price can vary by account.
  *    TODO: confirm the exact Azure prices with Azure login access when available. The support plans are from
  *    AWS's and Azure's own pricing pages. Refresh all of them now and then.
- *  - VavenCloud's managed plan starts from $49 a month (`vavenManaged`); the final fixed fee is agreed after the
- *    free review.
+ *  - VavenCloud's plans start from $100 a month (`vavenManaged`), as on the home page; the final fixed fee is
+ *    agreed after the free review.
  */
 
 export const pricesCheckedOn = '10 Nov 2026'
@@ -130,5 +130,8 @@ export const awsBusiness = (spend: number) =>
 /** Azure's plans are flat monthly fees */
 export const azureStandard = 100
 
-/** VavenCloud's managed plan: "from" price a month (Partner is no longer shown on the page) */
-export const vavenManaged = { managed: 49, partner: 1_499 }
+/**
+ * VavenCloud's "from" price a month, matching "From $100/month" on the plans (home/plans/plans.data.ts), FAQ and
+ * home compare table. Partner is no longer shown on the page.
+ */
+export const vavenManaged = { managed: 100, partner: 1_499 }

@@ -19,7 +19,7 @@ export const footerColumns: FooterColumn[] = [
   },
 ]
 
-/** The policies, as pages on this site (src/pages/<name>/), in vavencloud.com's footer order and wording */
+/** The policies, linked along the footer's foot (features/legal/), in vavencloud.com's footer order and wording */
 export const legalLinks = [
   { label: 'Terms of Service', href: legalPaths.termsOfService },
   { label: 'Privacy Policy', href: legalPaths.privacyPolicy },

@@ -3,22 +3,24 @@ import { routes } from '@/app/routes.ts'
 import { cn } from '@/lib/cn.ts'
 
 /*
- * Brand logo images (public/), made from the full-size logo public/Logo Cloud-1.png (trimmed, transparent):
- *  - logo.png        blue/pink "V" mark + charcoal "VAVEN" + blue "CLOUD", for light backgrounds
- *  - logo-light.png  the same with a white "VAVEN", for dark backgrounds
+ * Brand logo images (public/), made from the full-size logo public/Logo Cloud-1.png (trimmed, transparent).
+ * The site shows the wordmark alone, "VAVEN CLOUD" without the "V" mark:
+ *  - logo-wordmark.png        charcoal "VAVEN" + blue "CLOUD", for light backgrounds
+ *  - logo-wordmark-light.png  the same with a white "VAVEN", for dark backgrounds
+ * These are 638x47 (about 13.6:1), cut from the 777x120 logo.png / logo-light.png (mark + wordmark), which are
+ * kept. Other images:
  *  - favicon.png     the "V" mark alone (256px square)
  *  - logo-text.png   the wordmark alone, and logo-mark.png the "V" alone, large: the shapes the team page's
  *                    particle hero forms
- * The logos are 777x120 (about 6.5:1).
  *
  * The logo keeps its own colours, except "CLOUD": over it lies a gradient in the site's current brand colours,
- * cut to the letters by logo-cloud-mask.png (the same 777x120 size as the logo, so it lines up at any height).
- * On dark backgrounds (logo-light.png) the gradient is lighter.
+ * cut to the letters by logo-wordmark-cloud-mask.png (cut the same way as the logos, so it lines up at any
+ * height). On dark backgrounds (logo-wordmark-light.png) the gradient is lighter.
  */
 
 const wrap = 'relative inline-flex flex-none'
 const cloud =
-  'pointer-events-none absolute inset-0 [mask:url(/logo-cloud-mask.png)_0_0/100%_100%_no-repeat] [-webkit-mask:url(/logo-cloud-mask.png)_0_0/100%_100%_no-repeat]'
+  'pointer-events-none absolute inset-0 [mask:url(/logo-wordmark-cloud-mask.png)_0_0/100%_100%_no-repeat] [-webkit-mask:url(/logo-wordmark-cloud-mask.png)_0_0/100%_100%_no-repeat]'
 const cloudOnLight =
   'bg-[linear-gradient(90deg,var(--color-brand-700)_58%,var(--color-brand-500)_80%,var(--color-brand-400))]'
 const cloudOnDark =
@@ -36,7 +38,7 @@ interface LogoImageProps {
 export function LogoImage({ src, className, alt = '', wrapClass = '' }: LogoImageProps) {
   return (
     <span className={cn(wrap, wrapClass)}>
-      <img src={src} alt={alt} width="777" height="120" className={className} decoding="async" />
+      <img src={src} alt={alt} width="638" height="47" className={className} decoding="async" />
       <i className={`${cloud} ${src.includes('light') ? cloudOnDark : cloudOnLight}`} aria-hidden="true" />
     </span>
   )
@@ -52,7 +54,7 @@ export function LogoMark({ size, className }: { size: number; className: string 
 }
 
 const HeaderLogo = ({ src, wrapClass }: { src: string; wrapClass?: string }) => (
-  <LogoImage src={src} className="h-8 w-auto sm:h-9" wrapClass={wrapClass} />
+  <LogoImage src={src} className="h-3 w-auto sm:h-3.5" wrapClass={wrapClass} />
 )
 
 interface BrandLinkProps {
@@ -72,11 +74,11 @@ export function BrandLink({ className = '', tone = 'theme' }: BrandLinkProps) {
     >
       {tone === 'theme' ? (
         <>
-          <HeaderLogo src="/logo.png" wrapClass="dark:hidden" />
-          <HeaderLogo src="/logo-light.png" wrapClass="hidden dark:inline-flex" />
+          <HeaderLogo src="/logo-wordmark.png" wrapClass="dark:hidden" />
+          <HeaderLogo src="/logo-wordmark-light.png" wrapClass="hidden dark:inline-flex" />
         </>
       ) : (
-        <HeaderLogo src="/logo-light.png" />
+        <HeaderLogo src="/logo-wordmark-light.png" />
       )}
     </Link>
   )

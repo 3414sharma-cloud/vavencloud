@@ -8,7 +8,11 @@ export function LegalPage({ page, path }: { page: LegalCopy; path: string }) {
   useAutoReveal()
   return (
     <>
-      <PageMeta title={page.seoTitle ?? `${page.title} | VavenCloud`} description={page.seoDescription ?? ''} />
+      <PageMeta
+        title={page.seoTitle ?? `${page.title} | VavenCloud`}
+        description={page.seoDescription ?? ''}
+        path={path}
+      />
       <LegalDocument page={page} current={path} />
     </>
   )

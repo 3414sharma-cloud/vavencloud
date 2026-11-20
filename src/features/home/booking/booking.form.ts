@@ -42,11 +42,23 @@ export function isFixed(form: HTMLFormElement, changed: Field): boolean {
   return required?.checkValidity() ?? true
 }
 
-/** Turns both steps into the existing /api/contact payload: one subject, one readable message. */
+/**
+ * The subject sent to the backend: one of the old contact form's own options (vavencloud-static-website,
+ * constants/contact/contactPageData.ts: CONTACT_PAGE_SUBJECTS), so a backend that only accepts those still takes it.
+ * What kind of request it is, and whether it's urgent, leads the message instead.
+ */
+const BACKEND_SUBJECT = 'DevOps & Server Support'
+
+/**
+ * Turns both steps into the old contact form's /api/contact payload, field for field: name, email, company?,
+ * phone?, subject, message (the service adds recaptchaToken). Step 2's answers become one readable message.
+ */
 export function toPayload(data: FormData): ContactFormInput {
   const v = (key: string) => String(data.get(key) ?? '').trim()
   const urgent = v('urgent') === 'yes'
   const lines = [
+    urgent ? 'URGENT: production review request, something is broken right now' : 'Production review request',
+    '',
     `Role: ${v('role')}`,
     `Product: ${v('product')}`,
     `Live: ${v('live')}`,
@@ -62,7 +74,8 @@ export function toPayload(data: FormData): ContactFormInput {
     name: v('name'),
     email: v('email'),
     company: v('company') || undefined,
-    subject: `${urgent ? '[URGENT] ' : ''}Production review request`,
+    phone: v('phone') || undefined,
+    subject: BACKEND_SUBJECT,
     message: lines.join('\n'),
   }
 }

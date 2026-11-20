@@ -1,140 +1,160 @@
-export const PRIVACY_POLICY = {
+import type { LegalPage } from '../legal.types.ts'
+
+/** Privacy Policy, from "VavenCloud Legal Pages v1" */
+export const PRIVACY_POLICY: LegalPage = {
   title: 'Privacy Policy',
-  subtitle: 'How VavenCloud collects, uses, and protects your information',
-  effectiveDate: 'July 2, 2026',
+  lastUpdated: '[EFFECTIVE DATE]',
+  intro:
+    'We collect only what we need to talk to you, run your product and bill you. We never sell personal data. This policy explains what we collect, why, who sees it and what rights you have.',
   seoTitle: 'Privacy Policy | VavenCloud',
   seoDescription:
-    'Learn how VavenCloud collects, uses, discloses, and protects personal data in compliance with DPDPA 2023, GDPR, and international privacy regulations.',
+    'What personal data VavenCloud collects, why, who sees it and what rights you have. We never sell personal data.',
   sections: [
     {
-      heading: '1. Introduction',
-      body: [
-        'This Privacy Policy explains how VavenCloud, Powered by Vavensoft ("VavenCloud," "we," "us") collects, uses, discloses, and protects personal data when you visit our website, create an Account, or use the Services. This Policy is designed to align with India\'s Digital Personal Data Protection Act, 2023 (DPDPA), and, for customers outside India, with applicable frameworks such as the EU General Data Protection Regulation (GDPR) and relevant US state privacy laws, where they apply to our processing.',
+      heading: '1. Who is responsible',
+      blocks: [
+        'Vavensoft Private Limited, trading as VavenCloud, La Daftar, D 178, Phase 8B, Industrial Area, Sector 74, Sahibzada Ajit Singh Nagar, Punjab 140308, India. Privacy questions: privacy@vavencloud.com.',
+        'We play two roles, and this matters for your rights:',
+        {
+          list: [
+            '**Controller** for information about our website visitors, prospects and client contacts. This policy covers that information in full.',
+            '**Processor** for personal data inside the products we run for clients, such as their customers’ records in a database. We handle that data only on the client’s instructions, under our agreement with them. If you are one of our client’s customers, contact that client first; we will help them answer you.',
+          ],
+        },
       ],
     },
     {
-      heading: '2. Information We Collect',
-      list: [
-        'Account information: name, email address, phone number, billing address, and company details you provide at signup.',
-        'Payment information: processed directly by our payment partners, Razorpay and Chargebee; VavenCloud does not store full card numbers.',
-        'Service data: configuration details of the resources you provision (server sizes, regions, domain names), support tickets, and communications with us.',
-        'Usage and log data: IP addresses, access timestamps, API request logs, and dashboard activity, collected for security, billing, and operational purposes.',
-        'Cookies and similar technologies: as described in Section 10.',
-      ],
-      bodyAfter: [
-        'VavenCloud does not inspect, scan, or access the content stored inside customer servers, databases, or hosting accounts except where necessary to provide support you request, investigate an AUP violation, or comply with a valid legal order.',
-      ],
-    },
-    {
-      heading: '3. How We Use Your Information',
-      list: [
-        'To create and manage your Account and provision the Services you order.',
-        'To process payments, generate invoices, and manage subscriptions and renewals.',
-        'To provide customer support and respond to tickets or inquiries.',
-        'To monitor, secure, and maintain the reliability of the platform, including fraud and abuse prevention.',
-        'To send service-related notices (e.g., maintenance, billing, security alerts) and, where you have consented, marketing communications.',
-        'To comply with legal, regulatory, and tax obligations.',
-      ],
-    },
-    {
-      heading: '4. Legal Basis for Processing',
-      body: [
-        'Where applicable law requires a legal basis for processing, we rely on: your consent (e.g., for marketing), performance of a contract (e.g., providing the Services you ordered), compliance with a legal obligation (e.g., tax records, breach notification), and our legitimate interests (e.g., platform security and fraud prevention), balanced against your rights.',
-      ],
-    },
-    {
-      heading: '5. How We Share Information',
-      body: ['We do not sell personal data. We share information only with:'],
-      list: [
-        'Payment partners (Razorpay, Chargebee) to process transactions and manage billing.',
-        'Infrastructure and datacenter partners necessary to deliver the Services.',
-        'Subprocessors providing support tools (e.g., ticketing, email delivery), bound by confidentiality and data protection obligations.',
-        'Law enforcement or regulators, where required by valid legal process.',
-        'A successor entity in the event of a merger, acquisition, or asset sale, subject to continued protection of your data under this Policy.',
+      heading: '2. What we collect',
+      blocks: [
+        {
+          table: {
+            headers: ['Where it comes from', 'What we collect'],
+            rows: [
+              [
+                'Free review form and emails',
+                'Name, work email, company, website, role, and what you tell us about your product',
+              ],
+              ['Review and support calls', 'Notes from the call. We record a call only if you agree at the start'],
+              [
+                'Becoming a client',
+                'Billing contact, billing address, tax details and payment records. Card details are handled by our payment provider, not stored by us',
+              ],
+              ['Client portal and dashboard', 'Login details, activity logs and messages with our engineers'],
+              [
+                'Running your product',
+                'Access credentials, system logs and monitoring data. These may contain personal data of your users, which we handle as your processor',
+              ],
+              [
+                'Our website',
+                'Pages visited, device and browser type, approximate location from IP address, and cookies (see section 8)',
+              ],
+            ],
+          },
+        },
       ],
     },
     {
-      heading: '6. International Data Transfers',
-      body: [
-        'As VavenCloud serves customers worldwide, personal data may be transferred to and processed in countries other than your own, including where our datacenter and processing partners are located. Where required, we implement appropriate safeguards (such as standard contractual clauses or equivalent mechanisms) for such transfers.',
+      heading: '3. Why we use it',
+      blocks: [
+        {
+          table: {
+            headers: ['Purpose', 'Legal basis (GDPR)'],
+            rows: [
+              ['Reply to your enquiry and run your free review', 'Steps you asked for before a contract'],
+              ['Deliver the service, respond to incidents and send reports', 'Performing our contract with you'],
+              ['Bill you and keep tax records', 'Legal obligation'],
+              ['Keep our systems and yours secure, and prevent abuse', 'Legitimate interest'],
+              [
+                'Send occasional articles or product updates',
+                'Consent, or legitimate interest for existing clients. Unsubscribe any time',
+              ],
+              ['Improve our website', 'Consent, through the cookie banner'],
+            ],
+          },
+        },
+        'We do not use personal data inside your product for any purpose of our own, and we do not use it to train AI models.',
       ],
     },
     {
-      heading: '7. Data Retention',
-      list: [
-        'Account and billing data is retained for as long as your Account is active, and for 7 years thereafter to meet tax, accounting, and legal obligations.',
-        'Service configuration and log data is retained for 12 months for security and operational purposes, unless a longer period is required by law.',
-        'Upon Account closure, Customer Content is deleted in line with Section 9 of the Terms & Conditions (Part I).',
+      heading: '4. Who we share it with',
+      blocks: [
+        {
+          list: [
+            '**Our team:** VavenCloud and Vavensoft engineers who work on your account, each bound by confidentiality.',
+            '**Service providers (sub-processors):** [SUB-PROCESSORS]. Each is bound by a written contract to protect the data and use it only for the service they provide to us.',
+            '**Your cloud provider:** when we run your product in your own cloud account, your data stays with your provider under your agreement with them.',
+            '**Authorities:** only when the law requires, and we tell you first unless the law forbids it.',
+          ],
+        },
+        'We never sell personal data, and we do not share it for cross-context behavioural advertising.',
       ],
     },
     {
-      heading: '8. Security Measures',
-      body: [
-        'We implement technical and organizational measures appropriate to the risk, including encryption of data in transit and at rest, access controls and multi-factor authentication for administrative systems, network segmentation, logging and monitoring, and regular patching. No method of transmission or storage is completely secure; we cannot guarantee absolute security, but we are committed to promptly investigating and addressing any incident.',
+      heading: '5. International transfers',
+      blocks: [
+        'Our team works from India, and our providers may be in other countries. When personal data from the EU, UK or another region with transfer rules leaves that region, we protect it with recognised safeguards, such as the European Commission’s Standard Contractual Clauses. Data hosted on VavenCloud infrastructure is stored in [DATA CENTRES].',
       ],
     },
     {
-      heading: '9. Your Rights',
-      body: ['Subject to applicable law (including the DPDPA and, where applicable, GDPR), you may have the right to:'],
-      list: [
-        'Access the personal data we hold about you.',
-        'Correct inaccurate or incomplete data.',
-        'Request erasure of your personal data, subject to legal retention requirements.',
-        'Withdraw consent where processing is based on consent, without affecting prior lawful processing.',
-        'Nominate another individual to exercise your rights on your behalf in the event of death or incapacity (as provided under the DPDPA).',
-        'Lodge a grievance with our Grievance Officer (Section 13) or complain to the relevant supervisory authority (e.g., the Data Protection Board of India).',
-      ],
-      bodyAfter: [
-        'To exercise these rights, contact us at privacy@vavencloud.com. We will respond within the timeframe required by applicable law.',
-      ],
-      contact: {
-        email: 'privacy@vavencloud.com',
-      },
-    },
-    {
-      heading: '10. Cookies & Tracking Technologies',
-      body: [
-        'We use cookies and similar technologies on our website and dashboard for authentication, security, preference storage, and (where you consent) analytics. You can control cookies through your browser settings; disabling essential cookies may affect the functionality of the dashboard.',
+      heading: '6. How long we keep it',
+      blocks: [
+        {
+          list: [
+            '**Enquiries that do not become clients:** 24 months from our last contact, then deleted.',
+            '**Client account and contract records:** for the length of the contract plus the period tax and company law requires, usually 8 years for financial records in India.',
+            '**Data inside your product:** for as long as we run your product, then [EXIT RETENTION] after you leave, then securely deleted, with written confirmation.',
+            '**Logs and monitoring data:** 90 days, unless your plan or an incident investigation needs longer.',
+          ],
+        },
       ],
     },
     {
-      heading: '11. Children’s Privacy',
-      body: [
-        'The Services are not directed at individuals under the age of 18. We do not knowingly collect personal data from children. If we become aware that we have inadvertently collected such data, we will take steps to delete it promptly.',
+      heading: '7. How we protect it',
+      blocks: [
+        'Access is limited to named engineers and logged. Data is encrypted in transit and at rest, credentials are kept in a secrets manager, and accounts use multi-factor authentication. Our Trust & Security page gives the full picture.',
+        'If a breach affects your personal data, we will tell you without undue delay. For clients, we tell you within 72 hours of becoming aware of it, so you can meet your own duties.',
       ],
     },
     {
-      heading: '12. Data Breach Notification',
-      body: [
-        'In the event of a personal data breach that poses a risk to your rights, we will notify affected customers and, where required by applicable law, the relevant regulator (e.g., the Data Protection Board of India) without undue delay, in line with our Incident Response procedures.',
+      heading: '8. Cookies',
+      blocks: [
+        'We use essential cookies to make the website and portal work. Analytics cookies are used only if you accept them in the cookie banner, and you can change your choice at any time. We do not use advertising cookies.',
       ],
     },
     {
-      heading: '13. Grievance Officer',
-      body: [
-        'In accordance with applicable Indian law, VavenCloud has appointed a Grievance Officer to address concerns regarding personal data processing:',
-        'Name: Data Protection Officer, VavenCloud',
+      heading: '9. Your rights',
+      blocks: [
+        'Depending on where you live, you may ask to:',
+        {
+          list: [
+            'see the personal data we hold about you, and get a copy;',
+            'correct it or have it deleted;',
+            'restrict or object to how we use it, including for marketing;',
+            'move it to another provider;',
+            'withdraw consent you gave earlier.',
+          ],
+        },
+        '**EU and UK:** you also have the right to complain to your local data protection authority.',
+        '**California and other US states:** you have the right to know, delete and correct, and the right not to be discriminated against for using these rights. We do not sell or share personal information as these laws define it.',
+        '**India:** under the Digital Personal Data Protection Act, 2023, you may ask for a summary of your data, its correction or erasure, and nominate someone to act for you. Grievance Officer: [GRIEVANCE OFFICER].',
+        'To use any of these rights, email privacy@vavencloud.com. We reply within 30 days and may ask you to confirm your identity first.',
       ],
-      contact: {
-        email: 'privacy@vavencloud.com',
-        address: 'Mohali, Punjab, India',
-      },
     },
     {
-      heading: '14. Changes to This Policy',
-      body: [
-        'We may update this Privacy Policy periodically. Material changes will be communicated via email or a prominent dashboard notice before they take effect. The “Last Updated” date at the top of this document reflects the most recent revision.',
+      heading: '10. Children',
+      blocks: ['Our services are for businesses. We do not knowingly collect personal data from anyone under 18.'],
+    },
+    {
+      heading: '11. Changes to this policy',
+      blocks: [
+        'If we make a change that materially affects you, we will tell clients by email at least 30 days before it takes effect, and update the date at the top of this page.',
       ],
     },
     {
-      heading: '15. Contact Us',
-      body: [
-        'For any questions about this Privacy Policy or our data practices, contact: privacy@vavencloud.com — VavenCloud, Powered by Vavensoft, Mohali, Punjab, India.',
+      heading: '12. Contact',
+      blocks: [
+        'privacy@vavencloud.com · Grievance Officer: [GRIEVANCE OFFICER] · Vavensoft Private Limited, address above.',
       ],
-      contact: {
-        email: 'privacy@vavencloud.com',
-        address: 'Mohali, Punjab, India',
-      },
     },
   ],
-} as const
+}

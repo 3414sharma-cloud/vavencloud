@@ -122,7 +122,7 @@ export const layers: Layer[] = [
 export const studioProviders: { who: Who; name: string; plan: string }[] = [
   { who: 'aws', name: 'AWS', plan: 'Business Support+' },
   { who: 'azure', name: 'Azure', plan: 'Standard support' },
-  { who: 'vaven', name: 'VavenCloud', plan: 'Managed / starting price' },
+  { who: 'vaven', name: 'VavenCloud', plan: 'Plans / starting price' },
 ]
 
 /** The monthly support or management fee, for one server (AWS's share of a one-server bill is its $29 minimum) */

@@ -1,6 +1,7 @@
-import { createBrowserRouter } from 'react-router'
+import { createBrowserRouter, Navigate } from 'react-router'
 import { SiteLayout } from '@/components/layout/SiteLayout.tsx'
 import { legalPages } from '@/features/legal/legal.pages.ts'
+import { legalRedirects } from '@/features/legal/legal.routes.ts'
 import { ComparisonPage } from '@/pages/ComparisonPage.tsx'
 import { HomePage } from '@/pages/HomePage.tsx'
 import { LegalPage } from '@/pages/LegalPage.tsx'
@@ -19,6 +20,7 @@ export const router = createBrowserRouter([
       { path: '/team', element: <TeamPage /> },
       { path: '/comparison', element: <ComparisonPage /> },
       ...legalPages.map(({ path, page }) => ({ path, element: <LegalPage page={page} path={path} /> })),
+      ...legalRedirects.map(({ from, to }) => ({ path: from, element: <Navigate to={to} replace /> })),
       { path: '*', element: <NotFoundPage /> },
     ],
   },

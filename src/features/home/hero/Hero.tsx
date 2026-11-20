@@ -1,10 +1,11 @@
-import type { CSSProperties } from 'react'
+import { useEffect, useRef, type CSSProperties, type RefObject } from 'react'
 import { Link } from 'react-router'
 import { Icon } from '@/components/ui/Icon.tsx'
 import { DURATIONS, heroSlides, ownershipHighlights, type HeroSlide } from './hero.data.ts'
 import { useHeroSlider } from './useHeroSlider.ts'
 import { btnPrimary, container } from '@/components/ui/classes.ts'
 import { cn } from '@/lib/cn.ts'
+import { prefersReducedMotion } from '@/lib/motion.ts'
 
 /*
  * The hero: a slider of the three ways we work (one call fixes it, stay on your cloud, run on ours), centred,
@@ -83,7 +84,7 @@ const actions =
   'mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 max-[768px]:mt-5 [&_svg]:[transition:transform_0.2s_ease] [&_a:hover_svg]:[transform:translateX(3px)]'
 const primary = cn(
   btnPrimary,
-  'gap-3 !px-7 !py-3.5 !text-base active:[transform:scale(0.97)]',
+  'gap-3 !px-7 !py-3.5 !text-base hover:-translate-y-0.5 active:[transform:scale(0.97)] motion-reduce:[transition:none] motion-reduce:hover:translate-y-0',
   '[&_svg]:box-content [&_svg]:rounded-full [&_svg]:bg-[rgb(255_255_255/0.18)] [&_svg]:p-2',
   '[&_svg]:[transition:transform_0.3s_cubic-bezier(0.22,1,0.36,1),background-color_0.3s_ease] [&:hover_svg]:bg-[rgb(255_255_255/0.28)]',
 )
@@ -234,7 +235,10 @@ function Tab({ s, i, selected, tabRef, onSelect }: TabProps) {
       style={vars({ '--dur': `${DURATIONS[i]}ms` })}
       onClick={onSelect}
     >
-      <span className="relative mx-auto mb-[0.6rem] block h-6 w-15" aria-hidden="true">
+      <span
+        className="relative mx-auto mb-[0.6rem] block h-6 w-15 motion-reduce:[animation:none] [[aria-selected=true]_&]:animate-hero-tab-pulse"
+        aria-hidden="true"
+      >
         <Signal stroke="stroke-neutral-700" />
         <span className={fill}>
           <Signal stroke="stroke-brand-400" />
@@ -256,10 +260,80 @@ function Tab({ s, i, selected, tabRef, onSelect }: TabProps) {
 /** The two soft glows drifting behind the slides (still with reduced motion) */
 const glow = 'absolute top-1/2 left-1/2 rounded-[50%] motion-reduce:[animation:none]'
 
+/** Updates only CSS variables, so the decorative network follows scrolling without React rerenders. */
+function useNetworkScroll(ref: RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const hero = ref.current
+    if (!hero || prefersReducedMotion()) return
+
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const { top, height } = hero.getBoundingClientRect()
+      const progress = Math.min(1, Math.max(0, -top / height))
+      hero.style.setProperty('--network-shift', `${progress * 64}px`)
+      hero.style.setProperty('--network-scale', `${1 + progress * 0.08}`)
+      hero.style.setProperty('--network-opacity', `${0.5 - progress * 0.32}`)
+    }
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+
+    update()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      if (frame) window.cancelAnimationFrame(frame)
+    }
+  }, [ref])
+}
+
+/** A quiet infrastructure map: animated signal lines and nodes sit behind the hero copy. */
+function NetworkGraphic() {
+  return (
+    <svg
+      viewBox="0 0 1200 650"
+      preserveAspectRatio="xMidYMid slice"
+      className="absolute inset-0 h-full w-full [opacity:var(--network-opacity,0.5)] [transform:translate3d(0,var(--network-shift,0px),0)_scale(var(--network-scale,1))] motion-reduce:[animation:none]"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <g fill="none" stroke="currentColor" className="text-brand-400/40">
+        <path
+          d="M-40 445C145 365 225 520 386 407S648 204 793 314s227 47 447-123"
+          className="animate-hero-network-flow [stroke-dasharray:8_18] [stroke-width:1.5] motion-reduce:[animation:none]"
+        />
+        <path
+          d="M-30 216c169 76 281-79 446 36s195 231 370 140 254-167 449-73"
+          className="animate-hero-network-flow [animation-delay:-8s] [stroke-dasharray:5_22] [stroke-width:1] motion-reduce:[animation:none]"
+        />
+        <path
+          d="M145 690c82-169 265-179 349-52s274 109 395-29 238-182 386-107"
+          className="animate-hero-network-flow [animation-delay:-15s] [stroke-dasharray:4_28] [stroke-width:1] motion-reduce:[animation:none]"
+        />
+      </g>
+      <g className="fill-brand-300">
+        <circle cx="205" cy="391" r="4" className="animate-hero-network-node-a motion-reduce:[animation:none]" />
+        <circle cx="386" cy="407" r="3" className="animate-hero-network-node-b motion-reduce:[animation:none]" />
+        <circle cx="586" cy="248" r="4" className="animate-hero-network-node-a [animation-delay:-2.6s] motion-reduce:[animation:none]" />
+        <circle cx="793" cy="314" r="3" className="animate-hero-network-node-b [animation-delay:-1.4s] motion-reduce:[animation:none]" />
+        <circle cx="1019" cy="266" r="4" className="animate-hero-network-node-a [animation-delay:-4.2s] motion-reduce:[animation:none]" />
+        <circle cx="318" cy="214" r="3" className="animate-hero-network-node-b [animation-delay:-3.5s] motion-reduce:[animation:none]" />
+        <circle cx="889" cy="384" r="3" className="animate-hero-network-node-a [animation-delay:-1.8s] motion-reduce:[animation:none]" />
+      </g>
+    </svg>
+  )
+}
+
 export function Hero() {
+  const hero = useRef<HTMLElement>(null)
   const slider = useHeroSlider(count)
+  useNetworkScroll(hero)
   return (
     <section
+      ref={hero}
       id="top"
       className={[
         'dark v5-hero-dark relative isolate overflow-hidden text-neutral-300 scheme-dark',
@@ -270,6 +344,7 @@ export function Hero() {
       aria-labelledby="hero-title"
     >
       <div className="pointer-events-none absolute inset-0 -z-2 overflow-hidden" aria-hidden="true">
+        <NetworkGraphic />
         <span
           className={`${glow} h-[44rem] w-[44rem] animate-hero-drift-a bg-[radial-gradient(circle,color-mix(in_srgb,var(--color-brand-700)_34%,transparent),transparent_66%)]`}
         ></span>

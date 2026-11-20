@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://vavencloud.com/sitemap.xml

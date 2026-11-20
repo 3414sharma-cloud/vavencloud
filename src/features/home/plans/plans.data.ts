@@ -91,6 +91,6 @@ export const safety: { icon: IconName; title: string; text: string }[] = [
   {
     icon: 'lock',
     title: 'Never locked in',
-    text: 'Standard Linux, MySQL and PostgreSQL. Change plans anytime, or leave with everything handed over.',
+    text: 'Built on open standards. Leave anytime, with everything handed over.',
   },
 ]

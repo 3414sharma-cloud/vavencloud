@@ -24,7 +24,20 @@
     <!-- Inter for everything; Instrument Serif for the italic accent line in headings -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap" />
-    <!-- Each page sets its own <title> and description (src/components/seo/PageMeta.tsx) -->
+    <!-- Google Search Console: proves ownership of vavencloud.com (same key as the old site) -->
+    <meta name="google-site-verification" content="FceUtQ19UOZZVN5EXfA7yxO3zkndghzXAfHHbUULqnA" />
+    <!-- Google Analytics 4 (same property as the old site). Page changes inside the app are counted by GA4's
+         "page changes based on browser history events" (Enhanced measurement, on by default). -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-M3B4LZC0CQ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-M3B4LZC0CQ')
+    </script>
+    <!-- Each page sets its own <title>, description and canonical URL (src/components/seo/PageMeta.tsx) -->
   </head>
   <body>
     <div id="app"></div>

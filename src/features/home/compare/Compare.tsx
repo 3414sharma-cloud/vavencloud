@@ -1,5 +1,7 @@
 import { Link } from 'react-router'
+import { MotionConfig, motion } from 'motion/react'
 import { routes } from '@/app/routes.ts'
+import { fade, inView, rise, stagger } from '@/lib/scroll-motion.ts'
 import { Icon } from '@/components/ui/Icon.tsx'
 import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
 import { compare, compareColumns, compareMeans } from './compare.data.ts'
@@ -60,81 +62,99 @@ const answerOurs = `${answerBase} bg-brand-50 font-semibold text-neutral-950 max
 export function Compare() {
   const [vendors, hire, vaven] = compareColumns
   return (
-    <section
-      id="compare"
-      className={cn(bandMist, 'py-20 sm:py-26 border-t border-neutral-200 dark:border-neutral-800')}
-      aria-labelledby="compare-title"
-    >
-      <div className={container}>
-        {/* A heading across the whole width: the paragraph as wide as the table */}
-        <div>
-          <SectionHeading
-            id="compare-title"
-            title="Only one option <em>has an owner.</em>"
-            description="The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team."
-            leadClassName="max-w-none"
-          />
-        </div>
-        <div
-          data-reveal=""
-          className={cn(
-            card,
-            'mt-12 overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600',
-          )}
-          role="region"
-          aria-labelledby="compare-title"
-          tabIndex={0}
-        >
-          <table className={`w-full min-w-[42rem] border-collapse text-[0.95rem] ${block}`}>
-            <thead className="max-[768px]:hidden">
-              <tr className={block}>
-                <td className={head}></td>
-                <th scope="col" className={head}>
-                  {vendors}
-                </th>
-                <th scope="col" className={head}>
-                  {hire}
-                </th>
-                <th scope="col" className={headOurs}>
-                  {vaven}
-                </th>
-              </tr>
-            </thead>
-            <tbody className={block}>
-              {compare.map((r) => (
-                <tr key={r.label} className={row}>
-                  <th scope="row" className={question}>
-                    {r.label}
-                  </th>
-                  <td data-label={vendors} className={answer}>
-                    <Cell text={r.vendors.text} no={r.vendors.no} />
-                  </td>
-                  <td data-label={hire} className={answer}>
-                    <Cell text={r.hire.text} no={r.hire.no} />
-                  </td>
-                  <td data-label={vaven} className={answerOurs}>
-                    <span className={cellText}>
-                      <Mark yes />
-                      {r.vaven}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-6 text-[0.94rem] text-balance text-neutral-700 dark:text-neutral-300" data-reveal="">
-          <b className="text-neutral-950 dark:text-white">What this means for you:</b> {compareMeans}
-        </p>
-        <div className="mt-4" data-reveal="">
-          <Link
-            to={routes.comparison}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-brand-800 underline underline-offset-4 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:text-brand-300 dark:hover:text-brand-200"
+    <MotionConfig reducedMotion="user">
+      <section
+        id="compare"
+        data-no-reveal=""
+        className={cn(bandMist, 'py-20 sm:py-26 border-t border-neutral-200 dark:border-neutral-800')}
+        aria-labelledby="compare-title"
+      >
+        <div className={container}>
+          {/* A heading across the whole width: the paragraph as wide as the table */}
+          <motion.div variants={rise} initial="hidden" whileInView="visible" viewport={inView}>
+            <SectionHeading
+              id="compare-title"
+              title="Only one option <em>has an owner.</em>"
+              description="The real choice isn’t us or another agency. It’s keeping three vendors, hiring a DevOps engineer, or handing production to one team."
+              leadClassName="max-w-none"
+            />
+          </motion.div>
+          {/* Motion moves this wrapper; the scroll box inside keeps its own card hover */}
+          <motion.div className="mt-12" variants={rise} initial="hidden" whileInView="visible" viewport={inView}>
+            <div
+              className={cn(
+                card,
+                'overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600',
+              )}
+              role="region"
+              aria-labelledby="compare-title"
+              tabIndex={0}
+            >
+              <table className={`w-full min-w-[42rem] border-collapse text-[0.95rem] ${block}`}>
+                <thead className="max-[768px]:hidden">
+                  <tr className={block}>
+                    <td className={head}></td>
+                    <th scope="col" className={head}>
+                      {vendors}
+                    </th>
+                    <th scope="col" className={head}>
+                      {hire}
+                    </th>
+                    <th scope="col" className={headOurs}>
+                      {vaven}
+                    </th>
+                  </tr>
+                </thead>
+                {/* The rows fade in one after another (opacity only: they sit inside the scroll box) */}
+                <motion.tbody
+                  className={block}
+                  variants={stagger(0.1, 0.35)}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={inView}
+                >
+                  {compare.map((r) => (
+                    <motion.tr key={r.label} className={row} variants={fade}>
+                      <th scope="row" className={question}>
+                        {r.label}
+                      </th>
+                      <td data-label={vendors} className={answer}>
+                        <Cell text={r.vendors.text} no={r.vendors.no} />
+                      </td>
+                      <td data-label={hire} className={answer}>
+                        <Cell text={r.hire.text} no={r.hire.no} />
+                      </td>
+                      <td data-label={vaven} className={answerOurs}>
+                        <span className={cellText}>
+                          <Mark yes />
+                          {r.vaven}
+                        </span>
+                      </td>
+                    </motion.tr>
+                  ))}
+                </motion.tbody>
+              </table>
+            </div>
+          </motion.div>
+          <motion.p
+            className="mt-6 text-[0.94rem] text-balance text-neutral-700 dark:text-neutral-300"
+            variants={rise}
+            initial="hidden"
+            whileInView="visible"
+            viewport={inView}
           >
-            See the AWS and Azure price comparison <Icon name="arrow-right" className="size-4 shrink-0" />
-          </Link>
+            <b className="text-neutral-950 dark:text-white">What this means for you:</b> {compareMeans}
+          </motion.p>
+          <motion.div className="mt-4" variants={rise} initial="hidden" whileInView="visible" viewport={inView}>
+            <Link
+              to={routes.comparison}
+              className="inline-flex items-center gap-2 text-sm font-semibold text-brand-800 underline underline-offset-4 hover:text-brand-600 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-500 dark:text-brand-300 dark:hover:text-brand-200"
+            >
+              See the AWS and Azure price comparison <Icon name="arrow-right" className="size-4 shrink-0" />
+            </Link>
+          </motion.div>
         </div>
-      </div>
-    </section>
+      </section>
+    </MotionConfig>
   )
 }

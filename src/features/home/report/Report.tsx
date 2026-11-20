@@ -1,4 +1,6 @@
 import type { CSSProperties } from 'react'
+import { MotionConfig, motion } from 'motion/react'
+import { inView, item, rise, slideIn, stagger } from '@/lib/scroll-motion.ts'
 import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
 import { Icon } from '@/components/ui/Icon.tsx'
 import { useInViewOnce } from '@/hooks/useInViewOnce.ts'
@@ -42,6 +44,13 @@ const Pairs = ({ rows, row, term, value }: PairsProps) =>
     </div>
   ))
 
+/*
+ * Scroll motion (lib/scroll-motion.ts): the heading rises in, the tool cards follow one after another, and the
+ * report slides in from the right. Each plays once.
+ */
+const list = stagger()
+const viewport = inView
+
 /** The time bar's two parts, and the legend's dots: red before the call, blue with us */
 const lost = 'bg-[rgb(244_63_94)] dark:bg-[rgb(251_113_133)]'
 const fix = 'bg-brand-500 dark:bg-brand-400'
@@ -54,7 +63,14 @@ const fix = 'bg-brand-500 dark:bg-brand-400'
 function Doc() {
   const ref = useInViewOnce<HTMLElement>((el) => el.classList.add('is-in'), { threshold: 0.35 })
   return (
-    <figure ref={ref} data-report="">
+    <motion.figure
+      ref={ref}
+      data-report=""
+      variants={slideIn}
+      initial="hidden"
+      whileInView="visible"
+      viewport={viewport}
+    >
       {/* Tilted a little, on a second sheet behind it, tilted the other way */}
       <div
         className={[
@@ -65,7 +81,7 @@ function Doc() {
           'dark:before:border-neutral-800 dark:before:bg-neutral-900 dark:before:[box-shadow:0_18px_40px_-24px_rgb(0_0_0/0.6)]',
         ].join(' ')}
       >
-        <div data-reveal="" className={cn(card, 'relative p-7 sm:p-9')}>
+        <div className={cn(card, 'relative p-7 sm:p-9')}>
           <span
             className={[
               `absolute top-6 right-6 rounded-lg border-2 border-solid px-[0.7rem] py-[0.2rem] ${mono} text-[0.72rem] font-semibold tracking-[0.2em] uppercase`,
@@ -129,45 +145,64 @@ function Doc() {
           </dl>
         </div>
       </div>
-    </figure>
+    </motion.figure>
   )
 }
 
 export function Report() {
   return (
-    <section id="report" className="overflow-x-clip border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800">
-      <div className={cn(container, 'grid items-center gap-14 lg:grid-cols-2')}>
-        {/* The title shares its half of the row with the report, so it runs a size down to keep to three lines */}
-        <div className="min-w-0">
-          <SectionHeading
-            title="We don’t send you a ticket number. <em>We send you the fix.</em>"
-            description={reportIntro}
-            titleClassName="text-[length:clamp(2.5rem,4vw,3.6rem)] [&_em]:inline"
-          />
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
-            {workspace.map((t) => (
-              <li key={t.name} data-reveal="" className={cn(card, 'px-[1.4rem] pt-[1.4rem] pb-6')}>
-                <div className="flex items-center gap-[0.85rem]">
-                  <span className={iconBox}>
-                    <Icon name={t.icon} className="h-5 w-5" />
-                  </span>
-                  <p className="text-[1.1rem] leading-[1.25] font-[650] tracking-[-0.02em] text-neutral-950 dark:text-white">
-                    {t.name}
-                  </p>
-                </div>
-                <p className={`mt-4 ${mono} text-[0.68rem] leading-[1.5] tracking-[0.08em] text-neutral-500 uppercase`}>
-                  {t.who}
-                </p>
-                <p className="mt-2 text-[0.95rem] leading-[1.35] font-[650] text-neutral-950 dark:text-white">
-                  {t.headline}
-                </p>
-                <p className="mt-2 text-[0.92rem] leading-[1.6] text-neutral-600 dark:text-neutral-400">{t.what}</p>
-              </li>
-            ))}
-          </ul>
+    <MotionConfig reducedMotion="user">
+      <section
+        id="report"
+        data-no-reveal=""
+        className="overflow-x-clip border-t border-neutral-200 py-24 sm:py-32 dark:border-neutral-800"
+      >
+        <div className={cn(container, 'grid items-center gap-14 lg:grid-cols-2')}>
+          {/* The title shares its half of the row with the report, so it runs a size down to keep to three lines */}
+          <div className="min-w-0">
+            <motion.div variants={rise} initial="hidden" whileInView="visible" viewport={viewport}>
+              <SectionHeading
+                title="We don’t send you a ticket number. <em>We send you the fix.</em>"
+                description={reportIntro}
+                titleClassName="text-[length:clamp(2.5rem,4vw,3.6rem)] [&_em]:inline"
+              />
+            </motion.div>
+            <motion.ul
+              className="mt-10 grid gap-4 sm:grid-cols-2"
+              variants={list}
+              initial="hidden"
+              whileInView="visible"
+              viewport={viewport}
+            >
+              {workspace.map((t) => (
+                // Motion moves the <li>; the card inside keeps its own hover lift and transition
+                <motion.li key={t.name} variants={item} className="flex">
+                  <div className={cn(card, 'w-full px-[1.4rem] pt-[1.4rem] pb-6')}>
+                    <div className="flex items-center gap-[0.85rem]">
+                      <span className={iconBox}>
+                        <Icon name={t.icon} className="h-5 w-5" />
+                      </span>
+                      <p className="text-[1.1rem] leading-[1.25] font-[650] tracking-[-0.02em] text-neutral-950 dark:text-white">
+                        {t.name}
+                      </p>
+                    </div>
+                    <p
+                      className={`mt-4 ${mono} text-[0.68rem] leading-[1.5] tracking-[0.08em] text-neutral-500 uppercase`}
+                    >
+                      {t.who}
+                    </p>
+                    <p className="mt-2 text-[0.95rem] leading-[1.35] font-[650] text-neutral-950 dark:text-white">
+                      {t.headline}
+                    </p>
+                    <p className="mt-2 text-[0.92rem] leading-[1.6] text-neutral-600 dark:text-neutral-400">{t.what}</p>
+                  </div>
+                </motion.li>
+              ))}
+            </motion.ul>
+          </div>
+          <Doc />
         </div>
-        <Doc />
-      </div>
-    </section>
+      </section>
+    </MotionConfig>
   )
 }

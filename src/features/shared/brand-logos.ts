@@ -6,7 +6,7 @@
  *
  * Sources: Simple Icons (CC0) for AWS, Google Cloud, Linux and PostgreSQL; devicon (MIT) for Azure and the
  * MySQL dolphin (Simple Icons has no Azure, and its MySQL logo has the wordmark baked in). VavenCloud is not
- * here: the strip shows our own logo image (public/logo.png), as in the header.
+ * here: the strip shows our own wordmark image (public/logo-wordmark.png), as in the header.
  */
 export type BrandLogo = {
   viewBox: string

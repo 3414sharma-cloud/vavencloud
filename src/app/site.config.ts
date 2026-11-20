@@ -10,6 +10,9 @@ export interface SocialLink {
 export const site = {
   name: 'VavenCloud',
 
+  /** The live address, no trailing slash: canonical URLs (PageMeta) and public/sitemap.xml use it. */
+  url: 'https://vavencloud.com',
+
   /** TODO: confirm the legal entity name (shown in the footer). */
   legalName: '[Legal entity name]',
 

@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes.ts'
 import { PageMeta } from '@/components/seo/PageMeta.tsx'
 import { Engineers, Founders, HeroStage, Intro, TeamCta } from '@/features/team/Team.tsx'
 import { useAutoReveal } from '@/hooks/useAutoReveal.ts'
@@ -14,6 +15,7 @@ export function TeamPage() {
     <>
       <PageMeta
         title="The team | VavenCloud by Vavensoft"
+        path={routes.team}
         description="Meet the team behind VavenCloud: Vavensoft’s co-founders Jerry Bopara and Puneet Kumar, and the engineers who run your production 24/7."
       />
       <HeroStage />

@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes.ts'
 import { PageMeta } from '@/components/seo/PageMeta.tsx'
 import { Behind } from '@/features/home/behind/Behind.tsx'
 import { Blog } from '@/features/home/blog/Blog.tsx'
@@ -22,6 +23,7 @@ export function HomePage() {
     <>
       <PageMeta
         title="Production Ownership for Founders | VavenCloud"
+        path={routes.home}
         description="One team runs your servers, deployments and code, on call 24/7. Free 30-minute production review with a senior engineer. Built by the team behind 210+ products."
         og={{
           title: 'When something breaks, you make one call. We fix the rest.',

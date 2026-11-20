@@ -1,21 +1,20 @@
-import { useState, type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { Link } from 'react-router'
 import { routes } from '@/app/routes.ts'
 import { Icon } from '@/components/ui/Icon.tsx'
 import { SectionHeading } from '@/components/ui/SectionHeading.tsx'
 import { VideoPoster } from '@/components/ui/VideoPoster.tsx'
-import { accountTeam, behindIntro, behindStats, teamIntro } from '@/features/shared/company.data.ts'
-import { bandCard, bandIconBox, bandLead, bandTitle, darkBand } from '../dark-band.ts'
+import { behindIntro, behindStats } from '@/features/shared/company.data.ts'
+import { bandCard, bandLead, bandTitle, darkBand } from '../dark-band.ts'
 import { behindVideo, founders } from './behind.data.ts'
-import { btnSecondary, card, container, iconBox } from '@/components/ui/classes.ts'
+import { btnSecondary, card, container } from '@/components/ui/classes.ts'
 import { cn } from '@/lib/cn.ts'
 
 /*
  * Who's behind it. On a wide screen two halves: on the left who VavenCloud is and the four numbers in a 2×2
  * grid, each under a short brand rule; on the right the overview video in a framed card. Under both, the two
- * co-founders side by side, then a full-width button that opens the rest of the team (the engineers on your
- * account, by role) as a row of small cards. One of the page's blue-grey chapters (dark-band.ts): the light
- * colours below are the band's.
+ * co-founders side by side, then a link on the right to the team page. One of the page's blue-grey chapters
+ * (dark-band.ts): the light colours below are the band's.
  */
 
 /** The overview video in a framed card, with a small "Video" badge beside its caption */
@@ -57,7 +56,6 @@ const Stats = () => (
 )
 
 export function Behind({ children }: { children: ReactNode }) {
-  const [teamOpen, setTeamOpen] = useState(false)
   return (
     <section
       id="behind"
@@ -89,11 +87,7 @@ export function Behind({ children }: { children: ReactNode }) {
         {/* The two co-founders side by side, the initials large on the left of each */}
         <ul className="mt-12 grid gap-4 sm:mt-16 md:grid-cols-2">
           {founders.map((p) => (
-            <li
-              key={p.name}
-              data-reveal=""
-              className={cn(card, bandCard, 'flex gap-5 rounded-[1.6rem] p-5 sm:p-6')}
-            >
+            <li key={p.name} data-reveal="" className={cn(card, bandCard, 'flex gap-5 rounded-[1.6rem] p-5 sm:p-6')}>
               <span
                 className="inline-flex size-14 flex-none items-center justify-center rounded-2xl bg-[linear-gradient(160deg,var(--color-brand-500),var(--color-brand-800))] text-[1.05rem] font-bold text-white [box-shadow:inset_0_1px_0_rgb(255_255_255/0.25),0_10px_20px_-10px_var(--color-brand-700)]"
                 aria-hidden="true"
@@ -113,48 +107,18 @@ export function Behind({ children }: { children: ReactNode }) {
           ))}
         </ul>
 
-        {/* The rest of the team opens under the button, and closes again */}
-        <button
-          type="button"
-          className={cn(
-            btnSecondary,
-            'mt-4 min-h-12 w-full rounded-2xl [html:not(.dark)_&]:border-[#bfd3e3] [html:not(.dark)_&]:bg-[#f9fcff] [html:not(.dark)_&]:text-[#24577d] [html:not(.dark)_&:hover]:bg-[#deedf7] [&_svg]:transition-[transform] [&_svg]:duration-200 aria-expanded:[&_svg]:[transform:rotate(180deg)]',
-          )}
-          data-team-toggle=""
-          aria-expanded={teamOpen}
-          aria-controls="v4-team"
-          onClick={() => setTeamOpen((open) => !open)}
-        >
-          <span data-team-label="">{teamOpen ? 'Hide the team' : 'Meet the rest of the team'}</span>{' '}
-          <Icon name="chevron-down" className="h-4 w-4" />
-        </button>
-
-        {/* The engineers on your account, by role (no invented names): a small card each, four across on a wide screen */}
-        <div
-          id="v4-team"
-          className="mt-4 rounded-[1.6rem] border border-[#cddde9] bg-[#e2edf6] p-5 sm:p-6 dark:border-brand-900 dark:bg-brand-950"
-          hidden={!teamOpen}
-        >
-          <p className="max-w-3xl text-[0.9rem] leading-[1.6] text-[#4b6278] dark:text-neutral-300">{teamIntro}</p>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {accountTeam.map((m) => (
-              <li
-                key={m.role}
-                className="rounded-2xl border border-[#d5e2ed] bg-[#f9fcff] p-4 text-[0.84rem] leading-[1.45] text-[#4b6278] dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400"
-              >
-                <span className={cn(iconBox, 'size-9 rounded-[0.7rem]', bandIconBox)}>
-                  <Icon name={m.icon} className="h-4 w-4" />
-                </span>
-                <b className="mt-3 block font-[650] text-[#1c344b] dark:text-white">{m.role}</b>
-                <span className="mt-1 block">{m.focus}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 flex justify-end">
-            <Link to={routes.team} className={cn(btnSecondary, 'min-h-11')}>
-              Meet the whole Vavensoft team <Icon name="arrow-right" className="size-4" />
-            </Link>
-          </div>
+        {/* The rest of the team is on its own page: one link, on the right under the co-founders */}
+        <div className="mt-5 flex justify-end">
+          <Link
+            to={routes.team}
+            className={cn(
+              btnSecondary,
+              'min-h-11 [html:not(.dark)_&]:border-[#bfd3e3] [html:not(.dark)_&]:bg-[#f9fcff] [html:not(.dark)_&]:text-[#24577d] [html:not(.dark)_&:hover]:bg-[#deedf7]',
+              '[&_svg]:transition-[transform] [&_svg]:duration-200 [&:hover_svg]:translate-x-[3px] motion-reduce:[&_svg]:transition-none',
+            )}
+          >
+            Meet the whole Vavensoft team <Icon name="arrow-right" className="size-4" />
+          </Link>
         </div>
       </div>
       {/* Add Jerry's approved incident story here, above the client testimonials. */}

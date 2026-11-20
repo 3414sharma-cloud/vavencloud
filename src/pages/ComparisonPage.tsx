@@ -1,3 +1,4 @@
+import { routes } from '@/app/routes.ts'
 import { PageMeta } from '@/components/seo/PageMeta.tsx'
 import { ComparisonCta, ComparisonHero, ComparisonTool } from '@/features/comparison/Comparison.tsx'
 import { useAutoReveal } from '@/hooks/useAutoReveal.ts'
@@ -13,6 +14,7 @@ export function ComparisonPage() {
     <>
       <PageMeta
         title="AWS vs Azure vs VavenCloud: price comparison | VavenCloud"
+        path={routes.comparison}
         description="Compare what the same servers cost on AWS, Azure and VavenCloud, and what each charges for managed support. Change the sizes and see the difference."
       />
       <ComparisonHero />
