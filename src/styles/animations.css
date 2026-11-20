@@ -14,25 +14,8 @@
   transform: none;
 }
 
-/* Cards lift slightly on hover */
-.card {
-  transition:
-    border-color 0.2s ease,
-    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 0.3s ease;
-}
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: var(--shadow-lift);
-}
-form.card:hover,
-#book .card:hover {
-  transform: none;
-  box-shadow: none;
-}
-
 /*
- * Section-specific motion lives next to each section (hero.css, stats.css, pipeline.css).
+ * Section-specific motion lives next to each section (as Tailwind classes; their keyframes are in theme.css).
  * Visitors who ask for reduced motion get it switched off here; sliders also skip autoplay in JS.
  */
 @media (prefers-reduced-motion: reduce) {

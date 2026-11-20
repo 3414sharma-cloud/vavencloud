@@ -1,4 +1,4 @@
-import type { IconName } from '@/shared/ui/icons.ts'
+import type { IconName } from '@/components/ui/icons.ts'
 
 export interface SocialLink {
   icon: IconName

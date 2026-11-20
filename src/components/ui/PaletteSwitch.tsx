@@ -1,0 +1,46 @@
+import { getPalette, setPalette, type Palette } from '@/lib/palette.ts'
+
+/** Swatches use fixed colours (each palette's brand-500), so they look the same whichever palette is on. */
+const options: { value: Palette; label: string; swatch: string }[] = [
+  { value: 'petrol', label: 'Petrol', swatch: '#0f828d' },
+  { value: 'sky', label: 'Sky', swatch: '#117ab4' },
+]
+
+/** The Petrol / Sky switch (see palette-switcher.ts): starts on the saved palette, and saves a new choice */
+export function PaletteSwitch() {
+  const current = getPalette()
+  return (
+    <fieldset
+      id="palette-switch"
+      className="fixed bottom-4 left-4 z-[60] flex items-center gap-2 rounded-full border border-neutral-950/10 bg-white/90 p-1 pl-3.5 shadow-[0_10px_30px_-12px_rgb(24_24_27/0.35)] backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/90 dark:shadow-[0_10px_30px_-12px_rgb(0_0_0/0.8)]"
+    >
+      <legend className="sr-only">Colour palette</legend>
+      <span className="text-xs font-medium text-neutral-500" aria-hidden="true">
+        Palette
+      </span>
+      <div className="flex gap-0.5">
+        {options.map((o) => (
+          <label
+            key={o.value}
+            className="flex cursor-pointer items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold text-neutral-600 transition-colors hover:text-neutral-950 has-checked:bg-neutral-950 has-checked:text-white has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-brand-600 dark:text-neutral-400 dark:hover:text-white dark:has-checked:bg-white dark:has-checked:text-neutral-950"
+          >
+            <input
+              type="radio"
+              name="palette"
+              value={o.value}
+              className="sr-only"
+              defaultChecked={o.value === current}
+              onChange={(e) => e.currentTarget.checked && setPalette(o.value)}
+            />
+            <span
+              className="h-3 w-3 shrink-0 rounded-full ring-2 ring-white/70 dark:ring-black/30"
+              style={{ background: o.swatch }}
+              aria-hidden="true"
+            ></span>
+            {o.label}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  )
+}

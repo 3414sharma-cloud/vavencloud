@@ -6,8 +6,8 @@
  *
  * Light mode is white (`paper`, the page background) with light-grey bands (`linen`). `neutral-*` is a
  * clean untinted grey scale (Tailwind zinc values), used for every text, border and surface class.
- * `brand-*` carries buttons, links and highlights; `ink-*` is the dark blocks (.surface-ink in
- * components.css). `sage-*` (muted green) and `clay-*` (muted terracotta) are the two supporting tones
+ * `brand-*` carries buttons, links and highlights; `ink-*` is the dark blocks (surfaceInk in
+ * components/ui/classes.ts). `sage-*` (muted green) and `clay-*` (muted terracotta) are the two supporting tones
  * for scenes, icon tiles and illustrations.
  * Status colours stay Tailwind's emerald (healthy), amber (in progress) and rose (down / error).
  */
@@ -47,9 +47,11 @@
 
 /* `static`: always emit these as CSS variables, because module stylesheets read them with var() */
 @theme static {
+  /* A wave, used as a mask for lines that should be wavy (the "How we start" line, the story's scene bars) */
+  --v5-wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 4 Q6 0.6 12 4 T24 4' fill='none' stroke='black' stroke-width='1.7' stroke-linecap='round'/%3E%3C/svg%3E");
   /* Page background (light mode): plain white */
   --color-paper: #ffffff;
-  /* Light grey at the top of tinted section bands (.band-linen), fading into the white page */
+  /* Light grey at the top of tinted section bands (bandLinen), fading into the white page */
   --color-linen: #f4f4f5;
 
   /* Brand: VavenCloud petrol. 600 #036972 carries buttons and links (6.4:1 with white), 500 #0f828d (4.6:1) */
@@ -122,6 +124,202 @@
   /* Quiet, short transitions */
   --default-transition-timing-function: ease;
   --default-transition-duration: 150ms;
+
+  /* The comparison page's "follow the wires" board: animate-cw-glow when the platform does every task,
+     animate-cw-busy while your team still has some (features/comparison/board.styles.ts) */
+  --animate-cw-glow: cw-glow 2.4s ease-in-out infinite;
+  --animate-cw-busy: cw-busy 1.4s ease-in-out infinite;
+  /* The landing page's story (Story.tsx): the site's states, the phone's calls and messages, and the
+     wavy scene bars' drift */
+  @keyframes st-shake {
+    20%,
+    60% {
+      transform: translateX(-5px);
+    }
+    40%,
+    80% {
+      transform: translateX(5px);
+    }
+  }
+  @keyframes st-glitch {
+    0%,
+    90%,
+    100% {
+      text-shadow: none;
+      transform: none;
+    }
+    92% {
+      text-shadow:
+        2px 0 rgb(56 189 248 / 0.7),
+        -2px 0 rgb(244 63 94 / 0.7);
+      transform: translateX(-2px);
+    }
+    95% {
+      text-shadow:
+        -2px 0 rgb(56 189 248 / 0.7),
+        2px 0 rgb(244 63 94 / 0.7);
+      transform: translateX(2px);
+    }
+  }
+  @keyframes st-up {
+    from {
+      box-shadow:
+        0 0 0 0 rgb(16 185 129 / 0.45),
+        var(--shadow-card);
+    }
+    to {
+      box-shadow:
+        0 0 0 18px rgb(16 185 129 / 0),
+        var(--shadow-card);
+    }
+  }
+  @keyframes st-blink {
+    50% {
+      opacity: 0.55;
+    }
+  }
+  @keyframes st-pulse {
+    50% {
+      opacity: 0.55;
+    }
+  }
+  @keyframes st-ripple {
+    from {
+      opacity: 0.85;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(1.75);
+    }
+  }
+  @keyframes st-dot {
+    30% {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+  }
+  @keyframes st-wiggle {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    25% {
+      transform: rotate(-14deg);
+    }
+    75% {
+      transform: rotate(14deg);
+    }
+  }
+  @keyframes st-spin {
+    from {
+      transform: rotate(-200deg);
+    }
+  }
+  @keyframes v5-wave-drift {
+    to {
+      -webkit-mask-position: 24px 0;
+      mask-position: 24px 0;
+    }
+  }
+  /* The landing page's hero: its title word by word, the lines under it, the two drifting glows, and the
+     waveform that fills as a slide's time runs out (useHeroSlider listens for hero-wave-progress ending) */
+  --animate-hero-word-in: hero-word-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-hero-rise: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-hero-drift-a: hero-drift-a 18s ease-in-out infinite alternate;
+  --animate-hero-drift-b: hero-drift-b 22s ease-in-out infinite alternate;
+  @keyframes hero-word-in {
+    from {
+      opacity: 0;
+      filter: blur(10px);
+      transform: translateY(0.35em);
+    }
+  }
+  @keyframes hero-rise {
+    from {
+      opacity: 0;
+      transform: translateY(13px);
+    }
+  }
+  @keyframes hero-drift-a {
+    from {
+      transform: translate(-95%, -70%);
+    }
+    to {
+      transform: translate(-60%, -40%) scale(1.12);
+    }
+  }
+  @keyframes hero-drift-b {
+    from {
+      transform: translate(-10%, -45%);
+    }
+    to {
+      transform: translate(-40%, -70%) scale(1.15);
+    }
+  }
+  @keyframes hero-wave-progress {
+    from {
+      clip-path: inset(-20% 100% -20% 0);
+    }
+    to {
+      clip-path: inset(-20% 0 -20% 0);
+    }
+  }
+  --animate-track-record-rise: track-record-rise linear both;
+  @keyframes track-record-rise {
+    from {
+      transform: translateY(var(--track-record-offset)) scaleY(0.82);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  /* The logo strip under the landing page's hero: two copies of the list move left by one copy's width */
+  --animate-v5-marquee: v5-marquee 40s linear infinite;
+  @keyframes v5-marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  /* A video's play button: a ring that pulses out of it, asking to be played (the team page's founder video) */
+  --animate-tm-ring: tm-ring 2.4s ease-out infinite;
+  @keyframes tm-ring {
+    0% {
+      box-shadow: 0 0 0 0 rgb(255 255 255 / 0.45);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 1.1rem rgb(255 255 255 / 0);
+    }
+  }
+  @keyframes cw-glow {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 color-mix(in srgb, var(--cw-yes) 35%, transparent);
+    }
+    50% {
+      box-shadow: 0 0 0 8px transparent;
+    }
+  }
+  @keyframes cw-busy {
+    0%,
+    100% {
+      transform: rotate(0);
+    }
+    20% {
+      transform: rotate(-7deg);
+    }
+    40% {
+      transform: rotate(6deg);
+    }
+    60% {
+      transform: rotate(-3deg);
+    }
+    80% {
+      transform: rotate(0);
+    }
+  }
 }
 
 /*

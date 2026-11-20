@@ -1,6 +1,6 @@
 /*
- * Global stylesheet entry. Imported once by src/app/create-page.ts.
- * Component-specific CSS lives next to its component.
+ * Global stylesheet entry, imported once by src/main.tsx. Components are styled with Tailwind classes in their
+ * own files; the shared class lists (cards, buttons, headings, fields, bands) are in components/ui/classes.ts.
  * source("../") = scan all of src/ for Tailwind classes.
  */
 @import "tailwindcss" source("../");
@@ -8,5 +8,4 @@
 @import "./theme.css";
 @import "./utilities.css";
 @import "./base.css";
-@import "./components.css";
 @import "./animations.css";

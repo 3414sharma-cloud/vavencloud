@@ -18,5 +18,3 @@ export const routes = {
   /** Every "Book a free review" button leads here (final call to action + booking form) */
   book: `${landing}#book`,
 }
-
-export type Route = (typeof routes)[keyof typeof routes]

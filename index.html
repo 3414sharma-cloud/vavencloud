@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en" data-palette="sky" data-logo="brand" data-landing="v5">
+  <head>
+    <!-- Applies the saved theme before first paint (light by default; dark only when the visitor picks it, or
+         picks "System" on a dark OS). Keep the storage key in sync with src/lib/theme.ts -->
+    <script>
+      ;(function () {
+        try {
+          var c = localStorage.getItem('vc-theme-choice')
+          var d = c === 'dark' || (c === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
+          var r = document.documentElement
+          r.classList.toggle('dark', d)
+          r.style.colorScheme = d ? 'dark' : 'light'
+        } catch (e) {}
+      })()
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fbfaf7" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Inter for everything; Instrument Serif for the italic accent line in headings -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&display=swap" />
+    <!-- Each page sets its own <title> and description (src/components/seo/PageMeta.tsx) -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
