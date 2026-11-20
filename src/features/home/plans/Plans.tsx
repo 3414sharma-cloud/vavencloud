@@ -91,7 +91,7 @@ const groupLabel = 'text-xs font-semibold tracking-wider text-neutral-500 upperc
 /** What every plan includes: the core that never moves behind a higher price */
 function EveryPlan() {
   return (
-    <div className="mt-8 rounded-2xl bg-brand-50/70 p-5 sm:p-6 dark:bg-brand-950/30">
+    <div className="rounded-2xl bg-brand-50/70 p-5 sm:p-6 dark:bg-brand-950/30">
       <h4 className={groupLabel}>Included on every plan</h4>
       <ul className="mt-4 grid gap-x-8 gap-y-3 text-[0.93rem] leading-snug text-neutral-700 sm:grid-cols-2 dark:text-neutral-300">
         {everyPlan.map((item) => (
@@ -106,107 +106,121 @@ function EveryPlan() {
 }
 
 /*
- * The full comparison on a white card: what every plan includes, then each plan row by row. From 768px a table
- * with a heading row per group; on a phone a fold-out card per plan, its rows under the same group headings.
+ * The full comparison on a white card, closed until opened ("Compare the plans" is the bar that opens it): what
+ * every plan includes, then each plan row by row. From 768px a table with a heading row per group; on a phone a
+ * fold-out card per plan, its rows under the same group headings. A native <details>, so it opens with a click,
+ * Enter or Space, and screen readers announce it as expanded or collapsed. Named group (group/compare), so the
+ * plans' own fold-outs inside it keep their own open state.
  */
 function Comparison() {
   const col = 'border-l border-neutral-200 px-5 dark:border-neutral-800'
   return (
-    <section
-      aria-labelledby="plan-comparison-heading"
+    <details
       data-reveal=""
-      className="mt-8 rounded-[2rem] border border-neutral-200/80 bg-white p-5 [box-shadow:var(--shadow-card)] sm:p-8 lg:p-10 dark:border-neutral-800 dark:bg-neutral-900"
+      className="group/compare mt-8 rounded-[2rem] border border-neutral-200/80 bg-white [box-shadow:var(--shadow-card)] dark:border-neutral-800 dark:bg-neutral-900"
     >
-      <h3
-        id="plan-comparison-heading"
-        className="text-center text-[length:clamp(1.5rem,3vw,2.1rem)] font-[600] tracking-[-0.03em] text-neutral-950 dark:text-white"
-      >
-        Compare the plans
-      </h3>
-
-      <EveryPlan />
-
-      {/* From 768px: the table */}
-      <div className="mt-8 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block dark:border-neutral-800">
-        <table
-          aria-labelledby="plan-comparison-heading"
-          className="w-full table-fixed text-left text-[0.9rem] leading-relaxed"
+      <summary className="flex cursor-pointer list-none flex-wrap items-center justify-between gap-3 rounded-[2rem] px-5 py-5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600 sm:px-8 sm:py-6 lg:px-10 [&::-webkit-details-marker]:hidden">
+        <h3
+          id="plan-comparison-heading"
+          className="text-[length:clamp(1.3rem,2.6vw,1.75rem)] font-[600] tracking-[-0.03em] text-neutral-950 dark:text-white"
         >
-          <thead>
-            <tr>
-              <th
-                scope="col"
-                className="w-[22%] px-5 py-5 align-bottom text-sm font-medium text-neutral-500 dark:text-neutral-400"
-              >
-                <span className="sr-only">Feature</span>
-              </th>
-              {plans.map((plan) => (
-                <th key={plan.key} scope="col" className={cn(col, 'py-5 font-normal')}>
-                  <PlanName plan={plan} />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          {comparison.map(({ group, rows }) => (
-            <tbody
-              key={group}
-              className="border-t border-neutral-200 text-neutral-700 dark:border-neutral-800 dark:text-neutral-300"
-            >
-              <tr className="bg-neutral-50 dark:bg-neutral-950/40">
-                <th scope="colgroup" colSpan={plans.length + 1} className={cn(groupLabel, 'px-5 py-3')}>
-                  {group}
-                </th>
-              </tr>
-              {rows.map((row) => (
-                <tr key={row.label} className="border-t border-neutral-200 dark:border-neutral-800">
-                  <th scope="row" className="px-5 py-4 align-top font-[650] text-neutral-950 dark:text-white">
-                    {row.label}
-                  </th>
-                  {plans.map((plan) => (
-                    <td key={plan.key} className={cn(col, 'py-4 align-top')}>
-                      {row.values[plan.key]}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          ))}
-        </table>
-      </div>
+          Compare the plans
+        </h3>
+        <span className="inline-flex items-center gap-2 rounded-full border border-neutral-200 px-4 py-2 text-sm font-semibold text-neutral-800 transition-colors group-hover/compare:border-neutral-300 dark:border-neutral-700 dark:text-neutral-200">
+          <span className="group-open/compare:hidden">Show every feature</span>
+          <span className="hidden group-open/compare:inline">Hide comparison</span>
+          <Icon
+            name="chevron-down"
+            className="size-4 transition-transform duration-200 group-open/compare:rotate-180 motion-reduce:transition-none"
+          />
+        </span>
+      </summary>
 
-      {/* Under 768px: a fold-out card per plan */}
-      <div className="mt-6 grid gap-3 md:hidden">
-        {plans.map((plan) => (
-          <details
-            key={plan.key}
-            className="group rounded-2xl border border-neutral-200 open:bg-neutral-50/60 dark:border-neutral-800 dark:open:bg-neutral-950/30"
+      <div className="px-5 pb-5 sm:px-8 sm:pb-8 lg:px-10 lg:pb-10">
+        <EveryPlan />
+
+        {/* From 768px: the table */}
+        <div className="mt-8 hidden overflow-hidden rounded-2xl border border-neutral-200 md:block dark:border-neutral-800">
+          <table
+            aria-labelledby="plan-comparison-heading"
+            className="w-full table-fixed text-left text-[0.9rem] leading-relaxed"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 [&::-webkit-details-marker]:hidden">
-              <PlanName plan={plan} />
-              <Icon
-                name="chevron-down"
-                className="size-4 flex-none text-neutral-500 transition-transform group-open:rotate-180"
-              />
-            </summary>
-            <div className="px-4 pb-5">
-              {comparison.map(({ group, rows }) => (
-                <div key={group} className="mt-4 first:mt-0">
-                  <h4 className={groupLabel}>{group}</h4>
-                  <dl className="mt-2 grid gap-3 text-[0.92rem] leading-relaxed text-neutral-700 dark:text-neutral-300">
-                    {rows.map((row) => (
-                      <div key={row.label} className="border-t border-neutral-200 pt-3 dark:border-neutral-800">
-                        <dt className="font-[650] text-neutral-950 dark:text-white">{row.label}</dt>
-                        <dd className="mt-0.5">{row.values[plan.key]}</dd>
-                      </div>
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  className="w-[22%] px-5 py-5 align-bottom text-sm font-medium text-neutral-500 dark:text-neutral-400"
+                >
+                  <span className="sr-only">Feature</span>
+                </th>
+                {plans.map((plan) => (
+                  <th key={plan.key} scope="col" className={cn(col, 'py-5 font-normal')}>
+                    <PlanName plan={plan} />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            {comparison.map(({ group, rows }) => (
+              <tbody
+                key={group}
+                className="border-t border-neutral-200 text-neutral-700 dark:border-neutral-800 dark:text-neutral-300"
+              >
+                <tr className="bg-neutral-50 dark:bg-neutral-950/40">
+                  <th scope="colgroup" colSpan={plans.length + 1} className={cn(groupLabel, 'px-5 py-3')}>
+                    {group}
+                  </th>
+                </tr>
+                {rows.map((row) => (
+                  <tr key={row.label} className="border-t border-neutral-200 dark:border-neutral-800">
+                    <th scope="row" className="px-5 py-4 align-top font-[650] text-neutral-950 dark:text-white">
+                      {row.label}
+                    </th>
+                    {plans.map((plan) => (
+                      <td key={plan.key} className={cn(col, 'py-4 align-top')}>
+                        {row.values[plan.key]}
+                      </td>
                     ))}
-                  </dl>
-                </div>
-              ))}
-            </div>
-          </details>
-        ))}
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
+        </div>
+
+        {/* Under 768px: a fold-out card per plan */}
+        <div className="mt-6 grid gap-3 md:hidden">
+          {plans.map((plan) => (
+            <details
+              key={plan.key}
+              className="group rounded-2xl border border-neutral-200 open:bg-neutral-50/60 dark:border-neutral-800 dark:open:bg-neutral-950/30"
+            >
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 [&::-webkit-details-marker]:hidden">
+                <PlanName plan={plan} />
+                <Icon
+                  name="chevron-down"
+                  className="size-4 flex-none text-neutral-500 transition-transform group-open:rotate-180"
+                />
+              </summary>
+              <div className="px-4 pb-5">
+                {comparison.map(({ group, rows }) => (
+                  <div key={group} className="mt-4 first:mt-0">
+                    <h4 className={groupLabel}>{group}</h4>
+                    <dl className="mt-2 grid gap-3 text-[0.92rem] leading-relaxed text-neutral-700 dark:text-neutral-300">
+                      {rows.map((row) => (
+                        <div key={row.label} className="border-t border-neutral-200 pt-3 dark:border-neutral-800">
+                          <dt className="font-[650] text-neutral-950 dark:text-white">{row.label}</dt>
+                          <dd className="mt-0.5">{row.values[plan.key]}</dd>
+                        </div>
+                      ))}
+                    </dl>
+                  </div>
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
       </div>
-    </section>
+    </details>
   )
 }
 

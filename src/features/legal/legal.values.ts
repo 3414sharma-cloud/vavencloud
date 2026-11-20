@@ -18,9 +18,6 @@ import { planTerms } from '@/features/shared/plan-terms.ts'
 const { criticalResponse, highResponse, codeFixHours, serverLimit, backupDays } = planTerms
 
 export const legalValues: Record<string, string> = {
-  /** All pages. Suggested: the date the pages go live */
-  'EFFECTIVE DATE': '',
-
   /* SLA: Severity 1 and 2 response, per plan (plan-terms.ts) */
   'ESSENTIAL RESPONSE TIME': criticalResponse.essential,
   'MANAGED RESPONSE TIME': criticalResponse.managed,
@@ -34,33 +31,45 @@ export const legalValues: Record<string, string> = {
   /** Terms §5: "Essential starts at $100 a month and covers …" */
   'ESSENTIAL PLAN SCOPE': `a shared senior team, one production environment of up to ${serverLimit.essential} servers or services, monitoring, daily backups kept ${backupDays.essential} days and monthly patching`,
 
-  /** SLA: monthly uptime for servers on VavenCloud. Suggested: 99.9% */
-  'UPTIME TARGET': '',
   /** SLA §9, Trust: backups and restore tests, per plan */
   'BACKUP SCHEDULE': `daily backups kept ${backupDays.essential} days on Essential; daily backups kept ${backupDays.managed} days with a quarterly restore test on Managed; hourly database snapshots kept ${backupDays.partner} days with a monthly restore test and a disaster recovery plan on Partner`,
-  /** Terms: notice to cancel or change plan. Suggested: 30 days */
-  'NOTICE PERIOD': '',
-  /** Terms: when invoices are due. Suggested: 7 days */
-  'PAYMENT TERMS': '',
-  /** Terms: maximum liability. Suggested: the fees paid in the previous 12 months */
-  'LIABILITY CAP': '',
-  /** Terms, Privacy: how long data is kept after a client leaves. Suggested: 30 days, then deleted */
-  'EXIT RETENTION': '',
-  /** Privacy, Trust: provider and regions behind VavenCloud infrastructure */
-  'DATA CENTRES': '',
-  /** Privacy, Trust: third parties that touch client data (cloud host, email, billing, chat) */
-  'SUB-PROCESSORS': '',
+  /** Terms §12: "give us … written notice". The PDF's suggestion */
+  'NOTICE PERIOD': '30 days’',
+  /** Terms §5: "due within …". The PDF's suggestion */
+  'PAYMENT TERMS': '7 days of the invoice date',
+  /** Terms §15: "limited to …". The PDF's suggestion */
+  'LIABILITY CAP': 'the fees you paid us in the 12 months before the claim',
+  /** Terms §12, Privacy §6: "keep your data for … after the end date … then delete it". The PDF's suggestion */
+  'EXIT RETENTION': '30 days',
+  /** SLA §6 and §7: monthly uptime on VavenCloud infrastructure. The PDF's suggestion */
+  'UPTIME TARGET': '99.9%',
+  /** Terms §19: "governed by …". The PDF's suggestion */
+  'GOVERNING LAW': 'the laws of India, and the courts at Mohali, Punjab have jurisdiction',
   /**
-   * Trust: any certification held or in progress. If none, set this to a single space (' ') so the placeholder
-   * disappears. Never claim a certification (SOC 2, ISO 27001) that isn't held.
+   * Privacy §5, Trust: where VavenCloud's own servers are. The regions the old site published
+   * (vavencloud-static-website, serviceRegionsData.ts), matching the FAQ ("the United States or Europe").
+   * TODO: add the provider's name, as the PDF asks ("Name provider and regions").
    */
-  'CERTIFICATIONS STATUS': '',
-  /** Terms: law and courts that apply. Suggested: the laws of India, courts at Mohali, Punjab */
-  'GOVERNING LAW': '',
-  /** Privacy: named person for complaints (Indian IT Rules): name and email */
+  'DATA CENTRES':
+    'data centres in New York and St. Louis (United States) and Strasbourg (France), in the region you choose',
+  /**
+   * Trust: any certification held or in progress. A single space removes the placeholder, the PDF's suggestion
+   * when none is held. Never claim a certification (SOC 2, ISO 27001) that isn't held.
+   */
+  'CERTIFICATIONS STATUS': ' ',
+  /**
+   * SLA §2: the 24/7 line for critical incidents. The number the landing page already shows as its 24/7 line
+   * ("Site down right now? Call 24/7", home/booking/booking.data.ts). Confirm it's the emergency line.
+   */
+  'EMERGENCY PHONE': '+91 90609 79706',
+
+  /* Still to decide: no suggestion can stand in for these */
+  /** All pages: the date the pages go live */
+  'EFFECTIVE DATE': '',
+  /** Privacy (2 places): the named person for complaints (Indian IT Rules): name and email */
   'GRIEVANCE OFFICER': '',
-  /** SLA: 24/7 line for critical incidents. Decide whether to publish one */
-  'EMERGENCY PHONE': '',
+  /** Privacy, Trust: every third party that touches client data, by name (cloud host, email, billing, chat) */
+  'SUB-PROCESSORS': '',
 }
 
 /*

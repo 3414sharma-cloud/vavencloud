@@ -177,7 +177,7 @@ export const TERMS_OF_SERVICE: LegalPage = {
     {
       heading: '19. Disputes',
       blocks: [
-        'If something goes wrong, tell us first. A founder will respond within 5 business days, and we aim to resolve it within 30 days. If we cannot, these terms are governed by [GOVERNING LAW], and its courts have jurisdiction.',
+        'If something goes wrong, tell us first. A founder will respond within 5 business days, and we aim to resolve it within 30 days. If we cannot, these terms are governed by [GOVERNING LAW].',
       ],
     },
     {
